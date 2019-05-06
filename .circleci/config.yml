@@ -34,6 +34,9 @@ jobs:
             - cordova-plugins-{{ .Branch }}-
             - cordova-plugins-
       - run:
+          name: Add android platform
+          command: cordova platform add android
+      - run:
           name: Build android app
           command: cordova build android
       - save_cache:
