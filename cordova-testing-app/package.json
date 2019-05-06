@@ -18,11 +18,9 @@
     "webpack-cli": "^3.3.2"
   },
   "dependencies": {
-    "@aerogear/cordova-plugin-aerogear-security": "^2.4.0",
     "@aerogear/security": "^2.4.0",
     "cordova-android": "^8.0.0",
     "cordova-browser": "^6.0.0",
-    "cordova-plugin-aerogear-security": "@aerogear/cordova-plugin-aerogear-security@~2.4.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-iroot": "^0.7.0",
     "cordova-plugin-is-debug": "^1.0.0",
@@ -31,7 +29,12 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-aerogear-security": {}
+      "cordova-plugin-device": {},
+      "cordova-plugin-is-debug": {},
+      "cordova-plugin-iroot": {
+        "ENABLE_BUSYBOX_CHECK": "true"
+      },
+      "cordova-plugin-pincheck": {}
     },
     "platforms": [
       "browser",

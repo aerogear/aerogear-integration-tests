@@ -23,6 +23,11 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <plugin name="cordova-plugin-aerogear-security" spec="@aerogear/cordova-plugin-aerogear-security@~2.4.0" />
+    <plugin name="cordova-plugin-device" spec="2.0.2" />
+    <plugin name="cordova-plugin-is-debug" spec="1.0.0" />
+    <plugin name="cordova-plugin-iroot" spec="0.8.0">
+        <variable name="ENABLE_BUSYBOX_CHECK" value="true" />
+    </plugin>
+    <plugin name="cordova-plugin-pincheck" spec="0.0.6" />
     <engine name="android" spec="~8.0.0" />
 </widget>
