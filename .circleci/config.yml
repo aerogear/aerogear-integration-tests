@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build-android:
-    working_directory: ~/project/cordova-testing-app
+    working_directory: ~/aerogear-integration-tests/cordova-testing-app
     docker:
       - image: circleci/android:api-28-node
     steps:
@@ -12,7 +12,7 @@ jobs:
           name: Install cordova
           command: sudo npm --global install cordova
       - checkout:
-          path: ~/project
+          path: ~/aerogear-integration-tests
       - restore_cache:
           name: Restore node modules cache
           keys: 
