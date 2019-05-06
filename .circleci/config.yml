@@ -1,0 +1,83 @@
+version: 2
+jobs:
+  build-android:
+    working_directory: ~/project/cordova-testing-app
+    docker:
+      - image: circleci/android:api-28-node
+    steps:
+      - run:
+          name: Install gradle
+          command: sudo apt install gradle
+      - run:
+          name: Install cordova
+          command: sudo npm --global install cordova
+      - checkout:
+          path: ~/project
+      - restore_cache:
+          name: Restore node modules cache
+          keys: 
+            - node-modules-{{ .Branch }}-{{ checksum "package.json" }}
+            - node-modules-{{ .Branch }}-
+            - node-modules-
+      - run:
+          name: Install node modules
+          command: npm install
+      - save_cache:
+          name: Save node modules cache
+          key: node-modules-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - restore_cache:
+          name: Restoring cordova plugins cache
+          keys: 
+            - cordova-plugins-{{ .Branch }}-{{ checksum "config.xml" }}
+            - cordova-plugins-{{ .Branch }}-
+            - cordova-plugins-
+      - run:
+          name: Build android app
+          command: cordova build android
+      - save_cache:
+          name: Save cordova plugins cache
+          key: cordova-plugins-{{ .Branch }}-{{ checksum "config.xml" }}
+          paths:
+            - plugins
+      - persist_to_workspace:
+          root: platforms/android/app/build/outputs/apk/debug/
+          paths:
+            - app-debug.apk
+  test-android:
+    docker:
+      - image: circleci/node:carbon
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore node modules cache
+          keys: 
+            - node-modules-{{ .Branch }}-{{ checksum "package.json" }}
+            - node-modules-{{ .Branch }}-
+            - node-modules-
+      - run:
+          name: Install node modules
+          command: npm install
+      - save_cache:
+          name: Save node modules cache
+          key: node-modules-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Run E2E tests
+          command: |
+            export BROWSERSTACK_APP="$(curl -u "$BROWSERSTACK_USER:$BROWSERSTACK_KEY" \
+              -X POST https://api-cloud.browserstack.com/app-automate/upload \
+              -F "file=@/tmp/workspace/app-debug.apk" | cut -d '"' -f 4)"
+            npm start
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build-android
+      - test-android:
+          requires:
+            - build-android
