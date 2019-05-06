@@ -23,4 +23,6 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    <plugin name="cordova-plugin-aerogear-security" spec="@aerogear/cordova-plugin-aerogear-security@~2.4.0" />
+    <engine name="android" spec="~8.0.0" />
 </widget>

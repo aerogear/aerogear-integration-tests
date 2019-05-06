@@ -22,6 +22,7 @@
     "@aerogear/security": "^2.4.0",
     "cordova-android": "^8.0.0",
     "cordova-browser": "^6.0.0",
+    "cordova-plugin-aerogear-security": "@aerogear/cordova-plugin-aerogear-security@~2.4.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-iroot": "^0.7.0",
     "cordova-plugin-is-debug": "^1.0.0",
@@ -29,8 +30,8 @@
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-aerogear-security": {},
-      "cordova-plugin-whitelist": {}
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-aerogear-security": {}
     },
     "platforms": [
       "browser",
