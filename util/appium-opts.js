@@ -2,7 +2,7 @@ const opts = {
   hostname:'hub-cloud.browserstack.com',
   logLevel: 'error',
   capabilities: {
-    'os_version': '8.0',
+    'os_version': '7.1',
     'device': 'Google Pixel',
     'real_mobile': 'true',
     'project': 'AeroGear Integration Tests',
