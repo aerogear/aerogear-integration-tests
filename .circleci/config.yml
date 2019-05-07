@@ -45,8 +45,6 @@ jobs:
   test-android:
     docker:
       - image: circleci/node:carbon
-    environment:
-      GIT_COMMIT_DESC: git log --format=oneline -n 1 $CIRCLE_SHA1
     steps:
       - checkout
       - restore_cache:
@@ -71,6 +69,7 @@ jobs:
             export BROWSERSTACK_APP="$(curl -u "$BROWSERSTACK_USER:$BROWSERSTACK_KEY" \
               -X POST https://api-cloud.browserstack.com/app-automate/upload \
               -F "file=@/tmp/workspace/app-debug.apk" | cut -d '"' -f 4)"
+            export GIT_COMMIT_DESC="$(git log --format=oneline -n 1 $CIRCLE_SHA1)"
             npm start -- test/security/index.js
 workflows:
   version: 2
