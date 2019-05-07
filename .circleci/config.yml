@@ -1,12 +1,10 @@
 version: 2
 jobs:
   build-android:
-    working_directory: ~/aerogear-integration-tests/cordova-testing-app
     docker:
       - image: circleci/android:api-28-node
     steps:
-      - checkout:
-          path: ~/aerogear-integration-tests
+      - checkout
       - run:
           name: Install gradle
           command: sudo apt install gradle
@@ -14,16 +12,34 @@ jobs:
           name: Install cordova
           command: sudo npm --global install cordova@8
       - run:
-          name: Install node modules
-          command: npm install
+          name: Create cordova app
+          command: cordova create testing-app
       - run:
-          name: Add android platform
-          command: cordova platform add android
+          name: Install security package
+          command: cd testing-app && npm install --save @aerogear/security
+      - run:
+          name: Install security plugin
+          command: cd testing-app && cordova plugin add @aerogear/cordova-plugin-aerogear-security
+      - run:
+          name: Install webpack
+          command: cd testing-app && npm install --save-dev webpack webpack-cli
+      - run:
+          name: Copy webpack config
+          command: cp fixtures/webpack.config.js testing-app/
+      - run:
+          name: Copy index.js
+          command: cp fixtures/index.js testing-app/
+      - run:
+          name: Webpack build
+          command: cd testing-app && npx webpack
+      - run:
+          name: Add Android platform
+          command: cd testing-app && cordova platform add android
       - run:
           name: Build android app
-          command: cordova build android
+          command: cd testing-app && cordova build android
       - persist_to_workspace:
-          root: platforms/android/app/build/outputs/apk/debug/
+          root: testing-app/platforms/android/app/build/outputs/apk/debug/
           paths:
             - app-debug.apk
   test-android:
