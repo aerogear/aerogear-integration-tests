@@ -39,7 +39,7 @@ describe('Auth', function() {
     await usernamEl.setValue('test');
     
     const passwordEl = await client.$('#password')
-    await passwordEl.setValue('1234');
+    await passwordEl.setValue('123');
     
     const loginEl = await client.$('#kc-login')
     await loginEl.click();
