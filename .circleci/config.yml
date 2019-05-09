@@ -18,6 +18,9 @@ jobs:
           name: Copy config.xml
           command: cp fixtures/config.xml testing-app/
       - run:
+          name: Copy index.html
+          command: cp fixtures/index.html testing-app/www/
+      - run:
           name: Install security package
           command: |
             cd testing-app && \

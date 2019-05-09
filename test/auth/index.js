@@ -49,7 +49,11 @@ describe('Auth', function() {
     const authenticated = await client.executeAsync(async done => {
       const { authService, loginPromise } = window.aerogear;
 
-      await loginPromise;
+      try {
+        await loginPromise;
+      } catch (_) {
+        done(false);
+      }
 
       done(authService.isAuthenticated());
     });
