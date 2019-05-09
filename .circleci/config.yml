@@ -24,7 +24,10 @@ jobs:
             npm install --save @aerogear/security @aerogear/app @aerogear/auth
       - run:
           name: Install security plugin
-          command: cd testing-app && cordova plugin add @aerogear/cordova-plugin-aerogear-security
+          command: |
+            cd testing-app && \
+            cordova plugin add @aerogear/cordova-plugin-aerogear-security && \
+            cordova plugin add cordova-plugin-inappbrowser
       - run:
           name: Install webpack
           command: cd testing-app && npm install --save-dev webpack webpack-cli
