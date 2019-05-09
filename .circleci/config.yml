@@ -15,6 +15,9 @@ jobs:
           name: Create cordova app
           command: cordova create testing-app
       - run:
+          name: Copy config.xml
+          command: cp fixtures/config.xml testing-app/
+      - run:
           name: Install security package
           command: |
             cd testing-app && \
@@ -75,14 +78,14 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          name: Download BrowserStack Local binary and start it
+          name: Download BrowserStack Local binary
           command: |
             wget "https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip"
             unzip BrowserStackLocal-linux-x64.zip
-            ./BrowserStackLocal $BROWSERSTACK_KEY
       - run:
           name: Run the tests
           command: |
+            ./BrowserStackLocal $BROWSERSTACK_KEY &
             export BROWSERSTACK_APP="$(curl -u "$BROWSERSTACK_USER:$BROWSERSTACK_KEY" \
               -X POST https://api-cloud.browserstack.com/app-automate/upload \
               -F "file=@/tmp/workspace/app-debug.apk" | cut -d '"' -f 4)"
