@@ -16,7 +16,9 @@ jobs:
           command: cordova create testing-app
       - run:
           name: Install security package
-          command: cd testing-app && npm install --save @aerogear/security
+          command: |
+            cd testing-app && \
+            npm install --save @aerogear/security @aerogear/app @aerogear/auth
       - run:
           name: Install security plugin
           command: cd testing-app && cordova plugin add @aerogear/cordova-plugin-aerogear-security
@@ -73,8 +75,8 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          name : Download BrowserStack Local binary and start it
-          command : |
+          name: Download BrowserStack Local binary and start it
+          command: |
             wget "https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip"
             unzip BrowserStackLocal-linux-x64.zip
             ./BrowserStackLocal $BROWSERSTACK_KEY
