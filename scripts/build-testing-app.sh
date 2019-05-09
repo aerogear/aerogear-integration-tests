@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 cordova create testing-app
         
 cp fixtures/config.xml testing-app/
