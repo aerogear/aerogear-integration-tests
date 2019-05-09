@@ -15,31 +15,28 @@ jobs:
           name: Create cordova app
           command: cordova create testing-app
       - run:
-          name: Copy config.xml
-          command: cp fixtures/config.xml testing-app/
+          name: Copy fixtures
+          command: |
+            cp fixtures/config.xml testing-app/
+            cp fixtures/index.html testing-app/www/
+            cp fixtures/webpack.config.js testing-app/
+            cp fixtures/index.js testing-app/
       - run:
-          name: Copy index.html
-          command: cp fixtures/index.html testing-app/www/
-      - run:
-          name: Install security package
+          name: Install dependencies
           command: |
             cd testing-app && \
-            npm install --save @aerogear/security @aerogear/app @aerogear/auth
+            npm install \
+              @aerogear/security \
+              @aerogear/app \
+              @aerogear/auth \
+              webpack \
+              webpack-cli
       - run:
-          name: Install security plugin
+          name: Install cordova plugins
           command: |
             cd testing-app && \
             cordova plugin add @aerogear/cordova-plugin-aerogear-security && \
             cordova plugin add cordova-plugin-inappbrowser
-      - run:
-          name: Install webpack
-          command: cd testing-app && npm install --save-dev webpack webpack-cli
-      - run:
-          name: Copy webpack config
-          command: cp fixtures/webpack.config.js testing-app/
-      - run:
-          name: Copy index.js
-          command: cp fixtures/index.js testing-app/
       - run:
           name: Webpack build
           command: cd testing-app && npx webpack
