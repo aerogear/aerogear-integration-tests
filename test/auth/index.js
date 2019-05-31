@@ -51,12 +51,15 @@ describe('Auth', function() {
 
       try {
         await loginPromise;
-      } catch (_) {
-        done(false);
+      } catch (error) {
+        done(error.message);
+        return;
       }
 
       done(authService.isAuthenticated());
     });
+    
+    console.log('authenticated: ', authenticated);
 
     authenticated.should.equal(true);
   });
