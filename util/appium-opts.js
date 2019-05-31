@@ -22,7 +22,6 @@ if (process.env.LOCAL_APPIUM === 'true') {
       'device': 'Google Pixel',
       'real_mobile': 'true',
       'project': 'AeroGear Integration Tests',
-      'build': process.env.GIT_COMMIT_DESC,
       'name': 'tests',
       'browserstack.local': 'true',
       'browserstack.user': process.env.BROWSERSTACK_USER,
