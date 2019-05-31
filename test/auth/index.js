@@ -28,7 +28,7 @@ describe('Auth', function() {
       window.aerogear.loginPromise = authService.init(initOptions);
     }, mobileServices);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
     const mainWindow = await client.getWindowHandle();
     const allWindows = await client.getWindowHandles();
