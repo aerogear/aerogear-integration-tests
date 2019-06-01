@@ -1,5 +1,4 @@
 require('chai').should();
-const { Client } = require('pg');
 
 const appiumOpts = require('../../config/appium-opts');
 const testAppConfig = require('../../testing-app/package-lock');
@@ -20,23 +19,6 @@ const expectedData = {
 describe('App Metrics', function() {
   this.timeout(0);
 
-  let postgres;
-
-  before('connect to postgres', async function() {
-    postgres = new Client({
-      host: process.env.PGHOST,
-      user: process.env.PGUSER,
-      password: process.env.PGPASSWORD,
-      database: process.env.PGDATABASE
-    });
-
-    await postgres.connect();
-  });
-
-  after('close postgres connection', async function() {
-    await postgres.end();
-  });
-  
   it('should receive app metrics', async function() {
     await new Promise(resolve => setTimeout(resolve, 10 * 1000));
 

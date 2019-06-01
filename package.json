@@ -5,7 +5,7 @@
   "description": "AeroGear integration tests",
   "main": "index.js",
   "scripts": {
-    "start": "mocha --file util/appium.js --file util/init.js"
+    "start": "mocha --file util/appium.js --file util/metrics.js --file util/init.js"
   },
   "dependencies": {
     "axios": "^0.19.0",

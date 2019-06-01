@@ -10,5 +10,5 @@ before('Initialize appium', async function() {
 });
 
 after('Close appium session', async function() {
-  await global.client.deleteSession();
+  await client.deleteSession();
 });

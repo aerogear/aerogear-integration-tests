@@ -14,4 +14,6 @@ if [ ! -d "$METRICS_DIR" ]; then
 fi
 
 cd "$METRICS_DIR"
-git log
+
+make build_linux
+docker-compose up -d

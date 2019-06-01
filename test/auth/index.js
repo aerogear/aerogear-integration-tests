@@ -26,7 +26,7 @@ describe('Auth', function() {
       authService.init(initOptions);
     });
 
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, 20 * 1000));
 
     const mainWindow = await client.getWindowHandle();
     const allWindows = await client.getWindowHandles();
