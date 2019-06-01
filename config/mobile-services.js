@@ -1,5 +1,6 @@
 const keycloakUrl = `http://${process.env.KEYCLOAK_HOST}:${process.env.KEYCLOAK_PORT}/auth`;
 const syncUrl = `${process.env.SYNC_HOST}:${process.env.SYNC_PORT}/graphql`;
+const metricsUrl = `http://${process.env.METRICS_HOST}:${process.env.METRICS_PORT}/metrics`;
 
 const config = {
   "version": 1,
@@ -28,7 +29,14 @@ const config = {
       "config": {
         "websocketUrl": `ws://${syncUrl}`
       }
-    }
+    },
+    {
+      "id": "d3776cbe-7c83-11e9-afde-06799ee5f0b0",
+      "name": "metrics",
+      "type": "metrics",
+      "url": metricsUrl,
+      "config": {}
+    },
   ]
 }
 

@@ -14,6 +14,7 @@ npm install --save \
   webpack \
   webpack-cli
 
+cordova plugin add @aerogear/cordova-plugin-aerogear-metrics
 cordova plugin add @aerogear/cordova-plugin-aerogear-security
 cordova plugin add cordova-plugin-inappbrowser
 
