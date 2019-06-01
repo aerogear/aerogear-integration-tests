@@ -1,8 +1,6 @@
 require('chai').should();
 const { Client } = require('pg');
 
-const mobileServices = require('../../config/mobile-services');
-
 describe('App Metrics', function() {
   this.timeout(0);
 
@@ -24,14 +22,12 @@ describe('App Metrics', function() {
   });
   
   it('should receive app metrics', async function() {
-    client.execute(config => {
-      const { init } = window.aerogear;
-      init(config);
-    }, mobileServices);
-
     await new Promise(resolve => setTimeout(resolve, 10 * 1000));
 
     const result = await postgres.query('SELECT * FROM mobileappmetrics');
-    console.dir(result);
+
+    result.rows.length.should.equal(1);
+    result.rows[0].event_type.should.include('init');
+    console.dir(result.rows[0].data);
   });
 });

@@ -2,8 +2,6 @@ require('chai').should();
 const express = require('express');
 const { VoyagerServer, gql } = require('@aerogear/voyager-server');
 
-const mobileServices = require('../../config/mobile-services');
-
 describe('Data Sync', function() {
   this.timeout(0);
   
@@ -38,10 +36,8 @@ describe('Data Sync', function() {
   });
 
   it('should initialize voyager client', async function() {
-    await client.executeAsync(async (config, done) => {
-      const { init, OfflineClient } = window.aerogear;
-
-      const app = init(config);
+    await client.executeAsync(async done => {
+      const { OfflineClient, app } = window.aerogear;
 
       const options = {
         openShiftConfig: app.config
@@ -54,7 +50,7 @@ describe('Data Sync', function() {
       window.aerogear.apolloClient = apolloClient;
 
       done();
-    }, mobileServices);
+    });
   });
 
   it('should successfully perform query', async function() {

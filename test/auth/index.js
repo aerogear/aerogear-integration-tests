@@ -1,7 +1,6 @@
 require('chai').should();
 
 const { prepareKeycloak, resetKeycloakConfiguration } = require('../../util/keycloak');
-const mobileServices = require('../../config/mobile-services');
 
 describe('Auth', function() {
   this.timeout(0);
@@ -16,17 +15,15 @@ describe('Auth', function() {
   });
   
   it('should login', async function() {
-    client.execute(config => {
-      const { Auth, init } = window.aerogear;
-
-      const app = init(config);
+    client.execute(() => {
+      const { Auth, app } = window.aerogear;
 
       const authService = new Auth(app.config);
       window.aerogear.authService = authService;
 
       const initOptions = { onLoad: 'login-required' };
-      window.aerogear.loginPromise = authService.init(initOptions);
-    }, mobileServices);
+      authService.init(initOptions);
+    });
 
     await new Promise(resolve => setTimeout(resolve, 5000));
 
@@ -41,25 +38,20 @@ describe('Auth', function() {
     const passwordEl = await client.$('#password')
     await passwordEl.setValue('123');
     
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     const loginEl = await client.$('#kc-login')
     await loginEl.click();
 
     await client.switchToWindow(mainWindow);
 
-    const authenticated = await client.executeAsync(async done => {
-      const { authService, loginPromise } = window.aerogear;
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
-      try {
-        await loginPromise;
-      } catch (error) {
-        done(error.message);
-        return;
-      }
+    const authenticated = await client.executeAsync(async done => {
+      const { authService } = window.aerogear;
 
       done(authService.isAuthenticated());
     });
-    
-    console.log('authenticated: ', authenticated);
 
     authenticated.should.equal(true);
   });
