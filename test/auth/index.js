@@ -1,7 +1,7 @@
 require('chai').should();
 
 const { prepareKeycloak, resetKeycloakConfiguration } = require('../../util/keycloak');
-const mobileServices = require('../../fixtures/mobile-services');
+const mobileServices = require('../../config/mobile-services');
 
 describe('Auth', function() {
   this.timeout(0);

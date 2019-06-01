@@ -1,6 +1,6 @@
 const wdio = require("webdriverio");
 
-const opts = require('./appium-opts');
+const opts = require('../config/appium-opts');
 
 before('Initialize appium', async function() {
   this.timeout(0);

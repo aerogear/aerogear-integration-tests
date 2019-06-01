@@ -1,4 +1,5 @@
 const keycloakUrl = `http://${process.env.KEYCLOAK_HOST}:${process.env.KEYCLOAK_PORT}/auth`;
+const syncUrl = `${process.env.SYNC_HOST}:${process.env.SYNC_PORT}/graphql`;
 
 const config = {
   "version": 1,
@@ -17,6 +18,15 @@ const config = {
         "resource": "cordova-testing-app",
         "public-client": true,
         "confidential-port": 0
+      }
+    },
+    {
+      "id": "81f67bae-7d40-11e9-afde-06799ee5f0b0",
+      "name": "sync-app-test",
+      "type": "sync-app",
+      "url": `http://${syncUrl}`,
+      "config": {
+        "websocketUrl": `ws://${syncUrl}`
       }
     }
   ]
