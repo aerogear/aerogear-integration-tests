@@ -1,6 +1,22 @@
 require('chai').should();
 const { Client } = require('pg');
 
+const appiumOpts = require('../../config/appium-opts');
+const testAppConfig = require('../../testing-app/package-lock');
+
+const expectedData = {
+  app: {
+    appId: 'io.cordova.hellocordova',
+    framework: 'cordova',
+    appVersion: '1.0.0',
+    sdkVersion: testAppConfig.dependencies['@aerogear/app'].version
+  },
+ device: {
+   platform: appiumOpts.capabilities.device.includes('iPhone') ? 'ios' : 'android',
+   platformVersion: appiumOpts.capabilities.os_version
+  }
+};
+
 describe('App Metrics', function() {
   this.timeout(0);
 
@@ -28,6 +44,6 @@ describe('App Metrics', function() {
 
     result.rows.length.should.equal(1);
     result.rows[0].event_type.should.include('init');
-    console.dir(result.rows[0].data);
+    result.rows[0].data.should.deep.equal(expectedData);
   });
 });
