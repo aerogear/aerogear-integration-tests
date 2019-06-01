@@ -6,21 +6,21 @@ const mobileServices = require('../../config/mobile-services');
 describe('App Metrics', function() {
   this.timeout(0);
 
-  let client;
+  let postgres;
 
   before('connect to postgres', async function() {
-    client = new Client({
+    postgres = new Client({
       host: process.env.PGHOST,
       user: process.env.PGUSER,
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE
     });
 
-    await client.connect();
+    await postgres.connect();
   });
 
   after('close postgres connection', async function() {
-    await client.end();
+    await postgres.end();
   });
   
   it('should receive app metrics', async function() {
@@ -31,7 +31,7 @@ describe('App Metrics', function() {
 
     await new Promise(resolve => setTimeout(resolve, 10 * 1000));
 
-    const result = await client.query('SELECT * FROM mobileappmetrics');
+    const result = await postgres.query('SELECT * FROM mobileappmetrics');
     console.dir(result);
   });
 });
