@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-if [ "$CI" == "true" ]; then
+if [ "$CI" = "true" ]; then
   export KEYCLOAK_HOST=keycloak
 else
   export KEYCLOAK_HOST=bs-local.com
@@ -10,7 +8,7 @@ export SYNC_HOST=bs-local.com
 export SYNC_PORT=4000
 export METRICS_HOST=bs-local.com
 export METRICS_PORT=3000
-if [ "$CI" == "true" ]; then
+if [ "$CI" = "true" ]; then
   export PGHOST=postgres
 else
   export PGHOST=localhost
