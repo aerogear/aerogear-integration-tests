@@ -1,3 +1,5 @@
 node_modules
 testing-app
 package-lock.json
+bs-local-pid.txt
+BrowserStackLocal*

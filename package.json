@@ -5,12 +5,18 @@
   "description": "AeroGear integration tests",
   "main": "index.js",
   "scripts": {
-    "start": "mocha --file util/appium.js --file util/metrics.js --file util/init.js"
+    "prestart": "./scripts/start-bs-local.sh",
+    "poststart": "./scripts/stop-bs-local.sh",
+    "start": "source ./scripts/setup-env-vars.sh && mocha --file util/appium.js --file util/metrics.js --file util/init.js"
   },
   "dependencies": {
+    "@aerogear/voyager-server": "latest",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
+    "express": "latest",
+    "graphql": "latest",
     "mocha": "^6.1.4",
+    "node-fetch": "^2.6.0",
     "pg": "^7.11.0",
     "webdriverio": "^5.9.5"
   }

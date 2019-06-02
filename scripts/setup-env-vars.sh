@@ -8,3 +8,4 @@ export PGHOST=localhost
 export PGUSER=postgresql
 export PGPASSWORD=postgres
 export PGDATABASE=aerogear_mobile_metrics
+export BROWSERSTACK_APP=$(cat "./testing-app/bs-app-url.txt" | cut -d '"' -f 4)

@@ -2,22 +2,36 @@ require('chai').should();
 const express = require('express');
 const { VoyagerServer, gql } = require('@aerogear/voyager-server');
 
+const { setNetwork } = require('../../util/network');
+
 describe('Data Sync', function() {
   this.timeout(0);
   
   let expressServer;
+  let serverItems = [];
 
   it('should run the voyager server', async function() {
     const typeDefs = gql`
       type Query {
-        hello: String
+        items: [String]
+      }
+
+      type Mutation {
+        create(item: String!): String
       }
     `;
 
     const resolvers = {
       Query: {
-        hello: () => {
-          return 'Hello world';
+        items: () => {
+          return serverItems;
+        }
+      },
+      
+      Mutation: {
+        create: (_, args) => {
+          serverItems.push(args.item);
+          return args.item;
         }
       }
     };
@@ -30,17 +44,16 @@ describe('Data Sync', function() {
     const app = express();
     server.applyMiddleware({ app });
 
-    expressServer = app.listen(4000, () =>
-      console.log(`🚀 Server ready at http://localhost:4000/graphql`)
-    );
+    expressServer = app.listen(4000);
   });
 
   it('should initialize voyager client', async function() {
     await client.executeAsync(async done => {
-      const { OfflineClient, app } = window.aerogear;
+      const { OfflineClient, app, CordovaNetworkStatus } = window.aerogear;
 
       const options = {
-        openShiftConfig: app.config
+        openShiftConfig: app.config,
+        networkStatus: new CordovaNetworkStatus()
       };
 
       const offlineClient = new OfflineClient(options);
@@ -53,23 +66,99 @@ describe('Data Sync', function() {
     });
   });
 
-  it('should successfully perform query', async function() {
+  it('should perform query', async function() {
     const result = await client.executeAsync(async done => {
       try {
         const { apolloClient, gql } = window.aerogear;
 
         const { data } = await apolloClient.query({
           fetchPolicy: 'network-only',
-          query: gql`{hello}`
+          query: gql`{items}`
         });
 
-        done({ data: data.hello });
+        done({ data: data.items });
       } catch (error) {
         done({ error: error.message });
       }
     });
 
-    result.data.should.equal('Hello world');
+    result.data.should.deep.equal([]);
+  });
+
+  it('should perform offline mutation', async function() {
+    await setNetwork('no-network');
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
+    await client.executeAsync(async done => {
+      try {
+        const { apolloClient, gql } = window.aerogear;
+
+        await apolloClient.offlineMutation({
+          mutation: gql`
+            mutation create($item: String!) {
+              create(item: $item)
+            }
+          `,
+          variables: { item: 'test' },
+          // updateQuery: gql`{items}`,
+          // typeName: 'String'
+        });
+
+        done({ error: 'network error offline was not thrown' });
+      } catch (error) {
+        if (error.networkError && error.networkError.offline) {
+          const offlineError = error.networkError;
+          window.aerogear.offlineChangePromise = offlineError.watchOfflineChange();
+          done();
+          return;
+        }
+
+        done({ error: error.message });
+      }
+    });
+  });
+
+  it('should see updated cache', async function() {
+    const result = await client.executeAsync(async done => {
+      try {
+        const { apolloClient, gql } = window.aerogear;
+
+        const { data } = await apolloClient.query({
+          query: gql`{items}`
+        });
+
+        done({ data: data.items });
+      } catch (error) {
+        done({ error: error.message });
+      }
+    });
+
+    result.data.should.deep.equal(['test']);
+    await setNetwork('reset');
+  });
+
+  it('should sync changes when going online', async function() {
+    await setNetwork('reset');
+
+    const result = await client.executeAsync(async done => {
+      try {
+        const { apolloClient, gql, offlineChangePromise } = window.aerogear;
+        
+        await offlineChangePromise;
+
+        const { data } = await apolloClient.query({
+          query: gql`{items}`
+        });
+
+        done({ data: data.items });
+      } catch (error) {
+        done({ error: error.message });
+      }
+    });
+
+    result.data.should.deep.equal(['test']);
+    serverItems.should.deep.equal(['test']);
   });
 
   it('shouold stop voyager server', async function() {

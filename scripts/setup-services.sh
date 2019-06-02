@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
+
+docker-compose up -d
 
 if [[ -z "${GOPATH}" ]]; then
   echo "GOPATH is not set"
