@@ -14,9 +14,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRESQL_PASSWORD: postgres
-      POSTGRESQL_USER: postgresql
-      POSTGRESQL_DATABASE: aerogear_mobile_metrics
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgresql
+      POSTGRES_DB: aerogear_mobile_metrics
   metrics:
     image: aerogear/aerogear-app-metrics
     ports:
