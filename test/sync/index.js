@@ -9,15 +9,21 @@ describe('Data Sync', function() {
   
   let expressServer;
   let serverItems = [];
+  let numItems = 0;
 
   it('should run the voyager server', async function() {
     const typeDefs = gql`
+      type Item {
+        id: ID!
+        title: String!
+      }
+
       type Query {
-        items: [String]
+        items: [Item]
       }
 
       type Mutation {
-        create(item: String!): String
+        create(title: String!): Item
       }
     `;
 
@@ -30,8 +36,12 @@ describe('Data Sync', function() {
       
       Mutation: {
         create: (_, args) => {
-          serverItems.push(args.item);
-          return args.item;
+          const newItem = {
+            id: numItems++,
+            title: args.title
+          };
+          serverItems.push(newItem);
+          return newItem;
         }
       }
     };
@@ -49,48 +59,65 @@ describe('Data Sync', function() {
 
   it('should initialize voyager client', async function() {
     await client.executeAsync(async done => {
-      const {
-        app,
-        agSync: {
-          OfflineClient,
-          CordovaNetworkStatus,
-          CacheOperation,
-          getUpdateFunction
-        }
-      } = window.aerogear;
+      try {
+        const {
+          app,
+          agSync: {
+            OfflineClient,
+            CordovaNetworkStatus,
+            CacheOperation,
+            getUpdateFunction
+          },
+          gql
+        } = window.aerogear;
 
-      const networkStatus = new CordovaNetworkStatus();
-      window.aerogear.networkStatus = networkStatus;
+        const networkStatus = new CordovaNetworkStatus();
+        window.aerogear.networkStatus = networkStatus;
 
-      // const cacheUpdates = {
-      //   create: getUpdateFunction('create', 'id', GET_TASKS, CacheOperation.ADD)
-      // };
-    
-      const options = {
-        openShiftConfig: app.config,
-        networkStatus
-      };
+        const itemsQuery = gql`
+          query items {
+            items {
+              id
+              title
+            }
+          }
+        `;
+        window.aerogear.itemsQuery = itemsQuery;
 
-      const offlineClient = new OfflineClient(options);
+        const cacheUpdates = {
+          create: getUpdateFunction('create', 'id', itemsQuery, CacheOperation.ADD)
+        };
+      
+        const options = {
+          openShiftConfig: app.config,
+          networkStatus,
+          mutationCacheUpdates: cacheUpdates
+        };
 
-      window.aerogear.offlineStore = offlineClient.offlineStore;
+        const offlineClient = new OfflineClient(options);
 
-      const apolloClient = await offlineClient.init();
+        window.aerogear.offlineStore = offlineClient.offlineStore;
 
-      window.aerogear.apolloClient = apolloClient;
+        const apolloClient = await offlineClient.init();
 
-      done();
+        window.aerogear.apolloClient = apolloClient;
+
+        done();
+      } catch (error) {
+        done({ error: error.message });
+      }
     });
   });
 
   it('should perform query', async function() {
     const result = await client.executeAsync(async done => {
       try {
-        const { apolloClient, gql } = window.aerogear;
+        const { apolloClient, itemsQuery } = window.aerogear;
 
         const { data } = await apolloClient.query({
+          query: itemsQuery,
           fetchPolicy: 'network-only',
-          query: gql`{items}`
+          errorPolicy: 'none'
         });
 
         done({ data: data.items });
@@ -109,17 +136,20 @@ describe('Data Sync', function() {
 
     await client.executeAsync(async done => {
       try {
-        const { apolloClient, gql } = window.aerogear;
+        const { apolloClient, gql, itemsQuery } = window.aerogear;
 
         await apolloClient.offlineMutation({
           mutation: gql`
-            mutation create($item: String!) {
-              create(item: $item)
+            mutation create($title: String!) {
+              create(title: $title) {
+                id
+                title
+              }
             }
           `,
-          variables: { item: 'test' },
-          // updateQuery: gql`{items}`,
-          // typeName: 'String'
+          variables: { title: 'test' },
+          updateQuery: itemsQuery,
+          typeName: 'Item'
         });
 
         done({ error: 'network error offline was not thrown' });
@@ -139,10 +169,10 @@ describe('Data Sync', function() {
   it('should see updated cache', async function() {
     const result = await client.executeAsync(async done => {
       try {
-        const { apolloClient, gql } = window.aerogear;
+        const { apolloClient, itemsQuery } = window.aerogear;
 
         const { data } = await apolloClient.query({
-          query: gql`{items}`
+          query: itemsQuery
         });
 
         done({ data: data.items });
@@ -151,24 +181,23 @@ describe('Data Sync', function() {
       }
     });
 
-    result.data.should.deep.equal(['test']);
-    await setNetwork('reset');
+    result.data.length.should.equal(1);
+    result.data[0].title.should.equal('test');
   });
 
   it('should sync changes when going online', async function() {
     await setNetwork('reset');
 
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
     const result = await client.executeAsync(async done => {
       try {
-        const { apolloClient, gql, offlineChangePromise } = window.aerogear;
+        const { apolloClient, itemsQuery, offlineChangePromise } = window.aerogear;
         
         await offlineChangePromise;
 
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         const { data } = await apolloClient.query({
-          fetchPolicy: 'network-only',
-          query: gql`{items}`
+          query: itemsQuery
         });
 
         done({ data: data.items });
@@ -177,8 +206,15 @@ describe('Data Sync', function() {
       }
     });
 
-    result.data.should.deep.equal(['test']);
-    serverItems.should.deep.equal(['test']);
+    result.data.should.deep.equal([{
+      __typename: 'Item',
+      id: '0',
+      title: 'test'
+    }]);
+    serverItems.should.deep.equal([{
+      id: 0,
+      title: 'test'
+    }]);
   });
 
   it('shouold stop voyager server', async function() {

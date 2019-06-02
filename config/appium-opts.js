@@ -16,7 +16,7 @@ if (process.env.LOCAL_APPIUM === 'true') {
 } else {
   const opts = {
     hostname:'hub-cloud.browserstack.com',
-    logLevel: 'error',
+    logLevel: 'silent',
     capabilities: {
       'os_version': '7.1',
       'device': 'Google Pixel',
