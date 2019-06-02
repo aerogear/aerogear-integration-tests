@@ -1,17 +1,15 @@
-import { SecurityService, DeviceCheckType } from '@aerogear/security';
-import { Auth } from '@aerogear/auth';
-import { init } from '@aerogear/app';
-import { OfflineClient, CordovaNetworkStatus } from '@aerogear/voyager-client';
+import * as agSecurity from '@aerogear/security';
+import * as agAuth from '@aerogear/auth';
+import * as agApp from '@aerogear/app';
+import * as agSync from '@aerogear/voyager-client';
 import gql from 'graphql-tag';
 
 window.aerogear = {
-  SecurityService,
-  DeviceCheckType,
-  Auth,
-  init,
-  OfflineClient,
-  gql,
-  CordovaNetworkStatus
+  agSecurity,
+  agAuth,
+  agApp,
+  agSync,
+  gql
 };
 
 var app = {

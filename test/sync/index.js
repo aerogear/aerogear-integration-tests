@@ -49,14 +49,31 @@ describe('Data Sync', function() {
 
   it('should initialize voyager client', async function() {
     await client.executeAsync(async done => {
-      const { OfflineClient, app, CordovaNetworkStatus } = window.aerogear;
+      const {
+        app,
+        agSync: {
+          OfflineClient,
+          CordovaNetworkStatus,
+          CacheOperation,
+          getUpdateFunction
+        }
+      } = window.aerogear;
 
+      const networkStatus = new CordovaNetworkStatus();
+      window.aerogear.networkStatus = networkStatus;
+
+      // const cacheUpdates = {
+      //   create: getUpdateFunction('create', 'id', GET_TASKS, CacheOperation.ADD)
+      // };
+    
       const options = {
         openShiftConfig: app.config,
-        networkStatus: new CordovaNetworkStatus()
+        networkStatus
       };
 
       const offlineClient = new OfflineClient(options);
+
+      window.aerogear.offlineStore = offlineClient.offlineStore;
 
       const apolloClient = await offlineClient.init();
 
@@ -141,6 +158,8 @@ describe('Data Sync', function() {
   it('should sync changes when going online', async function() {
     await setNetwork('reset');
 
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
     const result = await client.executeAsync(async done => {
       try {
         const { apolloClient, gql, offlineChangePromise } = window.aerogear;
@@ -148,6 +167,7 @@ describe('Data Sync', function() {
         await offlineChangePromise;
 
         const { data } = await apolloClient.query({
+          fetchPolicy: 'network-only',
           query: gql`{items}`
         });
 

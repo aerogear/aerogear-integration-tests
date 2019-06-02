@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "./scripts/start-bs-local.sh",
-    "start": "source ./scripts/setup-env-vars.sh && mocha --file util/appium.js --file util/metrics.js --file util/init.js"
+    "start": ". ./scripts/setup-env-vars.sh && mocha --file util/appium.js --file util/metrics.js --file util/init.js"
   },
   "dependencies": {
     "@aerogear/voyager-server": "latest",

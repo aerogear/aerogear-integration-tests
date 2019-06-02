@@ -17,7 +17,7 @@ describe('Auth', function() {
   
   it('should login', async function() {
     client.execute(() => {
-      const { Auth, app } = window.aerogear;
+      const { agAuth: { Auth }, app } = window.aerogear;
 
       const authService = new Auth(app.config);
       window.aerogear.authService = authService;
