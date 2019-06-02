@@ -12,7 +12,7 @@
 
 ## Run services
 
-`./scripts/setup-services.sh`
+`docker-compose up -d`
 
 ## Setup testing app
 

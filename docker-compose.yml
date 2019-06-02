@@ -9,3 +9,22 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
       DB_VENDOR: h2
+  db:
+    image: postgres:9.6
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRESQL_PASSWORD: postgres
+      POSTGRESQL_USER: postgresql
+      POSTGRESQL_DATABASE: aerogear_mobile_metrics
+  metrics:
+    image: aerogear/aerogear-app-metrics
+    ports:
+      - "3000:3000"
+    environment:
+      PGHOST: db
+      PGUSER: postgresql
+      PGPASSWORD: postgres
+      PGDATABASE: aerogear_mobile_metrics
+    depends_on:
+      - db
