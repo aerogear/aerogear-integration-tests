@@ -14,6 +14,7 @@ fi
 
 if [ -e "./bs-local-pid.txt" ]; then
   kill $(cat bs-local-pid.txt) || true
+  sleep 3
 fi
 
 ./BrowserStackLocal $BROWSERSTACK_KEY &

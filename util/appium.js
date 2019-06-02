@@ -6,7 +6,20 @@ before('Initialize appium', async function() {
   this.timeout(0);
 
   global.client = await wdio.remote(opts);
-  await new Promise(resolve => setTimeout(resolve, 1000));
+});
+
+before('Wait for cordova device ready', async function() {
+  this.timeout(0);
+
+  await client.executeAsync(async done => {
+    const { deviceIsReady } = window.aerogear;
+
+    if (deviceIsReady) {
+      done();
+    } else {
+      document.addEventListener('deviceready', done, false);
+    }
+  });
 });
 
 after('Close appium session', async function() {
