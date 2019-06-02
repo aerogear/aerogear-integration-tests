@@ -1,10 +1,6 @@
 if [ "$CI" = "true" ]; then
   export KEYCLOAK_HOST=keycloak
-  if [ "$BUILD_DEPENDENCIES" = "true" ]; then
-    export METRICS_HOST=bs-local.com
-  else
-    export METRICS_HOST=metrics
-  fi
+  export METRICS_HOST=metrics
   export PGHOST=postgres
 else
   export KEYCLOAK_HOST=bs-local.com
