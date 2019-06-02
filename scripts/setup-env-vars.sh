@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 if [ "$CI" == "true" ]; then
   export KEYCLOAK_HOST=keycloak
 else
