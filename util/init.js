@@ -8,6 +8,7 @@ before('Initialize appium', async function() {
   this.timeout(0);
 
   global.client = await wdio.remote(opts);
+  global.client.setAsyncTimeout(30000);
 });
 
 before('Wait for cordova device ready', async function() {

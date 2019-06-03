@@ -58,7 +58,7 @@ describe('Data Sync', function() {
   });
 
   it('should initialize voyager client', async function() {
-    await client.executeAsync(async done => {
+    await client.executeAsync(async (platform, done) => {
       try {
         const {
           app,
@@ -68,10 +68,20 @@ describe('Data Sync', function() {
             CacheOperation,
             getUpdateFunction
           },
-          gql
+          gql,
+          ToggleNetworkStatus
         } = window.aerogear;
 
-        const networkStatus = new CordovaNetworkStatus();
+        let networkStatus;
+
+        if (platform === 'ios') {
+          // this is workaround for iOS as BrowserStack does not support
+          // putting iOS devices offline
+          networkStatus = new ToggleNetworkStatus();
+        } else {
+          networkStatus = new CordovaNetworkStatus();
+        }
+        
         window.aerogear.networkStatus = networkStatus;
 
         const itemsQuery = gql`
@@ -106,7 +116,7 @@ describe('Data Sync', function() {
       } catch (error) {
         done({ error: error.message });
       }
-    });
+    }, process.env.MOBILE_PLATFORM);
   });
 
   it('should perform query', async function() {
@@ -130,7 +140,14 @@ describe('Data Sync', function() {
   });
 
   it('should perform offline mutation', async function() {
-    await setNetwork('no-network');
+    if (process.env.MOBILE_PLATFORM === 'ios') {
+      client.execute(() => {
+        const { networkStatus } = window.aerogear;
+        networkStatus.setOnline(false);
+      });
+    } else {
+      await setNetwork('no-network');
+    }
 
     await new Promise(resolve => setTimeout(resolve, 5000));
 
@@ -186,7 +203,14 @@ describe('Data Sync', function() {
   });
 
   it('should sync changes when going online', async function() {
-    await setNetwork('reset');
+    if (process.env.MOBILE_PLATFORM === 'ios') {
+      client.execute(() => {
+        const { networkStatus } = window.aerogear;
+        networkStatus.setOnline(true);
+      });
+    } else {
+      await setNetwork('reset');
+    }
 
     const result = await client.executeAsync(async done => {
       try {
