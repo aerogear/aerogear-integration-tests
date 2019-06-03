@@ -18,4 +18,6 @@ export PGDATABASE=aerogear_mobile_metrics
 export SYNC_HOST=bs-local.com
 export SYNC_PORT=4000
 
-export BROWSERSTACK_APP=$(cat "./testing-app/bs-app-url.txt" | cut -d '"' -f 4)
+if [ -z "$BROWSERSTACK_APP" ]; then
+  export BROWSERSTACK_APP=$(cat "./testing-app/bs-app-url.txt" | cut -d '"' -f 4)
+fi
