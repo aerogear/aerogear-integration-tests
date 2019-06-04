@@ -21,7 +21,7 @@ node('psi_rhel8') {
   buildAerogear = buildAerogear.toString() == 'true'
 
   try {
-    sh 'docker create nework aerogear'
+    sh 'docker network create aerogear'
 
     // npm proxy registry - used for js publishing testing
     docker.image('verdaccio/verdaccio').withRun('--network aerogear --name verdaccio -p 4873:4873') {
