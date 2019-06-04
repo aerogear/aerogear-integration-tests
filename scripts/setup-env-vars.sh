@@ -1,7 +1,7 @@
 if [ "$CI" = "true" ]; then
-  export KEYCLOAK_HOST=keycloak
-  export METRICS_HOST=metrics
-  export PGHOST=postgres
+  export KEYCLOAK_HOST=keycloak-$MOBILE_PLATFORM
+  export METRICS_HOST=metrics-$MOBILE_PLATFORM
+  export PGHOST=postgres-$MOBILE_PLATFORM
 else
   export KEYCLOAK_HOST=bs-local.com
   export METRICS_HOST=bs-local.com
