@@ -12,6 +12,7 @@
 
 ## Run services
 
+`docker network create aerogear`
 `docker-compose up -d`
 
 ## Setup testing app

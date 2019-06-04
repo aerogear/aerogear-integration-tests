@@ -3,14 +3,16 @@ version: '3'
 services:
   keycloak:
     image: jboss/keycloak
+    container_name: keycloak
     ports:
       - "8080:8080"
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
       DB_VENDOR: h2
-  db:
+  postgres:
     image: postgres:9.6
+    container_name: postgres
     ports:
       - "5432:5432"
     environment:
@@ -19,12 +21,18 @@ services:
       POSTGRES_DB: aerogear_mobile_metrics
   metrics:
     image: aerogear/aerogear-app-metrics
+    container_name: metrics
     ports:
       - "3000:3000"
     environment:
-      PGHOST: db
+      PGHOST: postgres
       PGUSER: postgresql
       PGPASSWORD: postgres
       PGDATABASE: aerogear_mobile_metrics
     depends_on:
-      - db
+      - postgres
+
+networks:
+  default:
+    external:
+      name: aerogear
