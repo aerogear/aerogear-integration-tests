@@ -1,0 +1,18 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: ups
+      POSTGRES_PASSWORD: ups
+      POSTGRES_DB: ups
+  ups:
+    image: aerogear/unifiedpush-wildfly-plain:2.2.1.Final
+    ports:
+    - "8089:8080"
+    environment:
+      POSTGRES_SERVICE_HOST: db
+      POSTGRES_SERVICE_PORT: 5432
+      POSTGRES_USER: ups
+      POSTGRES_PASSWORD: ups
+      POSTGRES_DATABASE: ups
