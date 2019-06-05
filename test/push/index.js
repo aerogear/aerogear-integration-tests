@@ -1,13 +1,12 @@
 const expect = require('chai').expect;
 const axios = require('axios');
-const mobileServices = require('../../fixtures/mobile-services');
+const mobileServices = require('../../config/mobile-services');
 const sender = require("unifiedpush-node-sender");
 
-describe('Auth', function () {
+describe('Push', function () {
   this.timeout(0);
 
-  const upsUrl = process.env.UPS_URL;
-
+  let upsUrl;
   let pushApplicationID;
   let masterSecret;
 
@@ -16,6 +15,8 @@ describe('Auth', function () {
     const senderId = process.env.FIREBASE_SENDER_ID;
 
     const config = mobileServices.services.find(service => service.name === 'ups');
+
+    upsUrl = config.url;
 
     // set sender id in config
     config.config.android.senderId = senderId;
@@ -56,11 +57,13 @@ describe('Auth', function () {
     });
   })
 
-  it('should recive the test notification', async function () {
+  it('send and recive test notification', async function () {
 
     // register the app to the UPS server
     const error = await client.executeAsync((config, done) => {
-      const { PushRegistration, init } = window.aerogear;
+      const { agPush, agApp } = window.aerogear;
+      const { init } = agApp;
+      const { PushRegistration } = agPush;
 
       document.addEventListener("deviceready", () => {
 
@@ -110,9 +113,9 @@ describe('Auth', function () {
       masterSecret: masterSecret,
     }).then(client => {
       client.sender.send({ alert: "test" }, { criteria: { alias: ["alias"] } });
-    })
+    });
 
     // wait for the notification
-    expect(await message).to.equal("test")
+    expect(await message).to.equal("test");
   });
 });
