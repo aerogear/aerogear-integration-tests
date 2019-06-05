@@ -6,6 +6,8 @@ const sender = require("unifiedpush-node-sender");
 describe('Auth', function () {
   this.timeout(0);
 
+  const upsUrl = process.env.UPS_URL;
+
   let pushApplicationID;
   let masterSecret;
 
@@ -15,10 +17,13 @@ describe('Auth', function () {
 
     const config = mobileServices.services.find(service => service.name === 'ups');
 
+    // set sender id in config
+    config.config.android.senderId = senderId;
+
     // create test application
     const application = await axios({
       method: 'post',
-      url: `http://localhost:8089/rest/applications`,
+      url: `${upsUrl}/rest/applications`,
       data: {
         name: "test",
       },
@@ -29,13 +34,11 @@ describe('Auth', function () {
     // create android variant
     const variant = await axios({
       method: 'post',
-      url: `http://localhost:8089/rest/applications/${pushApplicationID}/android`,
+      url: `${upsUrl}/rest/applications/${pushApplicationID}/android`,
       data: {
         name: "android",
         googleKey: serverKey,
-        // googleKey: "AAAATRdW_Xs:APA91bE0VC90ktrkUjRg2P8PhlzIlEtPeK1XYGSYYwMB0LbzZaTzUHaKlTQpDpzWTJM3eQdx6n1466ZwXKv19Syf5LENvP03vsMu9424TO9XlwZ9xsWCtDfIUqShS8Cl8iCg4u5iRVNC",
         projectNumber: senderId,
-        // projectNumber: "331104058747",
       },
     });
 
@@ -49,7 +52,7 @@ describe('Auth', function () {
     // delete test application
     await axios({
       method: "delete",
-      url: `http://localhost:8089/rest/applications/${pushApplicationID}`
+      url: `${upsUrl}/rest/applications/${pushApplicationID}`
     });
   })
 
@@ -102,7 +105,7 @@ describe('Auth', function () {
 
     // send test notification
     sender({
-      url: "http://localhost:8089",
+      url: upsUrl,
       applicationId: pushApplicationID,
       masterSecret: masterSecret,
     }).then(client => {
