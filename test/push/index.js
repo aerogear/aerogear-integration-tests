@@ -1,11 +1,11 @@
-require('chai').should();
+const expect = require('chai').expect
 
 const mobileServices = require('../../fixtures/mobile-services');
 
 describe('Auth', function () {
   this.timeout(0);
 
-  it('should register push', async function () {
+  it('should recive the test notification', async function () {
 
     // register the app to the UPS server
     const error = await client.executeAsync((config, done) => {
@@ -41,12 +41,10 @@ describe('Auth', function () {
       }, false);
     }, mobileServices);
 
-    if (error !== null) {
-      throw new Error(error);
-    }
+    expect(error).to.be.null;
 
     // start listening for notifications
-    notification = client.executeAsync((done) => {
+    const message = client.executeAsync((done) => {
       const push = window.push;
 
       push.on("notification", (notification) => {
@@ -54,10 +52,11 @@ describe('Auth', function () {
       });
     });
 
-    // todo: send a notification
+
+    // // todo: send a notification
 
     // wait for the notification
-    console.log(await notification);
+    expect(await message).to.equal("test")
 
   });
 });
