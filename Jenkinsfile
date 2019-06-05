@@ -30,7 +30,9 @@ node('psi_rhel8') {
           credentialsId: 'browserstack',
           usernameVariable: 'BROWSERSTACK_USER',
           passwordVariable: 'BROWSERSTACK_KEY'
-        )
+        ),
+        string(credentialsId: 'firebase-server-key', variable: 'FIREBASE_SERVER_KEY'),
+        string(credentialsId: 'firebase-sender-id', variable: 'FIREBASE_SENDER_ID'),
       ]) {
         stage('Build js-sdk') {
           if (buildAerogear) {
@@ -79,7 +81,10 @@ node('psi_rhel8') {
                 sh 'apt install gradle'
                 sh 'npm -g install cordova@8'
                 git branch: 'master', url: 'https://github.com/jhellar/aerogear-integration-tests.git'
-                sh './scripts/build-testing-app.sh'
+                withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
+                  sh 'cp ${GOOGLE_SERVICES} ./fixtures/google-services.json'
+                  sh './scripts/build-testing-app.sh'
+                }
                 androidAppUrl = sh(returnStdout: true, script: 'cat "./testing-app/bs-app-url.txt" | cut -d \'"\' -f 4').trim()
               }
             }
