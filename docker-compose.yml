@@ -31,6 +31,22 @@ services:
       PGDATABASE: aerogear_mobile_metrics
     depends_on:
       - postgres
+  upsdb:
+    image: postgres
+    environment:
+      POSTGRES_USER: ups
+      POSTGRES_PASSWORD: ups
+      POSTGRES_DB: ups
+  ups:
+    image: aerogear/unifiedpush-wildfly-plain
+    ports:
+    - "8089:8080"
+    environment:
+      POSTGRES_SERVICE_HOST: upsdb
+      POSTGRES_SERVICE_PORT: 5432
+      POSTGRES_USER: ups
+      POSTGRES_PASSWORD: ups
+      POSTGRES_DATABASE: ups
 
 networks:
   default:
