@@ -30,7 +30,8 @@ if (process.env.LOCAL_APPIUM === 'true') {
       'browserstack.key': process.env.BROWSERSTACK_KEY,
       'app': process.env.BROWSERSTACK_APP,
       'autoWebview': true,
-      'browserstack.appium_version': '1.9.1'
+      'browserstack.appium_version': '1.9.1',
+      'browserstack.networkLogs': true,
     }
   };
 
