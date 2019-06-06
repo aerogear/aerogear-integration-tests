@@ -60,7 +60,7 @@ describe('Push', function () {
   it('send and recive test notification', async function () {
 
     // register the app to the UPS server
-    const error = await client.executeAsync((config, done) => {
+    await client.executeAsync((config, done) => {
       const { agPush, agApp } = window.aerogear;
       const { init } = agApp;
       const { PushRegistration } = agPush;
@@ -80,22 +80,20 @@ describe('Push', function () {
 
           push.register(data.registrationId, "alias")
             .then(() => {
-              done(null);
+              done();
             }).catch(e => {
-              done(e);
+              throw new Error(e);
             });
         });
 
         push.on("error", e => {
-          done(e);
+          throw new Error(e);
         });
 
         window.push = push;
 
       }, false);
     }, mobileServices);
-
-    expect(error).to.be.null;
 
     // start listening for notifications
     const message = client.executeAsync((done) => {
@@ -104,6 +102,10 @@ describe('Push', function () {
       push.on("notification", (notification) => {
         done(notification.message);
       });
+
+      push.on("error", e => {
+        throw new Error(e);
+      })
     });
 
     // send test notification
