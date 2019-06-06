@@ -22,7 +22,6 @@ describe('Push', function () {
     config.config.android.senderId = senderId;
 
     // create test application
-    console.log(upsUrl)
     const application = await axios({
       method: 'post',
       url: `${upsUrl}/rest/applications`,
@@ -34,7 +33,6 @@ describe('Push', function () {
     masterSecret = application.data.masterSecret;
 
     // create android variant
-    console.log("next")
     const variant = await axios({
       method: 'post',
       url: `${upsUrl}/rest/applications/${pushApplicationID}/android`,
