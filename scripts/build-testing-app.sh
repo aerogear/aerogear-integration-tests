@@ -11,6 +11,10 @@ cp fixtures/index.html testing-app/www/
 cp fixtures/webpack.config.js testing-app/
 cp fixtures/index.js testing-app/
 
+if [ "$MOBILE_PLATFORM" != "ios" ]; then
+  cp fixtures/google-services.json testing-app/
+fi
+
 cd testing-app
 
 npm install --save \
@@ -46,8 +50,6 @@ if [ "$MOBILE_PLATFORM" = "ios" ]; then
     -F "file=@$PWD/platforms/ios/build/device/HelloCordova.ipa" \
     >bs-app-url.txt
 else
-
-  cp fixtures/google-services.json testing-app/
 
   cordova platform add android || true
   cordova build android
