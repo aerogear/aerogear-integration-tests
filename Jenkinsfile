@@ -80,7 +80,7 @@ node('psi_rhel8') {
                 sh 'npm set registry http://verdaccio:4873/'
                 sh 'apt install gradle'
                 sh 'npm -g install cordova@8'
-                checkout cms
+                checkout scm
                 withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
                   sh 'cp ${GOOGLE_SERVICES} ./fixtures/google-services.json'
                   sh './scripts/build-testing-app.sh'
@@ -102,7 +102,7 @@ node('psi_rhel8') {
                   try {
                     sh "npm set registry http://${linuxNodeIP}:4873/"
                     sh 'npm -g install cordova@8'
-                    checkout cms
+                    checkout scm
                     sh 'security unlock-keychain -p $KEYCHAIN_PASS && ./scripts/build-testing-app.sh'
                     iosAppUrl = sh(returnStdout: true, script: 'cat "./testing-app/bs-app-url.txt" | cut -d \'"\' -f 4').trim()
                   } catch (e) {
