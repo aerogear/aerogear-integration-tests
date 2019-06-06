@@ -4,14 +4,19 @@ const { prepareKeycloak, resetKeycloakConfiguration } = require('../../util/keyc
 const mobileServices = require('../../config/mobile-services');
 
 describe('Auth', function() {
+
   this.timeout(0);
 
+  let mainWindow;
+
   before('setup test realm', async function() {
+    mainWindow = await client.getWindowHandle();
     const config = mobileServices.services.find(service => service.name === 'keycloak');
     await prepareKeycloak(config.url)
   });
 
   after('remove test realm', async function() {
+    await client.switchToWindow(mainWindow);
     await resetKeycloakConfiguration();
   });
   
@@ -28,7 +33,6 @@ describe('Auth', function() {
 
     await new Promise(resolve => setTimeout(resolve, 20 * 1000));
 
-    const mainWindow = await client.getWindowHandle();
     const allWindows = await client.getWindowHandles();
     const loginPage = allWindows.find(w => w !== mainWindow);
     await client.switchToWindow(loginPage);
