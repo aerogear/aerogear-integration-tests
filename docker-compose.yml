@@ -13,12 +13,10 @@ services:
   postgres:
     image: postgres:9.6
     container_name: postgres
+    volumes:
+    - "./config/postgres.sql:/docker-entrypoint-initdb.d/postgres.sql"
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgresql
-      POSTGRES_DB: aerogear_mobile_metrics
   metrics:
     image: aerogear/aerogear-app-metrics
     container_name: metrics
@@ -26,27 +24,23 @@ services:
       - "3000:3000"
     environment:
       PGHOST: postgres
-      PGUSER: postgresql
-      PGPASSWORD: postgres
-      PGDATABASE: aerogear_mobile_metrics
+      PGUSER: metrics
+      PGPASSWORD: metrics
+      PGDATABASE: metrics
     depends_on:
       - postgres
-  upsdb:
-    image: postgres
-    environment:
-      POSTGRES_USER: ups
-      POSTGRES_PASSWORD: ups
-      POSTGRES_DB: ups
   ups:
     image: aerogear/unifiedpush-wildfly-plain
     ports:
     - "8089:8080"
     environment:
-      POSTGRES_SERVICE_HOST: upsdb
+      POSTGRES_SERVICE_HOST: postgres
       POSTGRES_SERVICE_PORT: 5432
       POSTGRES_USER: ups
       POSTGRES_PASSWORD: ups
       POSTGRES_DATABASE: ups
+    depends_on:
+      - postgres
 
 networks:
   default:
