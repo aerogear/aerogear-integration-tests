@@ -64,40 +64,36 @@ describe('Push', function () {
 
   it('send and recive test notification', async function () {
 
-    // register the app to the UPS server
+    // register the app to the UPS server 
     await client.executeAsync((config, done) => {
       const { agPush, agApp } = window.aerogear;
       const { init } = agApp;
       const { PushRegistration } = agPush;
 
-      document.addEventListener("deviceready", () => {
+      const app = init(config);
 
-        const app = init(config);
+      const push = window.PushNotification.init({
+        android: {},
+        ios: {},
+      });
 
-        const push = window.PushNotification.init({
-          android: {},
-          ios: {},
-        });
+      push.on('registration', data => {
 
-        push.on('registration', data => {
+        const push = new PushRegistration(app.config);
 
-          const push = new PushRegistration(app.config);
+        push.register(data.registrationId, "alias")
+          .then(() => {
+            done();
+          }).catch(e => {
+            throw e;
+          });
+      });
 
-          push.register(data.registrationId, "alias")
-            .then(() => {
-              done();
-            }).catch(e => {
-              throw e;
-            });
-        });
+      push.on("error", e => {
+        throw e;
+      });
 
-        push.on("error", e => {
-          throw e;
-        });
-
-        window.push = push;
-
-      }, false);
+      window.push = push;
     }, mobileServices);
 
     // start listening for notifications
