@@ -27,7 +27,6 @@ npm install --save \
   webpack-cli
 
 cordova plugin add @aerogear/cordova-plugin-aerogear-metrics
-cordova plugin add @aerogear/cordova-plugin-aerogear-push
 cordova plugin add @aerogear/cordova-plugin-aerogear-security
 cordova plugin add @aerogear/cordova-plugin-aerogear-sync
 cordova plugin add cordova-plugin-inappbrowser
@@ -50,6 +49,9 @@ if [ "$MOBILE_PLATFORM" = "ios" ]; then
     -F "file=@$PWD/platforms/ios/build/device/HelloCordova.ipa" \
     >bs-app-url.txt
 else
+
+  # push tests works only in android
+  cordova plugin add @aerogear/cordova-plugin-aerogear-push
 
   cordova platform add android || true
   cordova build android

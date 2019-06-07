@@ -6,6 +6,11 @@ const sender = require("unifiedpush-node-sender");
 describe('Push', function () {
   this.timeout(0);
 
+  // skip push tests in ios
+  if (process.env.MOBILE_PLATFORM === "ios") {
+    return;
+  }
+
   let upsUrl;
   let pushApplicationID;
   let masterSecret;
