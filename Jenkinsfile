@@ -117,9 +117,11 @@ node('psi_rhel8') {
         }
         dir('aerogear-integration-tests') {
           try {
-            sh 'sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-\$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose'
-            sh 'sudo chmod +x /usr/local/bin/docker-compose'
-            sh 'docker-compose up -d'
+            stage('Start services') {
+              sh 'sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-\$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose'
+              sh 'sudo chmod +x /usr/local/bin/docker-compose'
+              sh 'docker-compose up -d'
+            }
             docker.image('circleci/node:dubnium-stretch').inside('-u root:root --network aerogear') {
               stage('Test Android') {
                 sh 'npm set registry http://verdaccio:4873/'
