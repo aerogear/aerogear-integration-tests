@@ -32,6 +32,7 @@ if (process.env.LOCAL_APPIUM === 'true') {
       'autoWebview': true,
       'browserstack.appium_version': '1.9.1',
       'browserstack.networkLogs': true,
+      'browserstack.debug': true,
     }
   };
 
