@@ -19,6 +19,10 @@ describe('Push', function () {
     const serverKey = process.env.FIREBASE_SERVER_KEY;
     const senderId = process.env.FIREBASE_SENDER_ID;
 
+    if (serverKey === undefined || senderId == undefined) {
+      throw new Error("FIREBASE_SERVER_KEY and/or FIREBASE_SENDER_ID are not defined")
+    }
+
     const config = mobileServices.services.find(service => service.name === 'ups');
 
     upsUrl = config.url;
