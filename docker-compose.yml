@@ -3,7 +3,6 @@ version: '3'
 services:
   keycloak:
     image: jboss/keycloak
-    container_name: keycloak
     ports:
       - "8080:8080"
     environment:
@@ -12,14 +11,12 @@ services:
       DB_VENDOR: h2
   metricsdb:
     image: postgres:9.6
-    container_name: metricsdb
     environment:
       POSTGRES_USER: metrics
       POSTGRES_PASSWORD: metrics
       POSTGRES_DB: metrics
   metrics:
     image: aerogear/aerogear-app-metrics
-    container_name: metrics
     ports:
       - "3000:3000"
     environment:
@@ -31,7 +28,6 @@ services:
       - metricsdb
   upsdb:
     image: postgres:9.6
-    container_name: upsdb
     environment:
       POSTGRES_USER: ups
       POSTGRES_PASSWORD: ups
