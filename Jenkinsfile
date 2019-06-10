@@ -146,7 +146,7 @@ node('psi_rhel8') {
           } catch (e) {
             throw e
           } finally {
-            sh 'docker-compose logs > docker-compose.log'
+            sh 'docker-compose logs --no-color > docker-compose.log'
             sh 'docker-compose down'
             archiveArtifacts "docker-compose.log"
           }
