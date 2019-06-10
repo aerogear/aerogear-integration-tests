@@ -14,8 +14,8 @@ services:
     image: postgres:9.6
     container_name: metricsdb
     environment:
-      POSTGRES_USER: metrics	
-      POSTGRES_PASSWORD: metrics	
+      POSTGRES_USER: metrics
+      POSTGRES_PASSWORD: metrics
       POSTGRES_DB: metrics
   metrics:
     image: aerogear/aerogear-app-metrics
@@ -33,8 +33,8 @@ services:
     image: postgres:9.6
     container_name: upsdb
     environment:
-      POSTGRES_USER: ups	
-      POSTGRES_PASSWORD: ups	
+      POSTGRES_USER: ups
+      POSTGRES_PASSWORD: ups
       POSTGRES_DB: ups
   ups:
     image: aerogear/unifiedpush-wildfly-plain
