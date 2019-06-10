@@ -10,37 +10,44 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
       DB_VENDOR: h2
-  postgres:
+  metricsdb:
     image: postgres:9.6
-    container_name: postgres
-    volumes:
-    - "./config/postgres.sql:/docker-entrypoint-initdb.d/postgres.sql"
-    ports:
-      - "5432:5432"
+    container_name: metricsdb
+    environment:
+      POSTGRES_USER: metrics	
+      POSTGRES_PASSWORD: metrics	
+      POSTGRES_DB: metrics
   metrics:
     image: aerogear/aerogear-app-metrics
     container_name: metrics
     ports:
       - "3000:3000"
     environment:
-      PGHOST: postgres
+      PGHOST: metricsdb
       PGUSER: metrics
       PGPASSWORD: metrics
       PGDATABASE: metrics
     depends_on:
-      - postgres
+      - metricsdb
+  upsdb:
+    image: postgres:9.6
+    container_name: upsdb
+    environment:
+      POSTGRES_USER: ups	
+      POSTGRES_PASSWORD: ups	
+      POSTGRES_DB: ups
   ups:
     image: aerogear/unifiedpush-wildfly-plain
     ports:
     - "8089:8080"
     environment:
-      POSTGRES_SERVICE_HOST: postgres
+      POSTGRES_SERVICE_HOST: upsdb
       POSTGRES_SERVICE_PORT: 5432
       POSTGRES_USER: ups
       POSTGRES_PASSWORD: ups
       POSTGRES_DATABASE: ups
     depends_on:
-      - postgres
+      - upsdb
 
 networks:
   default:
