@@ -1,7 +1,7 @@
 if [ "$CI" = "true" ]; then
   export KEYCLOAK_HOST=keycloak
   export METRICS_HOST=metrics
-  export PGHOST=postgres
+  export PGHOST=metricsdb
   
   export UPS_HOST=ups
   export UPS_PORT=8080
