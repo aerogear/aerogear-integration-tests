@@ -66,7 +66,7 @@ describe('Push', function () {
     });
   })
 
-  it('send and recive test notification', async function () {
+  it('send and receive test notification', async function () {
 
     // register the app to the UPS server 
     await client.executeAsync((config, done) => {
