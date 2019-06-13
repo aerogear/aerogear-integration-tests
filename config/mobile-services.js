@@ -1,6 +1,7 @@
 const keycloakUrl = `http://${process.env.KEYCLOAK_HOST}:${process.env.KEYCLOAK_PORT}/auth`;
 const syncUrl = `${process.env.SYNC_HOST}:${process.env.SYNC_PORT}/graphql`;
 const metricsUrl = `http://${process.env.METRICS_HOST}:${process.env.METRICS_PORT}/metrics`;
+const upsUrl = `http://${process.env.UPS_HOST}:${process.env.UPS_PORT}`;
 
 const config = {
   "version": 1,
@@ -37,6 +38,19 @@ const config = {
       "url": metricsUrl,
       "config": {}
     },
+    {
+      "id": "fb8ebb60-83b1-11e9-9805-e86a640057de",
+      "name": "ups",
+      "type": "push",
+      "url": upsUrl,
+      "config": {
+        "android": {
+          "senderId": null,
+          "variantId": null,
+          "variantSecret": null
+        }
+      }
+    }
   ]
 }
 

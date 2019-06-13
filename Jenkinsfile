@@ -30,7 +30,9 @@ node('psi_rhel8') {
           credentialsId: 'browserstack',
           usernameVariable: 'BROWSERSTACK_USER',
           passwordVariable: 'BROWSERSTACK_KEY'
-        )
+        ),
+        string(credentialsId: 'firebase-server-key', variable: 'FIREBASE_SERVER_KEY'),
+        string(credentialsId: 'firebase-sender-id', variable: 'FIREBASE_SENDER_ID'),
       ]) {
         stage('Build js-sdk') {
           if (buildAerogear) {
@@ -78,8 +80,11 @@ node('psi_rhel8') {
                 sh 'npm set registry http://verdaccio:4873/'
                 sh 'apt install gradle'
                 sh 'npm -g install cordova@8'
-                git branch: 'master', url: 'https://github.com/jhellar/aerogear-integration-tests.git'
-                sh './scripts/build-testing-app.sh'
+                checkout scm
+                withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
+                  sh 'cp ${GOOGLE_SERVICES} ./fixtures/google-services.json'
+                  sh './scripts/build-testing-app.sh'
+                }
                 androidAppUrl = sh(returnStdout: true, script: 'cat "./testing-app/bs-app-url.txt" | cut -d \'"\' -f 4').trim()
               }
             }
@@ -97,7 +102,7 @@ node('psi_rhel8') {
                   try {
                     sh "npm set registry http://${linuxNodeIP}:4873/"
                     sh 'npm -g install cordova@8'
-                    git branch: 'master', url: 'https://github.com/jhellar/aerogear-integration-tests.git'
+                    checkout scm
                     sh 'security unlock-keychain -p $KEYCHAIN_PASS && ./scripts/build-testing-app.sh'
                     iosAppUrl = sh(returnStdout: true, script: 'cat "./testing-app/bs-app-url.txt" | cut -d \'"\' -f 4').trim()
                   } catch (e) {
@@ -112,9 +117,11 @@ node('psi_rhel8') {
         }
         dir('aerogear-integration-tests') {
           try {
-            sh 'sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-\$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose'
-            sh 'sudo chmod +x /usr/local/bin/docker-compose'
-            sh 'docker-compose up -d'
+            stage('Start services') {
+              sh 'sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-\$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose'
+              sh 'sudo chmod +x /usr/local/bin/docker-compose'
+              sh 'docker-compose up -d'
+            }
             docker.image('circleci/node:dubnium-stretch').inside('-u root:root --network aerogear') {
               stage('Test Android') {
                 sh 'npm set registry http://verdaccio:4873/'
@@ -139,7 +146,9 @@ node('psi_rhel8') {
           } catch (e) {
             throw e
           } finally {
+            sh 'docker-compose logs --no-color > docker-compose.log'
             sh 'docker-compose down'
+            archiveArtifacts "docker-compose.log"
           }
         }
       }

@@ -2,6 +2,7 @@ import * as agSecurity from '@aerogear/security';
 import * as agAuth from '@aerogear/auth';
 import * as agApp from '@aerogear/app';
 import * as agSync from '@aerogear/voyager-client';
+import * as agPush from '@aerogear/push'
 import gql from 'graphql-tag';
 
 class ToggleNetworkStatus {
@@ -29,6 +30,7 @@ window.aerogear = {
   agAuth,
   agApp,
   agSync,
+  agPush,
   gql,
   ToggleNetworkStatus
 };

@@ -17,6 +17,7 @@
     "mocha": "^6.1.4",
     "node-fetch": "^2.6.0",
     "pg": "^7.11.0",
+    "unifiedpush-node-sender": "latest",
     "webdriverio": "^5.9.5"
   }
 }

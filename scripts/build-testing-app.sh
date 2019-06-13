@@ -11,6 +11,10 @@ cp fixtures/index.html testing-app/www/
 cp fixtures/webpack.config.js testing-app/
 cp fixtures/index.js testing-app/
 
+if [ "$MOBILE_PLATFORM" != "ios" ]; then
+  cp fixtures/google-services.json testing-app/
+fi
+
 cd testing-app
 
 npm install --save \
@@ -18,6 +22,7 @@ npm install --save \
   @aerogear/app \
   @aerogear/auth \
   @aerogear/voyager-client \
+  @aerogear/push \
   webpack \
   webpack-cli
 
@@ -44,6 +49,10 @@ if [ "$MOBILE_PLATFORM" = "ios" ]; then
     -F "file=@$PWD/platforms/ios/build/device/HelloCordova.ipa" \
     >bs-app-url.txt
 else
+
+  # push tests works only in android
+  cordova plugin add @aerogear/cordova-plugin-aerogear-push
+
   cordova platform add android || true
   cordova build android
 
