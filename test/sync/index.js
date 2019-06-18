@@ -168,7 +168,7 @@ describe('Data Sync', function() {
           `,
           variables: { title: 'test' },
           updateQuery: itemsQuery,
-          typeName: 'Item'
+          returnType: 'Item'
         });
 
         done({ error: 'network error offline was not thrown' });
