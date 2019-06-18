@@ -64,12 +64,14 @@ describe('Data Sync', function() {
           app,
           agSync: {
             OfflineClient,
-            CordovaNetworkStatus,
-            CacheOperation,
-            getUpdateFunction
+            CordovaNetworkStatus
           },
           gql,
-          ToggleNetworkStatus
+          ToggleNetworkStatus,
+          offixCache: {
+            CacheOperation,
+            getUpdateFunction
+          }
         } = window.aerogear;
 
         let networkStatus;

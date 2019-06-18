@@ -2,7 +2,8 @@ import * as agSecurity from '@aerogear/security';
 import * as agAuth from '@aerogear/auth';
 import * as agApp from '@aerogear/app';
 import * as agSync from '@aerogear/voyager-client';
-import * as agPush from '@aerogear/push'
+import * as agPush from '@aerogear/push';
+import * as offixCache from 'offix-cache';
 import gql from 'graphql-tag';
 
 class ToggleNetworkStatus {
@@ -32,7 +33,8 @@ window.aerogear = {
   agSync,
   agPush,
   gql,
-  ToggleNetworkStatus
+  ToggleNetworkStatus,
+  offixCache
 };
 
 var app = {
