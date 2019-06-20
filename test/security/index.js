@@ -11,6 +11,6 @@ describe('Device Security', function() {
       done(result);
     });
 
-    result.passed.should.equal(true);
+    result.passed.should.equal(process.env.MOBILE_PLATFORM !== 'ios');
   });
 });
