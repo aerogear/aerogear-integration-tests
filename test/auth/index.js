@@ -19,8 +19,8 @@ describe('Auth', function() {
     await client.switchToWindow(mainWindow);
     await resetKeycloakConfiguration();
   });
-  
-  it('should login', async function() {
+
+  it('should not login with incorrect credentials', async function() {
     client.execute(() => {
       const { agAuth: { Auth }, app } = window.aerogear;
 
@@ -37,15 +37,30 @@ describe('Auth', function() {
     const loginPage = allWindows.find(w => w !== mainWindow);
     await client.switchToWindow(loginPage);
 
-    const usernamEl = await client.$('#username')
+    const usernamEl = await client.$('#username');
     await usernamEl.setValue('test');
     
-    const passwordEl = await client.$('#password')
+    const passwordEl = await client.$('#password');
+    await passwordEl.setValue('wrong-password');
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const loginEl = await client.$('#kc-login');
+    await loginEl.click();
+
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    const alertEl = await client.$('.alert-error');
+    (await alertEl.isDisplayed()).should.equal(true);
+  });
+  
+  it('should login', async function() {
+    const passwordEl = await client.$('#password');
     await passwordEl.setValue('123');
     
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const loginEl = await client.$('#kc-login')
+    const loginEl = await client.$('#kc-login');
     await loginEl.click();
 
     await client.switchToWindow(mainWindow);
@@ -59,5 +74,37 @@ describe('Auth', function() {
     });
 
     authenticated.should.equal(true);
+  });
+
+  it('should refresh authentication token', async function() {
+    const authenticated = await client.executeAsync(async done => {
+      const { authService } = window.aerogear;
+
+      await authService.extract().updateToken(30);
+
+      done(authService.isAuthenticated());
+    });
+
+    authenticated.should.equal(true);
+  });
+
+  it('should get authentication token', function() {
+    client.execute(() => {
+      const { authService } = window.aerogear;
+
+      authService.extract().token;
+    });
+  });
+
+  it('should logout', async function() {
+    const authenticated = await client.executeAsync(async done => {
+      const { authService } = window.aerogear;
+
+      await authService.logout();
+
+      done(authService.isAuthenticated());
+    });
+
+    authenticated.should.equal(false);
   });
 });
