@@ -96,6 +96,16 @@ describe('Auth', function() {
     });
   });
 
+  it('should get realm roles', async function() {
+    const result = await client.executeAsync(async done => {
+      const { authService } = window.aerogear;
+
+      done(authService.getRealmRoles());
+    });
+
+    result.should.deep.equal(['offline_access', 'uma_authorization']);
+  });
+
   it('should logout', async function() {
     const authenticated = await client.executeAsync(async done => {
       const { authService } = window.aerogear;
