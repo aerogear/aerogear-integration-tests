@@ -16,6 +16,7 @@
     "chai": "^4.2.0",
     "express": "latest",
     "graphql": "latest",
+    "lodash": "^4.17.11",
     "mocha": "^6.1.4",
     "mqtt": "^3.0.0",
     "node-fetch": "^2.6.0",
