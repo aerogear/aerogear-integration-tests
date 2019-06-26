@@ -4,6 +4,28 @@ const { Client } = require('pg');
 const opts = require('../config/appium-opts');
 const mobileServices = require('../config/mobile-services');
 
+const waitForDeviceReady = async done => {
+  const { deviceIsReady } = window.aerogear;
+
+  if (deviceIsReady) {
+    if (done) {
+      done();
+    }
+  } else {
+    await new Promise(resolve =>
+      document.addEventListener('deviceready', resolve, false)
+    );
+    if (done) {
+      done();
+    }
+  }
+};
+
+const initJsSdk = config => {
+  const { init } = window.aerogear.agApp;
+  window.aerogear.app = init(config);
+};
+
 before('Initialize appium', async function() {
   this.timeout(0);
 
@@ -14,15 +36,7 @@ before('Initialize appium', async function() {
 before('Wait for cordova device ready', async function() {
   this.timeout(0);
 
-  await client.executeAsync(async done => {
-    const { deviceIsReady } = window.aerogear;
-
-    if (deviceIsReady) {
-      done();
-    } else {
-      document.addEventListener('deviceready', done, false);
-    }
-  });
+  await client.executeAsync(waitForDeviceReady);
 });
 
 before('connect to postgres', async function() {
@@ -42,10 +56,7 @@ before('reset metrics db', async function() {
 
 
 before('Initialize aerogear-js-sdk', async function() {
-  client.execute(config => {
-    const { init } = window.aerogear.agApp;
-    window.aerogear.app = init(config);
-  }, mobileServices);
+  client.execute(initJsSdk, mobileServices);
 });
 
 after('Close appium session', async function() {
@@ -55,3 +66,8 @@ after('Close appium session', async function() {
 after('close postgres connection', async function() {
   await postgres.end();
 });
+
+module.exports = {
+  waitForDeviceReady,
+  initJsSdk
+};

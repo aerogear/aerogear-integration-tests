@@ -46,6 +46,10 @@ services:
       POSTGRES_DATABASE: ups
     depends_on:
       - upsdb
+  mosca:
+    image: matteocollina/mosca
+    ports:
+    - "1883:1883"
 
 networks:
   default:

@@ -62,3 +62,6 @@ else
     -F "file=@$PWD/platforms/android/app/build/outputs/apk/debug/app-debug.apk" \
     >bs-app-url.txt
 fi
+
+cordova platform add browser || true
+cordova build browser
