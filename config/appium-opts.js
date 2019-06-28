@@ -20,8 +20,8 @@ if (process.env.LOCAL_APPIUM === 'true') {
     hostname: 'hub-cloud.browserstack.com',
     logLevel: 'error',
     capabilities: {
-      'os_version': process.env.MOBILE_PLATFORM === 'ios' ? '12' : '7.1',
-      'device': process.env.MOBILE_PLATFORM === 'ios' ? 'iPhone XS' : 'Google Pixel',
+      'os_version': process.env.MOBILE_PLATFORM === 'ios' ? '12' : '9.0',
+      'device': process.env.MOBILE_PLATFORM === 'ios' ? 'iPhone XS' : 'Google Pixel 3',
       'real_mobile': 'true',
       'project': 'AeroGear Integration Tests',
       'name': 'tests',

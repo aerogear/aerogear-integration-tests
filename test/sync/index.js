@@ -64,12 +64,14 @@ describe('Data Sync', function() {
           app,
           agSync: {
             OfflineClient,
-            CordovaNetworkStatus,
-            CacheOperation,
-            getUpdateFunction
+            CordovaNetworkStatus
           },
           gql,
-          ToggleNetworkStatus
+          ToggleNetworkStatus,
+          offixCache: {
+            CacheOperation,
+            getUpdateFunction
+          }
         } = window.aerogear;
 
         let networkStatus;
@@ -166,7 +168,7 @@ describe('Data Sync', function() {
           `,
           variables: { title: 'test' },
           updateQuery: itemsQuery,
-          typeName: 'Item'
+          returnType: 'Item'
         });
 
         done({ error: 'network error offline was not thrown' });
