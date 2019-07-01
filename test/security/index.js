@@ -74,7 +74,7 @@ describe('Device Security', function() {
     });
 
     result.find(r => r.name === 'Debugger Check').passed.should.equal(true);
-    result.find(r => r.name === 'Rooted Check').passed.should.equal(true);
+    result.find(r => r.name === 'Rooted Check').passed.should.equal(process.env.MOBILE_PLATFORM !== 'ios');
     result.find(r => r.name === 'Emulator Check').passed.should.equal(false);
     result.find(r => r.name === 'Screen Lock Check').passed.should.equal(false);
   });
