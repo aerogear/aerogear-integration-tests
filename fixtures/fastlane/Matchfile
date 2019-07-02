@@ -1,4 +1,4 @@
-git_url("git@gitlab.cee.redhat.com:mobile/ios-certificates.git")
+git_url("https://gitlab.cee.redhat.com/mobile/ios-certificates.git")
 
 storage_mode("git")
 
