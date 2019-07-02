@@ -33,6 +33,9 @@ node('psi_rhel8') {
         ),
         string(credentialsId: 'firebase-server-key', variable: 'FIREBASE_SERVER_KEY'),
         string(credentialsId: 'firebase-sender-id', variable: 'FIREBASE_SENDER_ID'),
+        string(credentialsId: 'fastlane-user', variable: 'FASTLANE_USER'),
+        string(credentialsId: 'fastlane-password', variable: 'FASTLANE_PASSWORD'),
+        string(credentialsId: 'match-password', variable: 'MATCH_PASSWORD'),
       ]) {
         stage('Build js-sdk') {
           if (buildAerogear) {
@@ -92,11 +95,7 @@ node('psi_rhel8') {
           iOS: {
             node('osx5x') {
               cleanWs()
-              withEnv([
-                'MOBILE_PLATFORM=ios',
-                'DEVELOPMENT_TEAM=GHPBX39444',
-                'KEYCHAIN_PASS=5sdfDSO8ig'
-              ]) {
+              withEnv(['MOBILE_PLATFORM=ios']) {
                 dir('aerogear-integration-tests-osx') {
                   originalRegistry = sh(script: 'npm get registry', returnStdout: true).trim()
                   try {
@@ -104,7 +103,7 @@ node('psi_rhel8') {
                     sh 'npm -g install cordova@8'
                     checkout scm
                     sh '''#!/usr/bin/env bash -l
-                        security unlock-keychain -p $KEYCHAIN_PASS && ./scripts/build-testing-app.sh
+                      ./scripts/build-testing-app.sh
                     '''
                     iosAppUrl = sh(returnStdout: true, script: 'cat "./testing-app/bs-app-url.txt" | cut -d \'"\' -f 4').trim()
                   } catch (e) {
