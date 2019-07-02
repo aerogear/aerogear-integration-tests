@@ -103,7 +103,9 @@ node('psi_rhel8') {
                     sh "npm set registry http://${linuxNodeIP}:4873/"
                     sh 'npm -g install cordova@8'
                     checkout scm
-                    sh 'security unlock-keychain -p $KEYCHAIN_PASS && ./scripts/build-testing-app.sh'
+                    sh '''#!/usr/bin/env bash -l
+                        security unlock-keychain -p $KEYCHAIN_PASS && ./scripts/build-testing-app.sh
+                    '''
                     iosAppUrl = sh(returnStdout: true, script: 'cat "./testing-app/bs-app-url.txt" | cut -d \'"\' -f 4').trim()
                   } catch (e) {
                     throw e
