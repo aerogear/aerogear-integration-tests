@@ -1,0 +1,3 @@
+app_identifier("org.aerogear.integrationtests")
+apple_id("jhellar@redhat.com")
+team_id("GHPBX39444")
