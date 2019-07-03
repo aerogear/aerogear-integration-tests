@@ -1,61 +1,61 @@
-import { remote, BrowserObject } from "webdriverio";
+import * as path from "path";
+import { BrowserObject, remote } from "webdriverio";
 import { modules } from "../app/modules";
-import { join } from "path";
 
 type Modules = typeof modules;
 
 export class Device {
-  browser: BrowserObject;
+    public browser: BrowserObject;
 
-  constructor(browser: BrowserObject) {
-    this.browser = browser;
-  }
-
-  executeAsync<T, A extends Array<any>>(
-    script: (modules: Modules, ...args: A) => Promise<T>,
-    ...args: A
-  ): Promise<T> {
-    return this.browser.executeAsync(
-      `return (${script}).apply(null, [window.modules].concat(arguments)).then(arguments[arguments.length -1 ]);`,
-      ...args
-    );
-  }
-
-  execute<T, A extends Array<any>>(
-    script: (modules: Modules, ...args: A) => T,
-    ...args: A
-  ): Promise<T> {
-    return this.browser.execute(
-      `return (${script}).apply(null, [window.modules].concat(arguments))`,
-      ...args
-    );
-  }
-}
-
-async function init() {
-  const browser = await remote({
-    port: 4723,
-    logLevel: "error",
-    capabilities: {
-      platformName: "Android",
-      platformVersion: "9",
-      deviceName: "Android Emulator",
-      app: join(
-        __dirname,
-        "../platforms/android/app/build/outputs/apk/debug/app-debug.apk"
-      ),
-      automationName: "UiAutomator2",
-      autoWebview: true
+    constructor(browser: BrowserObject) {
+        this.browser = browser;
     }
-  });
-  return new Device(browser);
+
+    public executeAsync<T, A extends any[]>(
+        script: (modules: Modules, ...args: A) => Promise<T>,
+        ...args: A
+    ): Promise<T> {
+        return this.browser.executeAsync(
+            `return (${script}).apply(null, [window.modules].concat(arguments)).then(arguments[arguments.length -1 ]);`,
+            ...args
+        );
+    }
+
+    public execute<T, A extends any[]>(
+        script: (modules: Modules, ...args: A) => T,
+        ...args: A
+    ): Promise<T> {
+        return this.browser.execute(
+            `return (${script}).apply(null, [window.modules].concat(arguments))`,
+            ...args
+        );
+    }
 }
 
-let _device: Device;
+async function initDevice() {
+    const browser = await remote({
+        capabilities: {
+            app: path.join(
+                __dirname,
+                "../platforms/android/app/build/outputs/apk/debug/app-debug.apk"
+            ),
+            autoWebview: true,
+            automationName: "UiAutomator2",
+            deviceName: "Android Emulator",
+            platformName: "Android",
+            platformVersion: "9",
+        },
+        logLevel: "error",
+        port: 4723,
+    });
+    return new Device(browser);
+}
 
-export async function device() {
-  if (_device === undefined) {
-    _device = await init();
-  }
-  return _device;
+let device: Device;
+
+export async function singletonDevice() {
+    if (device === undefined) {
+        device = await initDevice();
+    }
+    return device;
 }

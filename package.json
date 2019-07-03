@@ -7,6 +7,7 @@
   "scripts": {
     "prestart": "./scripts/start-bs-local.sh",
     "start": ". ./scripts/setup-env-vars.sh && mocha --file util/init.js",
+    "lint": "tslint -p .",
     "test": "wdio",
     "adb:uninstall": "adb uninstall org.aerogear.integrationtests",
     "cordova:android": "cordova build android"
@@ -32,6 +33,9 @@
     "pg": "^7.11.0",
     "prettier": "1.18.2",
     "ts-node": "8.3.0",
+    "tslint": "5.18.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-plugin-prettier": "2.0.1",
     "unifiedpush-node-sender": "latest",
     "webdriverio": "^5.9.5"
   },
