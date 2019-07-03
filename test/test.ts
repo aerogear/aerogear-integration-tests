@@ -9,6 +9,21 @@ describe("a test in typescript", function() {
     _device = await device();
   });
 
+  it("simple", async function () {
+    const result = await _device.execute(function (modules, hello) {
+        return hello;
+    }, "Hello");
+    console.log(`${result} World!`)
+  });
+
+  it("run async", async function() {
+    const result = await _device.executeAsync(async function() {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return "hello";
+    });
+    console.log(`=== ${result} ===`);
+  });
+
   it("run script", async function() {
     await _device.execute(
       function(modules, version, namespace, config) {
