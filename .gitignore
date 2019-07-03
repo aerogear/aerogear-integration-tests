@@ -5,3 +5,8 @@ bs-local-pid.txt
 BrowserStackLocal*
 google-services.json
 .vscode
+
+# cordova
+platforms/
+plugins/
+www/
