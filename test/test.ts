@@ -1,13 +1,17 @@
-import { execute } from "../util/execute";
+import { device, Device } from "../util/device";
 
-// import * as aerogearApp from "@aerogear/app";
+describe("a test in typescript", function() {
+  this.timeout(0);
 
-describe("a test in typescript", () => {
-  it("run script", async () => {
+  let _device: Device;
 
-    await execute(
-      browser,
-      (modules, version, namespace, config) => {
+  before("init device", async function() {
+    _device = await device();
+  });
+
+  it("run script", async function() {
+    await _device.execute(
+      function(modules, version, namespace, config) {
         const { init } = modules["@aerogear/app"];
         return init({ version, namespace, ...config });
       },
