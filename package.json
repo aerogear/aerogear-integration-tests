@@ -6,12 +6,17 @@
   "main": "index.js",
   "scripts": {
     "prestart": "./scripts/start-bs-local.sh",
-    "start": ". ./scripts/setup-env-vars.sh && mocha --file util/init.js"
+    "start": ". ./scripts/setup-env-vars.sh && mocha --file util/init.js",
+    "test": "wdio",
+    "adb:uninstall": "adb uninstall org.aerogear.integrationtests",
+    "cordova:android": "cordova build android"
   },
   "dependencies": {
     "@aerogear/app": "2.5.0",
     "@aerogear/auth": "2.5.0",
+    "@aerogear/push": "2.5.0",
     "@aerogear/security": "2.5.0",
+    "@aerogear/voyager-client": "2.5.0",
     "@aerogear/voyager-server": "latest",
     "@types/mocha": "5.2.7",
     "@types/webdriverio": "5.0.0",

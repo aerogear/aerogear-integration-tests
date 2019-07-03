@@ -1,18 +1,19 @@
+import { execute } from "../util/execute";
 
+// import * as aerogearApp from "@aerogear/app";
 
 describe("a test in typescript", () => {
+  it("run script", async () => {
 
-    it("run script", async () => {
-
-        console.log("hello");
-
-        console.log(await browser.execute(() => {
-            // return Object.keys(window);
-            const app = require("@aerogear/app");
-
-            return Object.keys(app);
-        }));
-
-    });
-
+    await execute(
+      browser,
+      (modules, version, namespace, config) => {
+        const { init } = modules["@aerogear/app"];
+        return init({ version, namespace, ...config });
+      },
+      1,
+      "integration",
+      { clusterName: "test" }
+    );
+  });
 });
