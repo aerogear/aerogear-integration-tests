@@ -11,6 +11,20 @@ export class Device {
     this.browser = browser;
   }
 
+  executeAsync<T, A extends Array<any>>(
+    script: (modules: Modules, ...args: A) => Promise<T>,
+    ...args: A
+  ): Promise<T> {
+    return this.browser.executeAsync(
+      `
+      const done = Array.prototype.pop.call(arguments);
+      const promise = (${script}).apply(null, [window.modules].concat(arguments));
+      return promise.then(done);
+      `,
+      ...args
+    );
+  }
+
   execute<T, A extends Array<any>>(
     script: (modules: Modules, ...args: A) => T,
     ...args: A
