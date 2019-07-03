@@ -3,11 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: './app/app.ts',
+  entry: './app/index.js',
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /app\/\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
       }

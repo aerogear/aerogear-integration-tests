@@ -6,6 +6,9 @@ BrowserStackLocal*
 google-services.json
 .vscode
 
+# typescript
+dist/
+
 # cordova
 platforms/
 plugins/

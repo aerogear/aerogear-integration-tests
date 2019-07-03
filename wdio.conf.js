@@ -23,6 +23,6 @@ exports.config = {
         ]
     },
     before: function() {
-        // require('ts-node').register({ files: true });
+        require('ts-node').register({ files: true });
     },
 }

@@ -1,5 +1,13 @@
 {
     "compilerOptions": {
+        // "target": "es6",
+        // "module": "commonjs",
+        // "moduleResolution": "node",
+        // "noEmitHelpers": true,
+        // "importHelpers": true,
+        "noEmit": true,
+        "outDir": "./dist",
         "types": ["node", "mocha", "webdriverio"]
     }
+    // "exclude": ["node_modules"]
 }
