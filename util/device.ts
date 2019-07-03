@@ -16,11 +16,7 @@ export class Device {
     ...args: A
   ): Promise<T> {
     return this.browser.executeAsync(
-      `
-      const done = Array.prototype.pop.call(arguments);
-      const promise = (${script}).apply(null, [window.modules].concat(arguments));
-      return promise.then(done);
-      `,
+      `return (${script}).apply(null, [window.modules].concat(arguments)).then(arguments[arguments.length -1 ]);`,
       ...args
     );
   }
