@@ -1,4 +1,5 @@
-import { Device, singletonDevice as bootDevice } from "../util/device";
+import { expect } from "chai";
+import { bootstrapDevice as bootDevice, Device } from "../util/device";
 
 describe("a test in typescript", function() {
     this.timeout(0);
@@ -9,30 +10,38 @@ describe("a test in typescript", function() {
         device = await bootDevice();
     });
 
-    it("simple", async () => {
-        const result = await device.execute((modules, hello) => {
-            return hello;
+    it("store in universe", async () => {
+        await device.execute((_, universe, hello) => {
+            universe.hello = hello;
         }, "Hello");
-        console.log(`${result} World!`);
     });
 
-    it("run async", async () => {
-        const result = await device.executeAsync(async () => {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            return "hello";
+    it("read from universe", async () => {
+        const result = await device.execute((_, universe) => {
+            return universe.hello;
         });
-        console.log(`=== ${result} ===`);
+        expect(result).to.equal("Hello");
     });
 
-    it("run script", async () => {
+    it("use a modules", async () => {
         await device.execute(
-            (modules, version, namespace, config) => {
+            (modules, _, config) => {
                 const { init } = modules["@aerogear/app"];
-                return init({ version, namespace, ...config });
+                init(config);
             },
-            1,
-            "integration",
-            { clusterName: "test" }
+            { version: 1, namespace: "integration", clusterName: "test" }
         );
+    });
+
+    it("throw an exception", async () => {
+        await device.execute(() => {
+            throw new Error("a strange exception");
+        });
+    });
+
+    it("throw an async exception", async () => {
+        await device.executeAsync(() => {
+            throw new Error("a strange async exception");
+        });
     });
 });
