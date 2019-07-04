@@ -1,4 +1,4 @@
-const keycloakUrl = `http://${process.env.KEYCLOAK_HOST}:${process.env.KEYCLOAK_PORT}/auth`;
+const keycloakUrl = `http://10.0.2.2:8080/auth`;
 const syncUrl = `${process.env.SYNC_HOST}:${process.env.SYNC_PORT}/graphql`;
 const metricsUrl = `http://${process.env.METRICS_HOST}:${process.env.METRICS_PORT}/metrics`;
 const upsUrl = `http://${process.env.UPS_HOST}:${process.env.UPS_PORT}`;
