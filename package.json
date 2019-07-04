@@ -27,6 +27,7 @@
     "chai": "^4.2.0",
     "cordova-android": "8.0.0",
     "cordova-ios": "5.0.1",
+    "cordova-plugin-inappbrowser": "3.0.0",
     "express": "latest",
     "graphql": "latest",
     "mocha": "^6.1.4",
@@ -56,10 +57,12 @@
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-whitelist": {}
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }
