@@ -12,6 +12,10 @@ export class Device {
     public browser: BrowserObject;
 
     constructor(browser: BrowserObject) {
+        browser.setTimeout({
+            script: 24 * 60 * 60 * 1000,
+        });
+
         this.browser = browser;
     }
 
@@ -76,6 +80,7 @@ async function initDevice() {
             autoWebview: true,
             automationName: "UiAutomator2",
             deviceName: "Android Emulator",
+            newCommandTimeout: 0,
             platformName: "Android",
             platformVersion: "9",
         },
