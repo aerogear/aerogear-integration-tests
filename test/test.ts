@@ -33,6 +33,12 @@ describe("a test in typescript", function() {
         );
     });
 
+    it("force the this", async () => {
+        await device.executeAsync(async () => {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        });
+    });
+
     it("throw an exception", async () => {
         await device.execute(() => {
             throw new Error("a strange exception");
