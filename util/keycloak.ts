@@ -16,7 +16,6 @@ const config = {
 };
 
 async function authenticateToKeycloak() {
-    console.log(config);
     const result = await axios.post(
         `${config.authServerUrl}/realms/${config.adminRealmName}/protocol/openid-connect/token`,
         `client_id=${config.resource}&username=${config.username}&password=${config.password}&grant_type=password`

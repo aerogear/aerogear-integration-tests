@@ -49,37 +49,29 @@ describe("auth", function() {
         });
     });
 
-    // before("load auth in context", async () => {
-    //     // await device.execute((modules, universe: Universe, mobileServices) => {
-    //     //     const { init } = modules["@aerogear/app"];
-    //     //     const { Auth } = modules["@aerogear/auth"];
-    //     //     const app = init(mobileServices);
-    //     //     const auth = new Auth(app.config);
-    //     //     universe.auth = auth;
-    //     // }, mobileServices);
-    // });
-
-    // after("clear context", async () => {
-    //     await device.execute((_, universe) => {
-    //         universe = {};
-    //     });
-    // });
-
-    it.only("should not login with incorrect credentials", async () => {
-        await device.executeAsync(async (modules, universe, mobileServices) => {
+    before("load auth in context", async () => {
+        await device.execute((modules, universe: Universe, mobileServices) => {
             const { init } = modules["@aerogear/app"];
             const { Auth } = modules["@aerogear/auth"];
 
             const app = init(mobileServices);
 
-            universe.app = app;
-
             const auth = new Auth(app.config);
 
             universe.auth = auth;
-
-            auth.init({ onLoad: "login-required" });
         }, mobileServices);
+    });
+
+    after("clear context", async () => {
+        await device.execute((_, universe) => {
+            universe = {};
+        });
+    });
+
+    it.only("should not login with incorrect credentials", async () => {
+        device.executeAsync(async (_, { auth }) => {
+            auth.init({ onLoad: "login-required" });
+        });
 
         await new Promise(resolve => setTimeout(resolve, 20 * 1000));
 
