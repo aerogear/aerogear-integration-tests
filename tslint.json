@@ -8,6 +8,8 @@
     "rules": {
         "prettier": [true, ".prettierrc.json"],
         "interface-name": false,
-        "no-console": false
+        "no-console": false,
+        "no-shadowed-variable": false,
+        "no-unused-expression": false
     }
 }

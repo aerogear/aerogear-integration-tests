@@ -19,6 +19,7 @@
     "@aerogear/security": "2.5.0",
     "@aerogear/voyager-client": "2.5.0",
     "@aerogear/voyager-server": "latest",
+    "@types/chai": "4.1.7",
     "@types/mocha": "5.2.7",
     "@types/webdriverio": "5.0.0",
     "@wdio/appium-service": "5.10.8",

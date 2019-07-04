@@ -8,6 +8,10 @@ for (const key in helpers) {
     }
 }
 
+// initialize the universe where everyone can store everything
+// @ts-ignore
+window.universe = {};
+
 // expose modules globally
 // @ts-ignore
 window.modules = modules;

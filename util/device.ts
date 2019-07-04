@@ -4,6 +4,10 @@ import { modules } from "../app/modules";
 
 type Modules = typeof modules;
 
+interface Universe {
+    [key: string]: any;
+}
+
 export class Device {
     public browser: BrowserObject;
 
@@ -12,21 +16,51 @@ export class Device {
     }
 
     public executeAsync<T, A extends any[]>(
-        script: (modules: Modules, ...args: A) => Promise<T>,
+        script: (
+            modules: Modules,
+            universe: Universe,
+            ...args: A
+        ) => Promise<T>,
         ...args: A
     ): Promise<T> {
         return this.browser.executeAsync(
-            `return (${script}).apply(null, [window.modules].concat(arguments)).then(arguments[arguments.length -1 ]);`,
+            (script, ...args) => {
+                const closure = new Function(
+                    `_this = null; return ${script};`
+                )();
+                return closure
+                    .apply(null, [
+                        // @ts-ignore
+                        window.modules,
+                        // @ts-ignore
+                        window.universe,
+                        ...args,
+                    ])
+                    .then(args[args.length - 1]);
+            },
+            `${script}`,
             ...args
         );
     }
 
     public execute<T, A extends any[]>(
-        script: (modules: Modules, ...args: A) => T,
+        script: (modules: Modules, universe: Universe, ...args: A) => T,
         ...args: A
     ): Promise<T> {
         return this.browser.execute(
-            `return (${script}).apply(null, [window.modules].concat(arguments))`,
+            (script, ...args) => {
+                const closure = new Function(
+                    `_this = null; return ${script};`
+                )();
+                return closure.apply(null, [
+                    // @ts-ignore
+                    window.modules,
+                    // @ts-ignore
+                    window.universe,
+                    ...args,
+                ]);
+            },
+            `${script}`,
             ...args
         );
     }
@@ -53,7 +87,7 @@ async function initDevice() {
 
 let device: Device;
 
-export async function singletonDevice() {
+export async function bootstrapDevice() {
     if (device === undefined) {
         device = await initDevice();
     }
