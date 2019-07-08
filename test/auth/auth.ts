@@ -2,6 +2,7 @@ import { Auth } from "@aerogear/auth";
 import { expect } from "chai";
 import { bootstrapDevice, Device } from "../../util/device";
 import { prepareKeycloak, resetKeycloak } from "../../util/keycloak";
+import { ONE_SECOND, sleep } from "../../util/time";
 
 interface Universe {
     auth: Auth;
@@ -49,7 +50,14 @@ describe("auth", function() {
         });
     });
 
-    before("load auth in context", async () => {
+    after("clear context", async () => {
+        await device.execute((_, universe) => {
+            universe = {};
+        });
+    });
+
+    it("initialize login window", async () => {
+        // initialize auth modules
         await device.execute((modules, universe: Universe, mobileServices) => {
             const { init } = modules["@aerogear/app"];
             const { Auth } = modules["@aerogear/auth"];
@@ -59,38 +67,35 @@ describe("auth", function() {
             const auth = new Auth(app.config);
 
             universe.auth = auth;
+
+            auth.init({ onLoad: "login-required" });
         }, mobileServices);
     });
 
-    after("clear context", async () => {
-        await device.execute((_, universe) => {
-            universe = {};
-        });
-    });
-
-    it.only("should not login with incorrect credentials", async () => {
-        device.executeAsync(async (_, { auth }) => {
-            auth.init({ onLoad: "login-required" });
-        });
-
-        await new Promise(resolve => setTimeout(resolve, 20 * 1000));
+    it("should switch to login window", async function() {
+        this.retries(20);
+        await sleep(ONE_SECOND);
 
         const allWindows = await device.browser.getWindowHandles();
-        const loginPage = allWindows.find(w => w !== mainWindow);
-        await device.browser.switchToWindow(loginPage);
 
+        const loginWindow = allWindows.find(window => window !== mainWindow);
+
+        await device.browser.switchToWindow(loginWindow);
+    });
+
+    it("should not login with incorrect credentials", async () => {
         const usernameEl = await device.browser.$("#username");
         await usernameEl.setValue("test");
 
         const passwordEl = await device.browser.$("#password");
         await passwordEl.setValue("wrong-password");
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await sleep(ONE_SECOND);
 
         const loginEl = await device.browser.$("#kc-login");
         await loginEl.click();
 
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await sleep(3 * ONE_SECOND);
 
         const alertEl = await device.browser.$(".alert-error");
         expect(await alertEl.isDisplayed()).to.be.true;
@@ -100,14 +105,14 @@ describe("auth", function() {
         const passwordEl = await device.browser.$("#password");
         await passwordEl.setValue("123");
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await sleep(ONE_SECOND);
 
         const loginEl = await device.browser.$("#kc-login");
         await loginEl.click();
 
         await device.browser.switchToWindow(mainWindow);
 
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await sleep(5 * ONE_SECOND);
 
         const authenticated = await device.execute((_, { auth }: Universe) => {
             return auth.isAuthenticated();
