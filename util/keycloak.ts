@@ -1,4 +1,5 @@
 import axios from "axios";
+import { KEYCLOAK_URL } from "./config";
 
 // tslint:disable-next-line: no-var-requires
 const realmToImport = require("../fixtures/realm-export");
@@ -6,7 +7,7 @@ const realmToImport = require("../fixtures/realm-export");
 const config = {
     adminRealmName: "master",
     appRealmName: "integration",
-    authServerUrl: null,
+    authServerUrl: KEYCLOAK_URL,
     password: "admin",
     resource: "admin-cli",
     testPass: "123",
@@ -52,7 +53,6 @@ async function createUserInKeycloak(name) {
 }
 
 export async function prepareKeycloak(authServerUrl) {
-    config.authServerUrl = authServerUrl;
     config.token = await authenticateToKeycloak();
     await importRealmInKeycloak();
     await createUserInKeycloak(config.testUser);
