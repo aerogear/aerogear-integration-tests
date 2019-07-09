@@ -1,7 +1,12 @@
 import { Auth } from "@aerogear/auth";
 import { expect } from "chai";
 import { bootstrapDevice, Device } from "../../util/device";
-import { prepareKeycloak, resetKeycloak } from "../../util/keycloak";
+import {
+    prepareKeycloak,
+    resetKeycloak,
+    TEST_PASSWORD,
+    TEST_USER,
+} from "../../util/keycloak";
 import { ONE_SECOND, sleep } from "../../util/time";
 
 interface Universe {
@@ -85,7 +90,7 @@ describe("auth", function() {
 
     it("should not login with incorrect credentials", async () => {
         const usernameEl = await device.browser.$("#username");
-        await usernameEl.setValue("test");
+        await usernameEl.setValue(TEST_USER);
 
         const passwordEl = await device.browser.$("#password");
         await passwordEl.setValue("wrong-password");
@@ -103,7 +108,7 @@ describe("auth", function() {
 
     it("should login", async () => {
         const passwordEl = await device.browser.$("#password");
-        await passwordEl.setValue("123");
+        await passwordEl.setValue(TEST_PASSWORD);
 
         await sleep(ONE_SECOND);
 
