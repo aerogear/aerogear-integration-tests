@@ -4,48 +4,48 @@ import { KEYCLOAK_URL } from "./config";
 // tslint:disable-next-line: no-var-requires
 const realmToImport = require("../fixtures/realm-export");
 
-const config = {
-    adminRealmName: "master",
-    appRealmName: "integration",
-    authServerUrl: KEYCLOAK_URL,
-    password: "admin",
-    resource: "admin-cli",
-    testPass: "123",
-    testUser: "test",
-    token: null,
-    username: "admin",
-};
+const ADMIN_REALM = "master";
+const ADMIN_USER = "admin";
+const ADMIN_PASSWORD = "admin";
+const ADMIN_RESOURCE = "admin-cli";
+
+const REALM = "integration";
+
+export const TEST_USER = "test";
+export const TEST_PASSWORD = "123";
+
+let token;
 
 async function authenticateToKeycloak() {
     const result = await axios.post(
-        `${config.authServerUrl}/realms/${config.adminRealmName}/protocol/openid-connect/token`,
-        `client_id=${config.resource}&username=${config.username}&password=${config.password}&grant_type=password`
+        `${KEYCLOAK_URL}/realms/${ADMIN_REALM}/protocol/openid-connect/token`,
+        `client_id=${ADMIN_RESOURCE}&username=${ADMIN_USER}&password=${ADMIN_PASSWORD}&grant_type=password`
     );
-    return `Bearer ${result.data.access_token}`;
+    token = `Bearer ${result.data.access_token}`;
 }
 
 async function importRealmInKeycloak() {
-    await axios.post(`${config.authServerUrl}/admin/realms`, realmToImport, {
+    await axios.post(`${KEYCLOAK_URL}/admin/realms`, realmToImport, {
         headers: {
-            Authorization: config.token,
+            Authorization: token,
             "Content-Type": "application/json",
         },
     });
 }
 
-async function createUserInKeycloak(name) {
+async function createTestUserInKeycloak() {
     await axios.post(
-        `${config.authServerUrl}/admin/realms/${config.appRealmName}/users`,
+        `${KEYCLOAK_URL}/admin/realms/${REALM}/users`,
         {
             credentials: [
-                { type: "password", value: config.testPass, temporary: false },
+                { type: "password", value: TEST_PASSWORD, temporary: false },
             ],
             enabled: true,
-            username: name,
+            username: TEST_USER,
         },
         {
             headers: {
-                Authorization: config.token,
+                Authorization: token,
                 "Content-Type": "application/json",
             },
         }
@@ -53,14 +53,13 @@ async function createUserInKeycloak(name) {
 }
 
 export async function prepareKeycloak(authServerUrl) {
-    config.token = await authenticateToKeycloak();
+    await authenticateToKeycloak();
     await importRealmInKeycloak();
-    await createUserInKeycloak(config.testUser);
+    await createTestUserInKeycloak();
 }
 
 export async function resetKeycloak() {
-    await axios.delete(
-        `${config.authServerUrl}/admin/realms/${config.appRealmName}`,
-        { headers: { Authorization: config.token } }
-    );
+    await axios.delete(`${KEYCLOAK_URL}/admin/realms/${REALM}`, {
+        headers: { Authorization: token },
+    });
 }
