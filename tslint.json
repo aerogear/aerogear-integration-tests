@@ -10,6 +10,7 @@
         "interface-name": false,
         "no-console": false,
         "no-shadowed-variable": false,
-        "no-unused-expression": false
+        "no-unused-expression": false,
+        "no-string-literal": false
     }
 }
