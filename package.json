@@ -15,6 +15,7 @@
   "dependencies": {
     "@aerogear/app": "2.5.0",
     "@aerogear/auth": "2.5.0",
+    "@aerogear/cordova-plugin-aerogear-metrics": "2.5.0",
     "@aerogear/push": "2.5.0",
     "@aerogear/security": "2.5.0",
     "@aerogear/voyager-client": "2.5.0",
@@ -27,6 +28,8 @@
     "chai": "^4.2.0",
     "cordova-android": "8.0.0",
     "cordova-ios": "5.0.1",
+    "cordova-plugin-app-version": "0.1.9",
+    "cordova-plugin-device": "2.0.2",
     "cordova-plugin-inappbrowser": "3.0.0",
     "express": "latest",
     "graphql": "latest",
@@ -42,6 +45,7 @@
     "webdriverio": "^5.9.5"
   },
   "devDependencies": {
+    "@types/pg": "7.4.14",
     "@wdio/cli": "5.10.9",
     "@wdio/dot-reporter": "5.9.3",
     "@wdio/junit-reporter": "5.9.3",
@@ -58,7 +62,8 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-inappbrowser": {}
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-aerogear-metrics": {}
     },
     "platforms": [
       "ios",

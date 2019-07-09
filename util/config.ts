@@ -43,6 +43,27 @@ export enum MobilePlatform {
 export const MOBILE_PLATFORM: MobilePlatform =
     MobilePlatform[process.env.MOBILE_PLATFORM] || MobilePlatform.Android;
 
+let MOBILE_DEVICE: string;
+let MOBILE_PLATFORM_VERSION: string;
+
+switch (MOBILE_PLATFORM) {
+    case MobilePlatform.IOS:
+        MOBILE_DEVICE = "iPhone XS";
+        MOBILE_PLATFORM_VERSION = "12";
+        break;
+
+    case MobilePlatform.Android:
+        MOBILE_DEVICE = "Google Pixel 3";
+        MOBILE_PLATFORM_VERSION = "9.0";
+        break;
+}
+
+MOBILE_DEVICE = process.env.MOBILE_DEVICE || MOBILE_DEVICE;
+MOBILE_PLATFORM_VERSION =
+    process.env.MOBILE_PLATFORM_VERSION || MOBILE_PLATFORM_VERSION;
+
+export { MOBILE_DEVICE, MOBILE_PLATFORM_VERSION };
+
 // Browserstack
 export const BROWSERSTACK_APP = process.env.BROWSERSTACK_APP;
 export const BROWSERSTACK_USER = process.env.BROWSERSTACK_USER;
