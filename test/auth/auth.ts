@@ -7,14 +7,15 @@ import {
     TEST_PASSWORD,
     TEST_USER,
 } from "../../util/keycloak";
+import {
+    generateConfig,
+    generateKeycloakService,
+} from "../../util/mobileServices";
 import { ONE_SECOND, sleep } from "../../util/time";
 
 interface Universe {
     auth: Auth;
 }
-
-// tslint:disable-next-line: no-var-requires
-const mobileServices = require("../../config/mobile-services");
 
 describe("auth", function() {
     this.timeout(0);
@@ -37,10 +38,7 @@ describe("auth", function() {
     });
 
     before("create test realm in keycloak", async () => {
-        const config = mobileServices.services.find(
-            service => service.name === "keycloak"
-        );
-        await prepareKeycloak("http://localhost:8080/auth");
+        await prepareKeycloak();
     });
 
     after("remove test realm from keycloak", async () => {
@@ -62,6 +60,8 @@ describe("auth", function() {
     });
 
     it("initialize login window", async () => {
+        const mobileServices = generateConfig([generateKeycloakService()]);
+
         // initialize auth modules
         await device.execute((modules, universe: Universe, mobileServices) => {
             const { init } = modules["@aerogear/app"];

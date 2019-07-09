@@ -52,7 +52,7 @@ async function createTestUserInKeycloak() {
     );
 }
 
-export async function prepareKeycloak(authServerUrl) {
+export async function prepareKeycloak() {
     await authenticateToKeycloak();
     await importRealmInKeycloak();
     await createTestUserInKeycloak();
