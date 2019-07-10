@@ -27,7 +27,7 @@ describe('App Metrics', function() {
     result.rows.length.should.equal(1);
     result.rows[0].event_type.should.be.a('string').and.satisfy(v => v.startsWith('init'));
     result.rows[0].data.device.platformVersion.should.be.a('string').and.satisfy(
-      v => v.startsWith(appiumOpts.capabilities.os_version)
+      v => v.startsWith(appiumOpts.capabilities.os_version) || appiumOpts.capabilities.os_version.startsWith(v)
     );
     result.rows[0].data.device.platformVersion = appiumOpts.capabilities.os_version;
     result.rows[0].data.should.deep.equal(expectedData);
