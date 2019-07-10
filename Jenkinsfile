@@ -81,12 +81,16 @@ node('psi_rhel8') {
             docker.image('circleci/android:api-28-node').inside('-u root:root --network aerogear') {
               dir('aerogear-integration-tests') {
                 sh 'npm set registry http://verdaccio:4873/'
-                sh 'apt install gradle'
                 sh 'npm -g install cordova@8'
                 checkout scm
                 withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
                   sh 'cp ${GOOGLE_SERVICES} ./fixtures/google-services.json'
-                  sh './scripts/build-testing-app.sh'
+                  sh '''#!/bin/bash -l
+                    curl -s "https://get.sdkman.io" | bash
+                    source "$HOME/.sdkman/bin/sdkman-init.sh"
+                    sdk install gradle 5.5
+                    ./scripts/build-testing-app.sh
+                  '''
                 }
                 androidAppUrl = sh(returnStdout: true, script: 'cat "./testing-app/bs-app-url.txt" | cut -d \'"\' -f 4').trim()
               }
