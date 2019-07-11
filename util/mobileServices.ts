@@ -7,7 +7,7 @@ import {
     UPS_URL,
 } from "./config";
 
-export function generateConfig(
+export function generateMobileServices(
     services: ServiceConfiguration[]
 ): AeroGearConfiguration {
     return {
