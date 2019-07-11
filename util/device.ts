@@ -1,6 +1,6 @@
 import * as path from "path";
 import { BrowserObject, remote } from "webdriverio";
-import { modules } from "../app/modules";
+import { Modules } from "../app/modules";
 import {
     BROWSERSTACK_APP,
     BROWSERSTACK_KEY,
@@ -10,9 +10,6 @@ import {
     MOBILE_PLATFORM_VERSION,
     MobilePlatform,
 } from "./config";
-import { homedir } from "os";
-
-type Modules = typeof modules;
 
 interface Universe {
     [key: string]: any;
