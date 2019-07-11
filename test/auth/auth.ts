@@ -122,15 +122,17 @@ describe("auth", function() {
 
         await sleep(5 * ONE_SECOND);
 
-        const authenticated = await device.execute((_, { auth }: Universe) => {
-            return auth.isAuthenticated();
-        });
+        const authenticated = await device.execute(
+            async (_, { auth }: Universe) => {
+                return auth.isAuthenticated();
+            }
+        );
 
         expect(authenticated).to.be.true;
     });
 
     it("should refresh authentication token", async () => {
-        const authenticated = await device.executeAsync(
+        const authenticated = await device.execute(
             async (_, { auth }: Universe) => {
                 await auth.extract().updateToken(30);
 
