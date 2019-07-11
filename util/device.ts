@@ -10,6 +10,7 @@ import {
     MOBILE_PLATFORM_VERSION,
     MobilePlatform,
 } from "./config";
+import { homedir } from "os";
 
 type Modules = typeof modules;
 
@@ -28,7 +29,11 @@ export class Device {
         this.browser = browser;
     }
 
-    public executeAsync<T, A extends any[]>(
+    /**
+     * This is a wrap around the webdriver.io executeAsync() method
+     * thats had few handy helpers and typescript support.
+     */
+    public async execute<T, A extends any[]>(
         script: (
             modules: Modules,
             universe: Universe,
@@ -36,46 +41,35 @@ export class Device {
         ) => Promise<T>,
         ...args: A
     ): Promise<T> {
-        return this.browser.executeAsync(
-            (script, ...args) => {
-                const closure = new Function(
-                    `_this = null; return ${script};`
-                )();
-                return closure
-                    .apply(null, [
-                        // @ts-ignore
-                        window.modules,
-                        // @ts-ignore
-                        window.universe,
-                        ...args,
-                    ])
-                    .then(args[args.length - 1]);
-            },
-            `${script}`,
+        const [error, result] = await this.browser.executeAsync(
+            `
+            var _this = null;
+            var done = arguments[arguments.length - 1];
+            var args = [window.modules, window.universe].concat(Array.from(arguments));
+            (${script}).apply(null, args)
+                .then(function (result) { 
+                    done([null, result]); 
+                })
+                .catch(function (error) {
+                    setTimeout(function () { throw error; }, 10);
+                    done([error.toString(), null]); 
+                });
+            `,
             ...args
         );
-    }
 
-    public execute<T, A extends any[]>(
-        script: (modules: Modules, universe: Universe, ...args: A) => T,
-        ...args: A
-    ): Promise<T> {
-        return this.browser.execute(
-            (script, ...args) => {
-                const closure = new Function(
-                    `_this = null; return ${script};`
-                )();
-                return closure.apply(null, [
-                    // @ts-ignore
-                    window.modules,
-                    // @ts-ignore
-                    window.universe,
-                    ...args,
-                ]);
-            },
-            `${script}`,
-            ...args
-        );
+        if (error !== null) {
+            // Report error with full console logs.
+            // Very handy because it allows to print anything
+            // using console.log() and it will be collected and reported back.
+            const console = (await this.browser.getLogs("browser"))
+                .map((log: any) => `        ${log.level}: ${log.message}`)
+                .join("\n");
+
+            throw new Error(`${error}\n\n      Console:\n${console}\n`);
+        }
+
+        return result;
     }
 }
 
