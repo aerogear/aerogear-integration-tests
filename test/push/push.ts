@@ -6,7 +6,7 @@ import { MOBILE_PLATFORM, MobilePlatform, UPS_URL } from "../../util/config";
 import { bootstrapDevice, Device } from "../../util/device";
 import { generateConfig, generatePushService } from "../../util/mobileServices";
 
-describe("Push", function() {
+describe("push notifications", function() {
     // skip push tests in ios
     if (MOBILE_PLATFORM === MobilePlatform.IOS) {
         return;
