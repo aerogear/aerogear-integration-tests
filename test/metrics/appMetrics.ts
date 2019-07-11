@@ -35,10 +35,18 @@ describe("app metrics", function() {
         await metricsdb.client.end();
     });
 
+    before("wait for device is ready", async () => {
+        await device.execute(async () => {
+            await new Promise(resolve => {
+                document.addEventListener("deviceready", resolve, false);
+            });
+        });
+    });
+
     it("initialize app with metrics service", async () => {
         const mobileServices = generateConfig([generateMetricsService()]);
 
-        await device.execute((modules, _, mobileServices) => {
+        await device.execute(async (modules, _, mobileServices) => {
             const { init } = modules["@aerogear/app"];
             const { expect } = modules["chai"];
 

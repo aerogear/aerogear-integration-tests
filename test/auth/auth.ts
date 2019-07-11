@@ -46,7 +46,7 @@ describe("auth", function() {
     });
 
     before("wait for device is ready", async () => {
-        await device.executeAsync(async () => {
+        await device.execute(async () => {
             await new Promise(resolve => {
                 document.addEventListener("deviceready", resolve, false);
             });
@@ -54,7 +54,7 @@ describe("auth", function() {
     });
 
     after("clear context", async () => {
-        await device.execute((_, universe) => {
+        await device.execute(async (_, universe) => {
             universe = {};
         });
     });
@@ -63,18 +63,21 @@ describe("auth", function() {
         const mobileServices = generateConfig([generateKeycloakService()]);
 
         // initialize auth modules
-        await device.execute((modules, universe: Universe, mobileServices) => {
-            const { init } = modules["@aerogear/app"];
-            const { Auth } = modules["@aerogear/auth"];
+        await device.execute(
+            async (modules, universe: Universe, mobileServices) => {
+                const { init } = modules["@aerogear/app"];
+                const { Auth } = modules["@aerogear/auth"];
 
-            const app = init(mobileServices);
+                const app = init(mobileServices);
 
-            const auth = new Auth(app.config);
+                const auth = new Auth(app.config);
 
-            universe.auth = auth;
+                universe.auth = auth;
 
-            auth.init({ onLoad: "login-required" });
-        }, mobileServices);
+                auth.init({ onLoad: "login-required" });
+            },
+            mobileServices
+        );
     });
 
     it("should switch to login window", async function() {
@@ -139,7 +142,7 @@ describe("auth", function() {
     });
 
     it("should get authentication token", async () => {
-        const token = await device.execute((_, { auth }: Universe) => {
+        const token = await device.execute(async (_, { auth }: Universe) => {
             return auth.extract().token;
         });
 
@@ -147,7 +150,7 @@ describe("auth", function() {
     });
 
     it("should get realm roles", async () => {
-        const roles = await device.execute((_, { auth }: Universe) => {
+        const roles = await device.execute(async (_, { auth }: Universe) => {
             return auth.getRealmRoles();
         });
 
@@ -155,7 +158,7 @@ describe("auth", function() {
     });
 
     it("should logout", async () => {
-        const authenticated = await device.executeAsync(
+        const authenticated = await device.execute(
             async (_, { auth }: Universe) => {
                 await auth.logout();
 
