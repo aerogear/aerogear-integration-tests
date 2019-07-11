@@ -97,7 +97,7 @@ describe('Data Sync', function() {
         window.aerogear.itemsQuery = itemsQuery;
 
         const cacheUpdates = {
-          create: getUpdateFunction('create', 'id', itemsQuery, CacheOperation.ADD)
+          create: getUpdateFunction('create', 'id', CacheOperation.ADD, itemsQuery)
         };
       
         const options = {
@@ -107,8 +107,6 @@ describe('Data Sync', function() {
         };
 
         const offlineClient = new OfflineClient(options);
-
-        window.aerogear.offlineStore = offlineClient.offlineStore;
 
         const apolloClient = await offlineClient.init();
 
