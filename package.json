@@ -17,6 +17,7 @@
     "@aerogear/auth": "2.5.0",
     "@aerogear/cordova-plugin-aerogear-metrics": "2.5.0",
     "@aerogear/cordova-plugin-aerogear-push": "2.5.0",
+    "@aerogear/cordova-plugin-aerogear-security": "2.5.0",
     "@aerogear/push": "2.5.0",
     "@aerogear/security": "2.5.0",
     "@aerogear/voyager-client": "2.5.0",
@@ -32,6 +33,9 @@
     "cordova-plugin-app-version": "0.1.9",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-inappbrowser": "3.0.0",
+    "cordova-plugin-iroot": "0.7.0",
+    "cordova-plugin-is-debug": "1.0.0",
+    "cordova-plugin-pincheck": "0.0.6",
     "cordova-support-google-services": "1.1.0",
     "express": "4.17.1",
     "graphql": "14.4.2",
@@ -68,7 +72,8 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-aerogear-push": {},
-      "cordova-plugin-aerogear-metrics": {}
+      "cordova-plugin-aerogear-metrics": {},
+      "cordova-plugin-aerogear-security": {}
     },
     "platforms": [
       "ios",
