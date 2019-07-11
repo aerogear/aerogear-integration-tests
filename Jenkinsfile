@@ -81,6 +81,7 @@ node('psi_rhel8') {
             docker.image('circleci/android:api-28-node').inside('-u root:root --network aerogear') {
               dir('aerogear-integration-tests') {
                 sh 'npm set registry http://verdaccio:4873/'
+                sh 'apt update'
                 sh 'apt install gradle'
                 sh 'npm -g install cordova@8'
                 checkout scm

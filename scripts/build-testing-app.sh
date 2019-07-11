@@ -25,7 +25,8 @@ npm install --save \
   @aerogear/voyager-client \
   @aerogear/push \
   webpack \
-  webpack-cli
+  webpack-cli \
+  graphql
 
 cordova plugin add @aerogear/cordova-plugin-aerogear-metrics
 cordova plugin add @aerogear/cordova-plugin-aerogear-security
