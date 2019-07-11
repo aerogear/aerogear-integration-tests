@@ -8,8 +8,8 @@ import {
     TEST_USER,
 } from "../../util/keycloak";
 import {
-    generateConfig,
     generateKeycloakService,
+    generateMobileServices,
 } from "../../util/mobileServices";
 import { ONE_SECOND, sleep } from "../../util/time";
 
@@ -60,7 +60,9 @@ describe("auth", function() {
     });
 
     it("initialize login window", async () => {
-        const mobileServices = generateConfig([generateKeycloakService()]);
+        const mobileServices = generateMobileServices([
+            generateKeycloakService(),
+        ]);
 
         // initialize auth modules
         await device.execute(

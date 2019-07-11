@@ -2,8 +2,8 @@ import { expect } from "chai";
 import { bootstrapDevice, Device } from "../../util/device";
 import { initMetricsDB, MetricsDB } from "../../util/metricsdb";
 import {
-    generateConfig,
     generateMetricsService,
+    generateMobileServices,
 } from "../../util/mobileServices";
 
 describe("security metrics", function() {
@@ -37,7 +37,9 @@ describe("security metrics", function() {
     });
 
     it("should be possible to report device check via metrics", async () => {
-        const mobileServices = generateConfig([generateMetricsService()]);
+        const mobileServices = generateMobileServices([
+            generateMetricsService(),
+        ]);
 
         await device.execute(async (modules, _, mobileServices) => {
             const { SecurityService, DeviceCheckType } = modules[

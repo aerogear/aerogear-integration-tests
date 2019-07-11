@@ -4,7 +4,10 @@ import { expect } from "chai";
 import * as sender from "unifiedpush-node-sender";
 import { MOBILE_PLATFORM, MobilePlatform, UPS_URL } from "../../util/config";
 import { bootstrapDevice, Device } from "../../util/device";
-import { generateConfig, generatePushService } from "../../util/mobileServices";
+import {
+    generateMobileServices,
+    generatePushService,
+} from "../../util/mobileServices";
 
 describe("push notifications", function() {
     // skip push tests in ios
@@ -56,7 +59,7 @@ describe("push notifications", function() {
         });
 
         // create the mobile services with all the secrets
-        mobileServices = generateConfig([
+        mobileServices = generateMobileServices([
             generatePushService(
                 senderId,
                 variant.data.variantID,

@@ -4,8 +4,8 @@ import { MOBILE_PLATFORM, MOBILE_PLATFORM_VERSION } from "../../util/config";
 import { bootstrapDevice, Device } from "../../util/device";
 import { initMetricsDB, MetricsDB } from "../../util/metricsdb";
 import {
-    generateConfig,
     generateMetricsService,
+    generateMobileServices,
 } from "../../util/mobileServices";
 import { ONE_SECOND, sleep } from "../../util/time";
 
@@ -44,7 +44,9 @@ describe("app metrics", function() {
     });
 
     it("initialize app with metrics service", async () => {
-        const mobileServices = generateConfig([generateMetricsService()]);
+        const mobileServices = generateMobileServices([
+            generateMetricsService(),
+        ]);
 
         await device.execute(async (modules, _, mobileServices) => {
             const { init } = modules["@aerogear/app"];
