@@ -36,6 +36,7 @@ node('psi_rhel8') {
         string(credentialsId: 'fastlane-user', variable: 'FASTLANE_USER'),
         string(credentialsId: 'fastlane-password', variable: 'FASTLANE_PASSWORD'),
         string(credentialsId: 'match-password', variable: 'MATCH_PASSWORD'),
+        string(credentialsId: 'mac2-password', variable: 'KEYCHAIN_PASS')
       ]) {
         stage('Build js-sdk') {
           if (buildAerogear) {
@@ -104,7 +105,7 @@ node('psi_rhel8') {
                     sh 'npm -g install cordova'
                     checkout scm
                     sh '''#!/usr/bin/env bash -l
-                      ./scripts/build-testing-app.sh
+                      security unlock-keychain -p $KEYCHAIN_PASS && ./scripts/build-testing-app.sh
                     '''
                     iosAppUrl = sh(returnStdout: true, script: 'cat "./testing-app/bs-app-url.txt" | cut -d \'"\' -f 4').trim()
                   } catch (e) {
