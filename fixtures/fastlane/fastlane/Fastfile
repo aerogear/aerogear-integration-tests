@@ -8,8 +8,7 @@ platform :ios do
       release: false,
       device: true,
       type: "development",
-      team_id: "GHPBX39444",
-      build_flag: ["-UseModernBuildSystem=0"]
+      team_id: "GHPBX39444"
     )
   end
 end
