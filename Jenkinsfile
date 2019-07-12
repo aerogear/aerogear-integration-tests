@@ -83,7 +83,7 @@ node('psi_rhel8') {
                 sh 'npm set registry http://verdaccio:4873/'
                 sh 'apt update'
                 sh 'apt install gradle'
-                sh 'npm -g install cordova@8'
+                sh 'npm -g install cordova'
                 checkout scm
                 withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
                   sh 'cp ${GOOGLE_SERVICES} ./fixtures/google-services.json'
@@ -101,7 +101,7 @@ node('psi_rhel8') {
                   originalRegistry = sh(script: 'npm get registry', returnStdout: true).trim()
                   try {
                     sh "npm set registry http://${linuxNodeIP}:4873/"
-                    sh 'npm -g install cordova@8'
+                    sh 'npm -g install cordova'
                     checkout scm
                     sh '''#!/usr/bin/env bash -l
                       ./scripts/build-testing-app.sh
