@@ -27,7 +27,8 @@ npm install --save \
   webpack \
   webpack-cli \
   graphql \
-  graphql-tag
+  graphql-tag \
+  offix-cache
 
 cordova plugin add @aerogear/cordova-plugin-aerogear-metrics
 cordova plugin add @aerogear/cordova-plugin-aerogear-security
