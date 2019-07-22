@@ -1,6 +1,6 @@
 import { Auth } from "@aerogear/auth";
 import { expect } from "chai";
-import { bootstrapDevice, Device } from "../../util/device";
+import { bootDevice, Device } from "../../util/device";
 import {
     prepareKeycloak,
     resetKeycloak,
@@ -21,12 +21,11 @@ describe("auth", function() {
     this.timeout(0);
 
     let device: Device;
-    let mainWindow: string;
-
     before("boot device", async () => {
-        device = await bootstrapDevice();
+        device = await bootDevice();
     });
 
+    let mainWindow: string;
     before("save main window", async () => {
         // store the name of the main window in a global variable
         // in order to be able to restore to it once the test is finish

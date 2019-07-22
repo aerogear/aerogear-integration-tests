@@ -1,7 +1,7 @@
 import { SecurityService } from "@aerogear/security";
 import { expect } from "chai";
 import { MOBILE_PLATFORM, MobilePlatform } from "../../util/config";
-import { bootstrapDevice, Device } from "../../util/device";
+import { bootDevice, Device } from "../../util/device";
 
 interface Universe {
     security: SecurityService;
@@ -11,9 +11,8 @@ describe("device security", function() {
     this.timeout(0);
 
     let device: Device;
-
     before("boot device", async () => {
-        device = await bootstrapDevice();
+        device = await bootDevice();
     });
 
     before("initialize security service", () => {
