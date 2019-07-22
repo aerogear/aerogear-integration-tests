@@ -1,5 +1,5 @@
 import * as path from "path";
-import { BrowserObject, remote } from "webdriverio";
+import { remote } from "webdriverio";
 import { Modules } from "../app/modules";
 import {
     BROWSERSTACK_APP,
@@ -70,8 +70,8 @@ export class Device {
     }
 }
 
-function generateOptions(): WebdriverIO.RemoteOptions {
-    const defaults: WebdriverIO.RemoteOptions = {
+function generateOptions(): WebDriver.Options & WebdriverIO.Options {
+    const defaults: WebDriver.Options & WebdriverIO.Options = {
         capabilities: {
             autoWebview: true,
         },
