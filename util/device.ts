@@ -139,7 +139,7 @@ async function initDevice(): Promise<Device> {
 
 let device: Device;
 
-export async function bootstrapDevice(): Promise<Device> {
+export async function bootDevice(): Promise<Device> {
     if (device === undefined) {
         device = await initDevice();
     }

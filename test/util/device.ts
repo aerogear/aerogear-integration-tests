@@ -1,11 +1,12 @@
 import { expect } from "chai";
-import { bootstrapDevice as bootDevice, Device } from "../../util/device";
+import { bootDevice, Device } from "../../util/device";
+
+// Test the utils library for integration tests
 
 describe("test device test util", function() {
     this.timeout(0);
 
     let device: Device;
-
     before("boot device", async () => {
         device = await bootDevice();
     });
@@ -44,7 +45,7 @@ describe("test device test util", function() {
     });
 
     it("throw an exception", async () => {
-        let error;
+        let error: Error;
         try {
             await device.execute(async () => {
                 throw new Error("a strange exception");
