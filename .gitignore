@@ -13,3 +13,7 @@ dist/
 platforms/
 plugins/
 www/
+
+
+# ignore .env
+.env
