@@ -45,7 +45,9 @@ after("close device", async () => {
     await device.close();
 });
 
-after("close browserstack local", async () => {
+after("close browserstack local", async function() {
+    this.timeout(0);
+
     if (browserstackLocal !== undefined) {
         await new Promise((resolve, reject) => {
             browserstackLocal.stop((error?: Error) => {
