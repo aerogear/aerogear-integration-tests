@@ -67,36 +67,53 @@ npm start -- test/<SERVICE>/index.js
 
 ### Preparation
 
-1. Create the android emulator using Android Studio. Ensure the Android version for the is **9.0**
-2. Start the emulator
-3. Download the correct Chrome Drivers for the Emulator Android version. In our case **2.44**
+1. Install packages and plugins
+    > In order to update the plugins you have first to delete the _plugins_ and _platforms_ directories
+    ```bash
+    npm install
+    ```
+2. Build the app
+    > If the app is already installed in the emulator rebuilding it is not enough, you will need also to uninstall it `adb uninstall org.aerogear.integrationtests`
+    ```bash
+    npm run build:android
+    ```
+3. Create the android emulator using Android Studio. Ensure the Android version for the is **9.0**
+4. Start the emulator
+5. Download the correct Chrome Drivers for the Emulator Android version. In our case **2.44**
     ```bash
     wget https://chromedriver.storage.googleapis.com/2.44/chromedriver_linux64.zip
     unzip chromedriver_linux64.zip
     ll chromedriver
     ```
-4. Optional: Move the chromedriver in a specific directory and rename it
+6. Optional: Move the chromedriver in a specific directory and rename it
     ```bash
     mkdir $HOME/.chromedrivers
     mv chromedriver $HOME/.chromedrivers/chromedriver-2.44
     ```
-5. Start Appium
+7. Start Appium
     ```bash
     appium --chromedriver-executable $HOME/.chromedrivers/chromedriver-2.44
     ```
-6. Start docker-compose
+8. Start docker-compose
     ```bash
     docker-compose up
     ```
-7. Optional: set **SERVICES_HOST** otherwise the test framework will try to guess it. The **SERVICES_HOST** should be an ip or hostname to the machine where docker-compose is running (in our case locally) that both the local machine and the emulator can resolve (can't use 127.0.0.1)
+9. Optional: set **SERVICES_HOST** otherwise the test framework will try to guess it. The **SERVICES_HOST** should be an ip or hostname pointing to the machine where docker-compose is running (in our case locally) that both the local machine and the emulator can resolve (can't use 127.0.0.1)
     ```bash
     export SERVICES_HOST="192.168.1.1"
     ```
-
-8. In order to also run the push integration test we have to set **FIREBASE_SERVER_KEY** and **FIREBASE_SENDER_ID**
+10. In order to also run the push integration test we have to set **FIREBASE_SERVER_KEY** and **FIREBASE_SENDER_ID**
 
 ### Start Tests
 
+> Attention some security tests will fails because they detect that the device is an emulator, this is not an error.
+
 ```bash
-./node_modules/.bin/mocha --require ts-node/register test/file/toTest.ts
+npm test
+```
+
+Start single test
+
+```bash
+npm test -- test/util/device.ts
 ```
