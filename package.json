@@ -8,7 +8,7 @@
     "postinstall": "./scripts/install-packages.sh && ./scripts/install-plugins.sh",
     "lint": "tslint -p .",
     "build:android": "webpack && cordova build android",
-    "test": "mocha \"test/**/*.ts\"",
+    "test": "mocha \"test/**/*.ts\""
   },
   "dependencies": {
     "@types/chai": "4.1.7",
