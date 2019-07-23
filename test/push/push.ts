@@ -4,7 +4,7 @@ import axios from "axios";
 import { expect } from "chai";
 import * as sender from "unifiedpush-node-sender";
 import { MOBILE_PLATFORM, MobilePlatform, UPS_URL } from "../../util/config";
-import { bootDevice, Device } from "../../util/device";
+import { device } from "../../util/device";
 import {
     generateMobileServices,
     generatePushService,
@@ -21,11 +21,6 @@ describe("push notifications", function() {
     }
 
     this.timeout(0);
-
-    let device: Device;
-    before("boot device", async () => {
-        device = await bootDevice();
-    });
 
     let mobileServices: AeroGearConfiguration;
     let pushApplicationID: string;
@@ -78,14 +73,6 @@ describe("push notifications", function() {
         await axios({
             method: "delete",
             url: `${UPS_URL}/rest/applications/${pushApplicationID}`,
-        });
-    });
-
-    before("wait for device is ready", async () => {
-        await device.execute(async () => {
-            await new Promise(resolve => {
-                document.addEventListener("deviceready", resolve, false);
-            });
         });
     });
 

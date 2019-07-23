@@ -1,4 +1,4 @@
 {
     "require": "ts-node/register",
-    "spec": "test/**/*.ts"
+    "file": "util/init.ts"
 }

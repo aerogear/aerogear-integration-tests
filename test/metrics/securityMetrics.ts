@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { bootDevice, Device } from "../../util/device";
+import { device } from "../../util/device";
 import { initMetricsDB, MetricsDB } from "../../util/metricsdb";
 import {
     generateMetricsService,
@@ -8,11 +8,6 @@ import {
 
 describe("security metrics", function() {
     this.timeout(0);
-
-    let device: Device;
-    before("boot device", async () => {
-        device = await bootDevice();
-    });
 
     let metricsdb: MetricsDB;
     before("initialize metricsdb", async () => {

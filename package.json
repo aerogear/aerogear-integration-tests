@@ -8,7 +8,7 @@
     "postinstall": "./scripts/install-packages.sh && ./scripts/install-plugins.sh",
     "lint": "tslint -p .",
     "build:android": "webpack && cordova build android",
-    "test": "mocha"
+    "test": "mocha \"test/**/*.ts\"",
   },
   "dependencies": {
     "@types/chai": "4.1.7",
@@ -22,6 +22,7 @@
     "@wdio/local-runner": "5.10.9",
     "@wdio/mocha-framework": "5.10.8",
     "axios": "0.19.0",
+    "browserstack-local": "1.4.0",
     "chai": "4.2.0",
     "cordova-android": "8.0.0",
     "cordova-ios": "5.0.1",

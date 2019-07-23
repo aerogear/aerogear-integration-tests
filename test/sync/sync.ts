@@ -4,7 +4,7 @@ import { gql, VoyagerServer } from "@aerogear/voyager-server";
 import { expect } from "chai";
 import * as express from "express";
 import * as http from "http";
-import { NetworkStatus, OfflineStore } from "offix-offline";
+import { OfflineStore } from "offix-offline";
 import { updateNetwork } from "../../util/browserStack";
 import {
     BROWSERSTACK_APP,
@@ -12,7 +12,7 @@ import {
     MobilePlatform,
     SYNC_PORT,
 } from "../../util/config";
-import { bootDevice, Device } from "../../util/device";
+import { device } from "../../util/device";
 import {
     generateMobileServices,
     generateSyncService,
@@ -30,11 +30,6 @@ interface Universe {
 
 describe("data sync", function() {
     this.timeout(0);
-
-    let device: Device;
-    before("boot device", async () => {
-        device = await bootDevice();
-    });
 
     let expressServer: http.Server;
     const serverItems = [];
@@ -129,9 +124,7 @@ describe("data sync", function() {
                 const { init } = modules["@aerogear/app"];
                 const { OfflineClient } = modules["@aerogear/voyager-client"];
                 const { gql } = modules["graphql-tag"];
-                const { CacheOperation, getUpdateFunction } = modules[
-                    "offix-cache"
-                ];
+                const { getUpdateFunction } = modules["offix-cache"];
                 const { ToggleNetworkStatus } = modules[
                     "../util/ToggleNetworkStatus"
                 ];
@@ -205,7 +198,7 @@ describe("data sync", function() {
             const { apolloClient, itemsQuery } = universe;
 
             try {
-                await apolloClient.offlineMutation({
+                await apolloClient.offlineMutate({
                     mutation: gql(`
                             mutation create($title: String!) {
                                 create(title: $title) {

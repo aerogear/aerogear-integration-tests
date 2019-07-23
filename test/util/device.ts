@@ -1,15 +1,10 @@
 import { expect } from "chai";
-import { bootDevice, Device } from "../../util/device";
+import { device } from "../../util/device";
 
 // Test the utils library for integration tests
 
 describe("test device test util", function() {
     this.timeout(0);
-
-    let device: Device;
-    before("boot device", async () => {
-        device = await bootDevice();
-    });
 
     it("store and read from universe", async () => {
         interface Universe {

@@ -11,65 +11,6 @@ import {
     MobilePlatform,
 } from "./config";
 
-interface Universe {
-    [key: string]: any;
-}
-
-export class Device {
-    public browser: BrowserObject;
-
-    constructor(browser: BrowserObject) {
-        browser.setTimeout({
-            script: 24 * 60 * 60 * 1000,
-        });
-
-        this.browser = browser;
-    }
-
-    /**
-     * This is a wrap around the webdriver.io executeAsync() method
-     * thats had few handy helpers and typescript support.
-     */
-    public async execute<T, A extends any[]>(
-        script: (
-            modules: Modules,
-            universe: Universe,
-            ...args: A
-        ) => Promise<T>,
-        ...args: A
-    ): Promise<T> {
-        const [error, result] = await this.browser.executeAsync(
-            `
-            var _this = null;
-            var done = arguments[arguments.length - 1];
-            var args = [window.modules, window.universe].concat(Array.from(arguments));
-            (${script}).apply(null, args)
-                .then(function (result) { 
-                    done([null, result]); 
-                })
-                .catch(function (error) {
-                    setTimeout(function () { throw error; }, 10);
-                    done([error.toString(), null]); 
-                });
-            `,
-            ...args
-        );
-
-        if (error !== null) {
-            // Report error with full console logs.
-            // Very handy because it allows to print anything
-            // using console.log() and it will be collected and reported back.
-            const console = (await this.browser.getLogs("browser"))
-                .map((log: any) => `        ${log.level}: ${log.message}`)
-                .join("\n");
-
-            throw new Error(`${error}\n\n      Console:\n${console}\n`);
-        }
-
-        return result;
-    }
-}
-
 function generateOptions(): WebDriver.Options & WebdriverIO.Options {
     const defaults: WebDriver.Options & WebdriverIO.Options = {
         capabilities: {
@@ -132,16 +73,63 @@ function generateOptions(): WebDriver.Options & WebdriverIO.Options {
     }
 }
 
-async function initDevice(): Promise<Device> {
-    const browser = await remote(generateOptions());
-    return new Device(browser);
+interface Universe {
+    [key: string]: any;
 }
 
-let device: Device;
+export class Device {
+    public browser: BrowserObject;
 
-export async function bootDevice(): Promise<Device> {
-    if (device === undefined) {
-        device = await initDevice();
+    public async init() {
+        this.browser = await remote(generateOptions());
     }
-    return device;
+
+    public async close() {
+        await this.browser.deleteSession();
+    }
+
+    /**
+     * This is a wrap around the webdriver.io executeAsync() method
+     * thats had few handy helpers and typescript support.
+     */
+    public async execute<T, A extends any[]>(
+        script: (
+            modules: Modules,
+            universe: Universe,
+            ...args: A
+        ) => Promise<T>,
+        ...args: A
+    ): Promise<T> {
+        const [error, result] = await this.browser.executeAsync(
+            `
+            var _this = null;
+            var done = arguments[arguments.length - 1];
+            var args = [window.modules, window.universe].concat(Array.from(arguments));
+            (${script}).apply(null, args)
+                .then(function (result) { 
+                    done([null, result]); 
+                })
+                .catch(function (error) {
+                    setTimeout(function () { throw error; }, 10);
+                    done([error.toString(), null]); 
+                });
+            `,
+            ...args
+        );
+
+        if (error !== null) {
+            // Report error with full console logs.
+            // Very handy because it allows to print anything
+            // using console.log() and it will be collected and reported back.
+            const console = (await this.browser.getLogs("browser"))
+                .map((log: any) => `        ${log.level}: ${log.message}`)
+                .join("\n");
+
+            throw new Error(`${error}\n\n      Console:\n${console}\n`);
+        }
+
+        return result;
+    }
 }
+
+export const device = new Device();
