@@ -149,12 +149,10 @@ describe("data sync", function() {
                 universe.itemsQuery = itemsQuery;
 
                 const cacheUpdates = {
-                    create: getUpdateFunction(
-                        "create",
-                        "id",
-                        CacheOperation.ADD,
-                        itemsQuery
-                    ),
+                    create: getUpdateFunction({
+                        mutationName: "create",
+                        updateQuery: itemsQuery,
+                    }),
                 };
 
                 const options: DataSyncConfig = {
