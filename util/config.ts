@@ -1,4 +1,7 @@
-const SERVICES_HOST = process.env.SERVICES_HOST;
+import { luckyIp } from "./ip";
+
+// Single url for all services
+const SERVICES_HOST = process.env.SERVICES_HOST || luckyIp();
 
 // Services
 
