@@ -1,13 +1,18 @@
 import { AeroGearConfiguration } from "@aerogear/core";
+import { PushRegistration } from "@aerogear/push";
 import axios from "axios";
 import { expect } from "chai";
 import * as sender from "unifiedpush-node-sender";
 import { MOBILE_PLATFORM, MobilePlatform, UPS_URL } from "../../util/config";
-import { bootstrapDevice, Device } from "../../util/device";
+import { bootDevice, Device } from "../../util/device";
 import {
     generateMobileServices,
     generatePushService,
 } from "../../util/mobileServices";
+
+interface Universe {
+    push: PushRegistration;
+}
 
 describe("push notifications", function() {
     // skip push tests in ios
@@ -18,13 +23,13 @@ describe("push notifications", function() {
     this.timeout(0);
 
     let device: Device;
+    before("boot device", async () => {
+        device = await bootDevice();
+    });
+
     let mobileServices: AeroGearConfiguration;
     let pushApplicationID: string;
     let masterSecret: string;
-
-    before("boot device", async () => {
-        device = await bootstrapDevice();
-    });
 
     before("create ups application", async () => {
         const serverKey = process.env.FIREBASE_SERVER_KEY;
@@ -85,47 +90,26 @@ describe("push notifications", function() {
     });
 
     it("send and receive test notification", async () => {
-        // register the device to firebase
-        const registrationId = await device.execute(async (_, universe) => {
-            const push = (window as any).PushNotification.init({
-                android: {},
-                ios: {},
-            });
-
-            const { registrationId } = await new Promise((resolve, reject) => {
-                push.on("registration", resolve);
-                push.on("error", reject);
-            });
-
-            universe.push = push;
-
-            return registrationId;
-        });
-
         // register the device to UPS
-        await device.execute(
-            async (modules, _, mobileServices, registrationId) => {
-                const { init } = modules["@aerogear/app"];
-                const { PushRegistration } = modules["@aerogear/push"];
+        await device.execute(async (modules, _, mobileServices) => {
+            const { init } = modules["@aerogear/app"];
+            const { PushRegistration } = modules["@aerogear/push"];
 
-                const app = init(mobileServices);
+            const app = init(mobileServices);
 
-                const register = new PushRegistration(app.config);
-                await register.register(registrationId, "alias");
-            },
-            mobileServices,
-            registrationId
-        );
+            const register = new PushRegistration(app.config);
+
+            await register.register({ alias: "alias" });
+        }, mobileServices);
 
         // start listening for notifications
-        const notification: Promise<any> = device.execute(
-            async (_, { push }) => {
-                return await new Promise((resolve, reject) => {
-                    push.on("notification", resolve);
-                    push.on("error", reject);
-                });
-            }
-        );
+        const notification: Promise<any> = device.execute(async modules => {
+            const { PushRegistration } = modules["@aerogear/push"];
+
+            return await new Promise(resolve => {
+                PushRegistration.onMessageReceived(resolve);
+            });
+        });
 
         // send test notification
         sender({
