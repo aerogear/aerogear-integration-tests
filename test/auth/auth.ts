@@ -1,6 +1,6 @@
 import { Auth } from "@aerogear/auth";
 import { expect } from "chai";
-import { bootDevice, Device } from "../../util/device";
+import { device } from "../../util/device";
 import {
     prepareKeycloak,
     resetKeycloak,
@@ -19,11 +19,6 @@ interface Universe {
 
 describe("auth", function() {
     this.timeout(0);
-
-    let device: Device;
-    before("boot device", async () => {
-        device = await bootDevice();
-    });
 
     let mainWindow: string;
     before("save main window", async () => {

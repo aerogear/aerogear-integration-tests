@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { version as aerogearAppVersion } from "../../node_modules/@aerogear/app/package.json";
 import { MOBILE_PLATFORM, MOBILE_PLATFORM_VERSION } from "../../util/config";
-import { bootDevice, Device } from "../../util/device";
+import { device } from "../../util/device";
 import { initMetricsDB, MetricsDB } from "../../util/metricsdb";
 import {
     generateMetricsService,
@@ -15,11 +15,6 @@ const VERSION_TABLE = {
 
 describe("app metrics", function() {
     this.timeout(0);
-
-    let device: Device;
-    before("boot device", async () => {
-        device = await bootDevice();
-    });
 
     let metricsdb: MetricsDB;
     before("initialize metricsdb", async () => {
