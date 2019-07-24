@@ -30,7 +30,8 @@ node('psi_rhel8') {
             withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
               sh 'cp ${GOOGLE_SERVICES} ./google-services.json'
             }
-            sh 'npm run prepare'
+            sh 'npm install'
+            sh 'npm run prepare:android'
             sh 'npm run build:android'
             androidAppUrl = sh(returnStdout: true, script: './scripts/upload-app-to-browserstack.sh android').trim()
           }
