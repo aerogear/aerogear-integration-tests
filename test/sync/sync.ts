@@ -1,10 +1,9 @@
-import { DataSyncConfig } from "@aerogear/voyager-client";
+import { DataSyncConfig, OfflineClient } from "@aerogear/voyager-client";
 import { ApolloOfflineClient } from "@aerogear/voyager-client/types/ApolloOfflineClient";
 import { gql, VoyagerServer } from "@aerogear/voyager-server";
 import { expect } from "chai";
 import * as express from "express";
 import * as http from "http";
-import { OfflineStore } from "offix-offline";
 import { updateNetwork } from "../../util/browserStack";
 import {
     BROWSERSTACK_APP,
@@ -21,9 +20,9 @@ import { ONE_SECOND, sleep } from "../../util/time";
 import { ToggleNetworkStatus } from "../../util/ToggleNetworkStatus";
 
 interface Universe {
-    networkStatus: ToggleNetworkStatus;
+    toggleNetworkStatus: ToggleNetworkStatus;
     itemsQuery: any;
-    offlineStore: OfflineStore;
+    offlineClient: OfflineClient;
     apolloClient: ApolloOfflineClient;
     offlineChangePromise: Promise<any>;
 }
@@ -93,8 +92,8 @@ describe("data sync", function() {
 
     const goOffline = () => {
         if (useToggleNetworkStatus) {
-            device.execute(async (_, { networkStatus }: Universe) => {
-                networkStatus.goOffline();
+            device.execute(async (_, { toggleNetworkStatus }: Universe) => {
+                toggleNetworkStatus.goOffline();
             });
         } else {
             updateNetwork(device.browser.sessionId, "no-network");
@@ -103,8 +102,8 @@ describe("data sync", function() {
 
     const goOnline = () => {
         if (useToggleNetworkStatus) {
-            device.execute(async (_, { networkStatus }: Universe) => {
-                networkStatus.goOnline();
+            device.execute(async (_, { toggleNetworkStatus }: Universe) => {
+                toggleNetworkStatus.goOnline();
             });
         } else {
             updateNetwork(device.browser.sessionId, "reset");
@@ -157,15 +156,13 @@ describe("data sync", function() {
                     // Use ToggleNetworkStatus when testing on local device or iOS
                     const networkStatus = new ToggleNetworkStatus();
 
-                    universe.networkStatus = networkStatus;
+                    universe.toggleNetworkStatus = networkStatus;
                     options.networkStatus = networkStatus;
                 }
 
                 const offlineClient = new OfflineClient(options);
-
-                universe.offlineStore = offlineClient.offlineStore;
-
                 universe.apolloClient = await offlineClient.init();
+                universe.offlineClient = offlineClient;
             },
             mobileServices,
             useToggleNetworkStatus
@@ -174,7 +171,7 @@ describe("data sync", function() {
 
     it("should perform the query", async () => {
         const items = await device.execute(
-            async (_, { apolloClient, itemsQuery }) => {
+            async (_, { apolloClient, itemsQuery }: Universe) => {
                 const result = await apolloClient.query({
                     errorPolicy: "none",
                     fetchPolicy: "network-only",
@@ -195,10 +192,10 @@ describe("data sync", function() {
 
         await device.execute(async (modules, universe: Universe) => {
             const { gql } = modules["graphql-tag"];
-            const { apolloClient, itemsQuery } = universe;
+            const { offlineClient, itemsQuery } = universe;
 
             try {
-                await apolloClient.offlineMutate({
+                await offlineClient.offlineMutate({
                     mutation: gql(`
                             mutation create($title: String!) {
                                 create(title: $title) {
@@ -228,15 +225,15 @@ describe("data sync", function() {
     });
 
     it("should see the updated cache", async () => {
-        const items = await device.execute(async (_, universe) => {
-            const { apolloClient, itemsQuery } = universe;
+        const items = await device.execute(
+            async (_, { apolloClient, itemsQuery }: Universe) => {
+                const result = await apolloClient.query({
+                    query: itemsQuery,
+                });
 
-            const result = await apolloClient.query({
-                query: itemsQuery,
-            });
-
-            return result.data.items;
-        });
+                return result.data.items;
+            }
+        );
 
         expect(items).not.empty;
         expect(items[0].title).eq("test");
@@ -248,7 +245,7 @@ describe("data sync", function() {
         const items = await device.execute(
             async (
                 modules,
-                { apolloClient, itemsQuery, offlineChangePromise }
+                { apolloClient, itemsQuery, offlineChangePromise }: Universe
             ) => {
                 const { sleep, ONE_SECOND } = modules["../util/time"];
 
