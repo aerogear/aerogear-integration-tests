@@ -6,6 +6,7 @@ import * as aerogearVoyagerClient from "@aerogear/voyager-client";
 import * as chai from "chai";
 import gql from "graphql-tag";
 import * as officeCache from "offix-cache";
+import * as offixOffline from "offix-offline";
 import * as utilTime from "../util/time";
 import * as utilToggleNetworkStatus from "../util/ToggleNetworkStatus";
 
@@ -20,6 +21,7 @@ export const modules = {
     chai,
     "graphql-tag": { gql },
     "offix-cache": officeCache,
+    "offix-offline": offixOffline,
 };
 
 export type Modules = typeof modules;
