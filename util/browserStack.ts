@@ -3,7 +3,7 @@ import { BROWSERSTACK_KEY, BROWSERSTACK_USER } from "./config";
 
 function auth(): string {
     const buff = Buffer.from(`${BROWSERSTACK_USER}:${BROWSERSTACK_KEY}`);
-    return `Basic: ${buff.toString("base64")}`;
+    return `Basic ${buff.toString("base64")}`;
 }
 
 /**
