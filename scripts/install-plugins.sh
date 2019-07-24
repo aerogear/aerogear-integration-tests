@@ -3,6 +3,7 @@ set -e
 set -x
 
 # install plugins in config.xml and bootstrap platforms
+mkdir -p www
 cordova prepare
 
 # install aerogear plugins
