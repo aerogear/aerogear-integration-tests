@@ -5,7 +5,7 @@
   "description": "AeroGear integration tests",
   "main": "index.js",
   "scripts": {
-    "postinstall": "./scripts/install-packages.sh && ./scripts/install-plugins.sh",
+    "postinstall": "./scripts/install-plugins.sh && ./scripts/install-packages.sh",
     "lint": "tslint -p .",
     "build:android": "webpack && cordova build android",
     "test": "mocha \"test/**/*.ts\""
