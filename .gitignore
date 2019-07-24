@@ -1,19 +1,22 @@
+
+# npm
 node_modules
-testing-app
-package-lock.json
-bs-local-pid.txt
-BrowserStackLocal*
-google-services.json
+
+# editors
 .vscode
 
-# typescript
-dist/
+# google-services
+google-services.json
+
+# browserstack local
+bs-local-pid.txt
+BrowserStackLocal*
+local.log
 
 # cordova
 platforms/
 plugins/
 www/
-
 
 # ignore .env
 .env
