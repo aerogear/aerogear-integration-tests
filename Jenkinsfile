@@ -28,7 +28,7 @@ node('psi_rhel8') {
             sh 'npm -g install cordova@8'
             checkout scm
             withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
-              sh 'cp ${GOOGLE_SERVICES} ./fixtures/google-services.json'
+              sh 'cp ${GOOGLE_SERVICES} ./google-services.json'
             }
             sh 'npm run prepare'
             sh 'npm run build:android'
