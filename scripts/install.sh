@@ -10,3 +10,5 @@ npm install --no-save \
     @aerogear/security@dev \
     @aerogear/voyager-client@dev \
     @aerogear/voyager-server@latest
+
+exit 0
