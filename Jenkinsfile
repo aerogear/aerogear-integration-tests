@@ -24,14 +24,16 @@ node('psi_rhel8') {
         parallel Android: {
           docker.image('circleci/android:api-28-node').inside('-u root:root --network aerogear') {
             dir('aerogear-integration-tests') {
+              sh 'apt update'
               sh 'apt install gradle'
               sh 'npm -g install cordova@8'
               checkout scm
               withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
                 sh 'cp ${GOOGLE_SERVICES} ./fixtures/google-services.json'
-                sh './scripts/build-testing-app.sh'
               }
-              androidAppUrl = sh(returnStdout: true, script: 'cat "./testing-app/bs-app-url.txt" | cut -d \'"\' -f 4').trim()
+              sh 'npm install'
+              sh 'npm run build:android'
+              androidAppUrl = sh(returnStdout: true, script: './scripts/upload-app-to-browserstack.sh android').trim()
             }
           }
         },
