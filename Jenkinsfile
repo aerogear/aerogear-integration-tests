@@ -22,19 +22,17 @@ node('psi_rhel8') {
     ]) {
       stage('Build testing app') {
         parallel Android: {
-          docker.image('circleci/android:api-28-node').inside('-u root:root --network aerogear') {
-            dir('aerogear-integration-tests') {
-              sh 'apt update'
-              sh 'apt install gradle'
-              sh 'npm -g install cordova@8'
-              checkout scm
-              withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
-                sh 'cp ${GOOGLE_SERVICES} ./fixtures/google-services.json'
-              }
-              sh 'npm install'
-              sh 'npm run build:android'
-              androidAppUrl = sh(returnStdout: true, script: './scripts/upload-app-to-browserstack.sh android').trim()
+          docker.image('circleci/android:api-28-node').inside('-u root:root') {
+            sh 'apt update'
+            sh 'apt install gradle'
+            sh 'npm -g install cordova@8'
+            checkout scm
+            withCredentials([file(credentialsId: 'google-services', variable: 'GOOGLE_SERVICES')]) {
+              sh 'cp ${GOOGLE_SERVICES} ./fixtures/google-services.json'
             }
+            sh 'npm run prepare'
+            sh 'npm run build:android'
+            androidAppUrl = sh(returnStdout: true, script: './scripts/upload-app-to-browserstack.sh android').trim()
           }
         },
         iOS: {
