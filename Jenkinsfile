@@ -1,6 +1,6 @@
 def runIntegrationTests() {
     withDockerContainer(image: 'circleci/node:dubnium-stretch', args: '-u root --network aerogear') {
-        sh "JUNIT_REPORT_PATH=report-${env.MOBILE_PLATFORM}.xml npm start -- --reporter mocha-jenkins-reporter test/auth/*.js || true"
+        sh "JUNIT_REPORT_PATH=report-${env.MOBILE_PLATFORM}.xml npm start -- --reporter mocha-jenkins-reporter test/**/*.js || true"
         archiveArtifacts "report-${env.MOBILE_PLATFORM}.xml"
         junit allowEmptyResults: true, testResults: "report-${env.MOBILE_PLATFORM}.xml"
     }
@@ -45,7 +45,7 @@ pipeline {
           }
         }
 
-        stage('Build iOS') {
+        stage('iOS') {
           agent { 
             label 'osx5x'
           }
@@ -66,7 +66,7 @@ pipeline {
 
     stage('Testing') {
       stages {
-        stage('start services') {
+        stage('Start services') {
           steps {
               sh """
               docker network create aerogear || true
@@ -86,7 +86,7 @@ pipeline {
                 }
             }
         }
-        stage('test android') {
+        stage('Test android') {
           environment { 
             MOBILE_PLATFORM = 'android'
           }
@@ -95,7 +95,7 @@ pipeline {
             runIntegrationTests()
           }
         }
-        stage('test ios') {
+        stage('Test ios') {
           environment { 
             MOBILE_PLATFORM = 'ios'
           }
