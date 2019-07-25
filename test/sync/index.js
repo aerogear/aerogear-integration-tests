@@ -97,7 +97,12 @@ describe('Data Sync', function() {
         window.aerogear.itemsQuery = itemsQuery;
 
         const cacheUpdates = {
-          create: getUpdateFunction('create', 'id', CacheOperation.ADD, itemsQuery)
+          create: getUpdateFunction({
+            mutationName: 'create',
+            idField: 'id',
+            operationType: CacheOperation.ADD,
+            updateQuery: itemsQuery
+          })
         };
       
         const options = {
@@ -155,7 +160,7 @@ describe('Data Sync', function() {
       try {
         const { apolloClient, gql, itemsQuery } = window.aerogear;
 
-        await apolloClient.offlineMutation({
+        await apolloClient.offlineMutate({
           mutation: gql`
             mutation create($title: String!) {
               create(title: $title) {
