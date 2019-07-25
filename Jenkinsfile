@@ -31,7 +31,7 @@ pipeline {
             GOOGLE_SERVICES = credentials('google-services')
           }
           steps {
-            git branch: 'master', url: 'https://github.com/aerogear/aerogear-integration-tests.git'
+            checkout scm
             withDockerContainer(image: 'circleci/android:api-28-node', args: '-u root') {
               sh """
               apt update
@@ -53,7 +53,7 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
-            git branch: 'master', url: 'https://github.com/aerogear/aerogear-integration-tests.git'
+            checkout scm
             sh """#!/usr/bin/env bash -l
             npm -g install cordova
             security unlock-keychain -p $KEYCHAIN_PASS && ./scripts/build-testing-app.sh
