@@ -18,7 +18,7 @@ services:
       POSTGRES_PASSWORD: metrics
       POSTGRES_DB: metrics
   metrics:
-    image: aerogear/aerogear-app-metrics
+    image: aerogear/aerogear-app-metrics:master
     ports:
       - "3000:3000"
     environment:
