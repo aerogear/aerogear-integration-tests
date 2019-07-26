@@ -15,7 +15,7 @@ describe('Push', function () {
   let pushApplicationID;
   let masterSecret;
 
-  before("create ups application", async () => {
+  before("create ups application", async function () {
     const serverKey = process.env.FIREBASE_SERVER_KEY;
     const senderId = process.env.FIREBASE_SENDER_ID;
 
@@ -57,7 +57,7 @@ describe('Push', function () {
     config.config.android.variantSecret = variant.data.secret;
   })
 
-  after("delete ups application", async () => {
+  after("delete ups application", async function () {
 
     // delete test application
     await axios({
@@ -76,41 +76,20 @@ describe('Push', function () {
 
       const app = init(config);
 
-      const push = window.PushNotification.init({
-        android: {},
-        ios: {},
-      });
-
-      push.on('registration', data => {
-
-        const push = new PushRegistration(app.config);
-
-        push.register(data.registrationId, "alias")
-          .then(() => {
-            done();
-          }).catch(e => {
-            throw e;
-          });
-      });
-
-      push.on("error", e => {
-        throw e;
-      });
-
-      window.push = push;
+      new PushRegistration(app.config).register({alias: 'alias'})
+        .then(() => {
+          done();
+        }).catch(err => {
+          throw err;
+        });
     }, mobileServices);
 
     // start listening for notifications
     const message = client.executeAsync((done) => {
-      const push = window.push;
+      const { agPush } = window.aerogear;
+      const { PushRegistration } = agPush;
 
-      push.on("notification", (notification) => {
-        done(notification.message);
-      });
-
-      push.on("error", e => {
-        throw e;
-      })
+      PushRegistration.onMessageReceived(notification => done(notification.message));
     });
 
     // send test notification
