@@ -21,53 +21,53 @@ pipeline {
     JUNIT_REPORT_STACK="1"
   }
   stages {
-    stage('Build Testing App') {
-      parallel {
+    // stage('Build Testing App') {
+    //   parallel {
 
-        stage('Android') {
-          agent {
-            docker {
-              image 'circleci/android:api-28-node'
-              label 'psi_rhel8'
-              args '-u root'
-            }
-          }
-          environment {
-            GOOGLE_SERVICES = credentials('google-services')
-          }
-          steps {
-            sh 'apt update'
-            sh 'apt install gradle'
-            sh 'npm -g install cordova@8'
-            sh 'cp ${GOOGLE_SERVICES} ./google-services.json'
-            sh 'npm install --unsafe-perm'
-            sh 'npm run prepare:android'
-            sh 'npm run build:android'
-            sh './scripts/upload-app-to-browserstack.sh android > BROWSERSTACK_APP'
-            stash includes: 'BROWSERSTACK_APP', name: 'android-browserstack-app'
-          }
-        }
+    //     stage('Android') {
+    //       agent {
+    //         docker {
+    //           image 'circleci/android:api-28-node'
+    //           label 'psi_rhel8'
+    //           args '-u root'
+    //         }
+    //       }
+    //       environment {
+    //         GOOGLE_SERVICES = credentials('google-services')
+    //       }
+    //       steps {
+    //         sh 'apt update'
+    //         sh 'apt install gradle'
+    //         sh 'npm -g install cordova@8'
+    //         sh 'cp ${GOOGLE_SERVICES} ./google-services.json'
+    //         sh 'npm install --unsafe-perm'
+    //         sh 'npm run prepare:android'
+    //         sh 'npm run build:android'
+    //         sh './scripts/upload-app-to-browserstack.sh android > BROWSERSTACK_APP'
+    //         stash includes: 'BROWSERSTACK_APP', name: 'android-browserstack-app'
+    //       }
+    //     }
 
-        stage('iOS') {
-          agent { 
-            label 'osx5x'
-          }
-          environment { 
-            MOBILE_PLATFORM = 'ios'
-          }
-          steps {
-            sh 'npm -g install cordova@8'
-            sh 'npm install'
-            sh 'npm run prepare:ios'
-            sh """#!/usr/bin/env bash -l
-            security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
-            """
-            sh './scripts/upload-app-to-browserstack.sh ios > BROWSERSTACK_APP'
-            stash includes: 'BROWSERSTACK_APP', name: 'ios-browserstack-app'        
-          }
-        }
-      }
-    }
+    //     stage('iOS') {
+    //       agent { 
+    //         label 'osx5x'
+    //       }
+    //       environment { 
+    //         MOBILE_PLATFORM = 'ios'
+    //       }
+    //       steps {
+    //         sh 'npm -g install cordova@8'
+    //         sh 'npm install'
+    //         sh 'npm run prepare:ios'
+    //         sh """#!/usr/bin/env bash -l
+    //         security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
+    //         """
+    //         sh './scripts/upload-app-to-browserstack.sh ios > BROWSERSTACK_APP'
+    //         stash includes: 'BROWSERSTACK_APP', name: 'ios-browserstack-app'        
+    //       }
+    //     }
+    //   }
+    // }
 
     stage('Testing') {
       stages {
