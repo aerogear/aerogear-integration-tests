@@ -56,15 +56,14 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
-            sh 'ls'
-            // sh 'npm -g install cordova@8'
-            // sh 'npm install'
-            // sh 'npm run prepare:ios'
-            // sh """#!/usr/bin/env bash -l
-            // security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
-            // """
-            // sh './scripts/upload-app-to-browserstack.sh ios > BROWSERSTACK_APP'
-            // stash includes: 'BROWSERSTACK_APP', name: 'ios-browserstack-app'        
+            sh 'npm -g install cordova@8'
+            sh 'npm install'
+            sh 'npm run prepare:ios'
+            sh """#!/usr/bin/env bash -l
+            security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
+            """
+            sh './scripts/upload-app-to-browserstack.sh ios > BROWSERSTACK_APP'
+            stash includes: 'BROWSERSTACK_APP', name: 'ios-browserstack-app'        
           }
         }
       }
