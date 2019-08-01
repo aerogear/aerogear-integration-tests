@@ -70,23 +70,17 @@ pipeline {
     // }
 
     stage('Testing') {
+      agent {
+        docker {
+          image 'circleci/node:dubnium-stretch'
+          label 'psi_rhel8'
+          args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+      }
       stages {
         stage('Start services') {
-          agent {
-            docker {
-              image 'circleci/node:dubnium-stretch'
-              label 'psi_rhel8'
-              args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-            }
-          }
           steps {
-            sh 'docker ps'
-              sh """
-              docker network create aerogear || true
-              docker-compose up -d
-              # To remove ownership of root user from testing-app folder
-              sudo chown -R jenkins:jenkins .
-              """
+            sh 'docker-compose up -d'
           }
         }
         // stage('Install dependencies for tests') {
