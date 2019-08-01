@@ -33,14 +33,14 @@ pipeline {
           steps {
             checkout scm
             withDockerContainer(image: 'circleci/android:api-28-node', args: '-u root') {
-              sh """
-              apt update
-              apt install gradle
-              npm -g install cordova
-              cp ${GOOGLE_SERVICES} ./fixtures/google-services.json
-              ./scripts/build-testing-app.sh
-              """
-              stash includes: 'testing-app/bs-app-url.txt', name: 'android-testing-app'
+              sh 'apt update'
+              sh 'apt install gradle'
+              sh 'npm -g install cordova@8'
+              sh 'cp ${GOOGLE_SERVICES} ./google-services.json'
+              sh 'npm install'
+              sh 'npm prepare:android'
+              sh 'npm build:android'
+              // stash includes: 'testing-app/bs-app-url.txt', name: 'android-testing-app'
             }
           }
         }
