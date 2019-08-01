@@ -38,8 +38,8 @@ pipeline {
               sh 'npm -g install cordova@8'
               sh 'cp ${GOOGLE_SERVICES} ./google-services.json'
               sh 'npm install'
-              sh 'npm prepare:android'
-              sh 'npm build:android'
+              sh 'npm run prepare:android'
+              sh 'npm run build:android'
               // stash includes: 'testing-app/bs-app-url.txt', name: 'android-testing-app'
             }
           }
