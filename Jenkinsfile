@@ -56,12 +56,14 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
-            checkout scm
+            sh 'npm -g install cordova@8'
+            sh 'npm install'
+            sh 'run prepare:ios'
             sh """#!/usr/bin/env bash -l
-            npm -g install cordova
-            security unlock-keychain -p $KEYCHAIN_PASS && ./scripts/build-testing-app.sh
+            security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
             """
-            stash includes: 'testing-app/bs-app-url.txt', name: 'ios-testing-app'        
+            sh './scripts/upload-app-to-browserstack.sh ios > BROWSERSTACK_APP'
+            stash includes: 'BROWSERSTACK_APP', name: 'ios-browserstack-app'        
           }
         }
       }
