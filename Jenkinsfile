@@ -85,7 +85,7 @@ pipeline {
         }
         stage('Install dependencies for tests') {
             steps {
-              sh 'npm install'
+              sh 'npm install --unsafe-perm'
               // npm install mocha-jenkins-reporter
             }
         }
@@ -94,7 +94,7 @@ pipeline {
             MOBILE_PLATFORM = 'android'
           }
           steps {
-            unstash 'android-testing-app'
+            unstash 'android-browserstack-app'
             sh 'export BROWSERSTACK_APP="$(cat BROWSERSTACK_APP)"'
             sh 'npm test'
             // runIntegrationTests()
