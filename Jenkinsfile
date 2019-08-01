@@ -43,7 +43,7 @@ pipeline {
             sh 'npm install --unsafe-perm'
             sh 'npm run prepare:android'
             sh 'npm run build:android'
-            sh './scripts/upload-app-to-browserstack.sh > BROWSERSTACK_APP'
+            sh './scripts/upload-app-to-browserstack.sh android > BROWSERSTACK_APP'
             stash includes: 'BROWSERSTACK_APP', name: 'android-browserstack-app'
           }
         }
