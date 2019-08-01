@@ -25,10 +25,12 @@ pipeline {
       parallel {
 
         stage('Android') {
-          docker {
-            image 'circleci/android:api-28-node'
-            label 'psi_rhel8'
-            args '-u root'
+          agent {
+            docker {
+              image 'circleci/android:api-28-node'
+              label 'psi_rhel8'
+              args '-u root'
+            }
           }
           environment {
             GOOGLE_SERVICES = credentials('google-services')
