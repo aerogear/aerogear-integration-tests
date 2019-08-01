@@ -7,9 +7,6 @@ def runIntegrationTests() {
 }
 
 pipeline {
-  agent {
-    label 'psi_rhel8'
-  }
   environment {
     BROWSERSTACK_USER = credentials('browserstack-user')
     BROWSERSTACK_KEY = credentials('browserstack-key')
@@ -27,12 +24,17 @@ pipeline {
       parallel {
 
         stage('Android') {
+          docker {
+            image 'circleci/android:api-28-node'
+            label 'psi_rhel8'
+            args '-u root'
+          }
           environment {
             GOOGLE_SERVICES = credentials('google-services')
           }
           steps {
-            checkout scm
-            withDockerContainer(image: 'circleci/android:api-28-node', args: '-u root') {
+            // checkout scm
+            // withDockerContainer(image: 'circleci/android:api-28-node', args: '-u root') {
               sh 'apt update'
               sh 'apt install gradle'
               sh 'npm -g install cordova@8'
@@ -41,7 +43,7 @@ pipeline {
               sh 'npm run prepare:android'
               sh 'npm run build:android'
               // stash includes: 'testing-app/bs-app-url.txt', name: 'android-testing-app'
-            }
+            // }
           }
         }
 
