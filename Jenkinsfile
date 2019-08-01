@@ -72,7 +72,15 @@ pipeline {
     stage('Testing') {
       stages {
         stage('Start services') {
+          agent {
+            docker {
+              image 'circleci/node:dubnium-stretch'
+              label 'psi_rhel8'
+              args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+            }
+          }
           steps {
+            sh 'docker ps'
               sh """
               docker network create aerogear || true
               docker-compose up -d
@@ -81,45 +89,47 @@ pipeline {
               """
           }
         }
-        stage('Install dependencies for tests') {
-            steps {
-                withDockerContainer(image: 'circleci/node:dubnium-stretch', args: '-u root') {
-                  sh """
-                  npm install
-                  npm install mocha-jenkins-reporter
-                  """
-                }
-            }
-        }
-        stage('Test android') {
-          environment { 
-            MOBILE_PLATFORM = 'android'
-          }
-          steps {
-            unstash 'android-testing-app'
-            runIntegrationTests()
-          }
-        }
-        stage('Test ios') {
-          environment { 
-            MOBILE_PLATFORM = 'ios'
-          }
-          steps {
-            unstash 'ios-testing-app'
-            runIntegrationTests()
-          }
-        }
+        // stage('Install dependencies for tests') {
+        //     steps {
+        //         withDockerContainer(image: 'circleci/node:dubnium-stretch', args: '-u root') {
+        //           sh """
+        //           npm install
+        //           npm install mocha-jenkins-reporter
+        //           """
+        //         }
+        //     }
+        // }
+        // stage('Test android') {
+        //   environment { 
+        //     MOBILE_PLATFORM = 'android'
+        //   }
+        //   steps {
+        //     unstash 'android-testing-app'
+        //     runIntegrationTests()
+        //   }
+        // }
+        // stage('Test ios') {
+        //   environment { 
+        //     MOBILE_PLATFORM = 'ios'
+        //   }
+        //   steps {
+        //     unstash 'ios-testing-app'
+        //     runIntegrationTests()
+        //   }
+        // }
       }
-      post { 
-        always {
-          sh """
-          docker-compose logs --no-color > docker-compose.log
-          docker-compose down
-          docker network rm aerogear || true
-          """
-          archiveArtifacts 'docker-compose.log'
-        }
-      }
+    //   post { 
+    //     always {
+    //       sh ''
+    //       sh """
+    //       docker-compose logs --no-color > docker-compose.log
+    //       docker-compose down
+    //       docker network rm aerogear || true
+    //       """
+    //       archiveArtifacts 'docker-compose.log'
+    //     }
+    //   }
+    // }
     }
   }
 }
