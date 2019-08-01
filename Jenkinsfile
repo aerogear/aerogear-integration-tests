@@ -112,18 +112,13 @@ pipeline {
         //   }
         // }
       }
-    //   post { 
-    //     always {
-    //       sh ''
-    //       sh """
-    //       docker-compose logs --no-color > docker-compose.log
-    //       docker-compose down
-    //       docker network rm aerogear || true
-    //       """
-    //       archiveArtifacts 'docker-compose.log'
-    //     }
-    //   }
-    // }
+      post { 
+        always {
+          sh 'docker-compose logs --no-color > docker-compose.log'
+          sh 'docker-compose down'
+          archiveArtifacts 'docker-compose.log'
+        }
+      }
     }
   }
 }
