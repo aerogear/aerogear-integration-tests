@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "./scripts/postinstall.sh",
     "lint": "tslint -p .",
-    "prepare:android": "./cordova-prepare.sh android",
+    "prepare:android": "./scripts/cordova-prepare.sh android",
     "build:android": "webpack && cordova build android",
     "test": "mocha \"test/**/*.ts\""
   },
