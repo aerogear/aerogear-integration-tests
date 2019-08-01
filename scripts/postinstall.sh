@@ -4,7 +4,7 @@ set -e
 set -x
 
 # update supported packages to master version
-npm install --no-save \
+npm install \
     @aerogear/app@dev \
     @aerogear/auth@dev \
     @aerogear/push@dev \
