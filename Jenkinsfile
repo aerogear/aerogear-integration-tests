@@ -58,7 +58,7 @@ pipeline {
           steps {
             sh 'npm -g install cordova@8'
             sh 'npm install'
-            sh 'run prepare:ios'
+            sh 'npm run prepare:ios'
             sh """#!/usr/bin/env bash -l
             security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
             """
