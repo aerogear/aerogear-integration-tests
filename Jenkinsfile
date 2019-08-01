@@ -7,6 +7,7 @@ def runIntegrationTests() {
 }
 
 pipeline {
+  agent none
   environment {
     BROWSERSTACK_USER = credentials('browserstack-user')
     BROWSERSTACK_KEY = credentials('browserstack-key')
