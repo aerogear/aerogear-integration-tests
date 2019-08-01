@@ -56,6 +56,7 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
+            sh 'ls'
             // sh 'npm -g install cordova@8'
             // sh 'npm install'
             // sh 'npm run prepare:ios'
@@ -105,6 +106,7 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
+            sh 'ls'
             // unstash 'ios-testing-app'
             // runIntegrationTests()
           }
