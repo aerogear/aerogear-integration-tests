@@ -23,7 +23,7 @@ elif [ "$PLATFORM" == "ios" ]; then
     APP=$PWD/platforms/ios/build/device/HelloCordova.ipa
 
 elif [ "$PLATFORM" == "android" ]; then
-    PP=$PWD/platforms/android/app/build/outputs/apk/debug/app-debug.apk
+    APP=$PWD/platforms/android/app/build/outputs/apk/debug/app-debug.apk
 
 else
     echo "error: $PLATFORM is not a valid PLATFORM" >&2
