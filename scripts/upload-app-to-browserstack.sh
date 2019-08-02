@@ -36,8 +36,9 @@ if [ -z "$BROWSERSTACK_USER" ] || [ -z "$BROWSERSTACK_KEY" ]; then
     exit 1
 fi
 
+# TODO: use jq
 exec curl \
     -u "$BROWSERSTACK_USER:$BROWSERSTACK_KEY" \
     -X POST https://api-cloud.browserstack.com/app-automate/upload \
     -F "file=@$APP" \
-    | jq -r ".app_url"
+    | cut -d '"' -f 4
