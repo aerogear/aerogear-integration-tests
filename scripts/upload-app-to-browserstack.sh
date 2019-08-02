@@ -20,7 +20,7 @@ if [ -z "$PLATFORM" ]; then
     exit 1
 
 elif [ "$PLATFORM" == "ios" ]; then
-    APP=$PWD/platforms/ios/build/device/HelloCordova.ipa
+    APP=$PWD/platforms/ios/build/device/Aerogear\ Integration\ Tests.ipa
 
 elif [ "$PLATFORM" == "android" ]; then
     APP=$PWD/platforms/android/app/build/outputs/apk/debug/app-debug.apk
