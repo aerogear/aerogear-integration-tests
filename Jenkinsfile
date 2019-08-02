@@ -67,6 +67,7 @@ pipeline {
             sh """#!/usr/bin/env bash -l
             security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
             """
+            sh 'find .'
             sh './scripts/upload-app-to-browserstack.sh ios > BROWSERSTACK_APP'
             stash includes: 'BROWSERSTACK_APP', name: 'ios-browserstack-app'        
           }
