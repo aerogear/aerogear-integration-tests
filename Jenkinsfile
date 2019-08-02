@@ -56,6 +56,8 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
+            sh 'ls -al'
+            sh 'ls -al plugins/ || true'
             sh 'npm -g install cordova'
             sh 'npm install'
             sh 'npm run prepare:ios'
