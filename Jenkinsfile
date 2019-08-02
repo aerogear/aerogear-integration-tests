@@ -38,7 +38,7 @@ pipeline {
           steps {
             sh 'apt update'
             sh 'apt install gradle'
-            sh 'npm -g install cordova@8'
+            sh 'npm -g install cordova'
             sh 'cp ${GOOGLE_SERVICES} ./google-services.json'
             sh 'npm install --unsafe-perm'
             sh 'npm run prepare:android'
@@ -56,7 +56,7 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
-            sh 'npm -g install cordova@8'
+            sh 'npm -g install cordova'
             sh 'npm install'
             sh 'npm run prepare:ios'
             sh """#!/usr/bin/env bash -l

@@ -32,12 +32,10 @@ cordova prepare ${PLATFORM}
 cordova plugin add --nosave \
     @aerogear/cordova-plugin-aerogear-metrics@dev \
     @aerogear/cordova-plugin-aerogear-security@dev \
-    @aerogear/cordova-plugin-aerogear-sync@dev \
-    @aerogear/cordova-plugin-iroot@latest
+    @aerogear/cordova-plugin-aerogear-sync@dev
 
 if [ "$PLATFORM" == "android" ]; then 
-    cordova plugin add --nosave \
-        @aerogear/cordova-plugin-aerogear-push@dev
+    cordova plugin add --nosave @aerogear/cordova-plugin-aerogear-push@dev
 fi
 
 exit 0
