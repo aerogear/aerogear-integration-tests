@@ -46,6 +46,11 @@ pipeline {
             sh './scripts/upload-app-to-browserstack.sh android > BROWSERSTACK_APP'
             stash includes: 'BROWSERSTACK_APP', name: 'android-browserstack-app'
           }
+          post {
+            always {
+              sh 'rm -rf .* *'
+            }
+          }
         }
 
         stage('iOS') {
@@ -56,8 +61,6 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
-            sh 'ls -al'
-            sh 'ls -al plugins/ || true'
             sh 'npm -g install cordova'
             sh 'npm install'
             sh 'npm run prepare:ios'
@@ -66,6 +69,11 @@ pipeline {
             """
             sh './scripts/upload-app-to-browserstack.sh ios > BROWSERSTACK_APP'
             stash includes: 'BROWSERSTACK_APP', name: 'ios-browserstack-app'        
+          }
+          post { 
+            always {
+              sh 'rm -rf .* *'
+            }
           }
         }
       }
@@ -118,6 +126,7 @@ pipeline {
           sh 'docker-compose logs --no-color > docker-compose.log'
           sh 'docker-compose down'
           archiveArtifacts 'docker-compose.log'
+          sh 'rm -rf .* *'
         }
       }
     }
