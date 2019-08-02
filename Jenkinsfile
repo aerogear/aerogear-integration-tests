@@ -48,7 +48,7 @@ pipeline {
           }
           post {
             always {
-              sh 'rm -rf .* *'
+              deleteDir()
             }
           }
         }
@@ -73,7 +73,7 @@ pipeline {
           }
           post { 
             always {
-              sh 'rm -rf .* *'
+              deleteDir()
             }
           }
         }
@@ -127,7 +127,7 @@ pipeline {
           sh 'docker-compose logs --no-color > docker-compose.log'
           sh 'docker-compose down'
           archiveArtifacts 'docker-compose.log'
-          sh 'rm -rf .* *'
+          deleteDir()
         }
       }
     }
