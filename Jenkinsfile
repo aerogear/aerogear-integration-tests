@@ -6,6 +6,10 @@ def runIntegrationTests() {
     }
 }
 
+def cleanWorkSpace() {
+  sh 'find . -mindepth 1 -delete'
+}
+
 pipeline {
   agent none
   environment {
@@ -48,7 +52,7 @@ pipeline {
           }
           post {
             always {
-              deleteDir()
+              cleanWorkSpace()
             }
           }
         }
@@ -73,7 +77,7 @@ pipeline {
           }
           post { 
             always {
-              deleteDir()
+              cleanWorkSpace()
             }
           }
         }
@@ -127,7 +131,7 @@ pipeline {
           sh 'docker-compose logs --no-color > docker-compose.log'
           sh 'docker-compose down'
           archiveArtifacts 'docker-compose.log'
-          deleteDir()
+          cleanWorkSpace()
         }
       }
     }
