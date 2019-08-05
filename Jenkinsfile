@@ -116,10 +116,7 @@ pipeline {
             MOBILE_PLATFORM = 'android'
           }
           steps {
-            sh 'export BROWSERSTACK_APP="$(cat ANDROID_BROWSERSTACK_APP)"'
-            sh 'env'
-            sh 'npm test'
-            // runIntegrationTests()
+            sh 'BROWSERSTACK_APP="$(cat ANDROID_BROWSERSTACK_APP)" npm test'
           }
         }
         stage('Test ios') {
