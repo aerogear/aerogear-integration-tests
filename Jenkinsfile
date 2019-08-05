@@ -99,6 +99,8 @@ pipeline {
       environment {
         // default ip to the docker host where also docker-compose will be executed
         SERVICES_HOST= "172.17.0.1"
+        // enable all debug logs
+        DEBUG = "*"
       }
       stages {
         stage('Prepare') {

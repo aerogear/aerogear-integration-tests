@@ -1,3 +1,4 @@
+import debug = require("debug");
 import * as path from "path";
 import { remote } from "webdriverio";
 import { Modules } from "../app/modules";
@@ -10,6 +11,8 @@ import {
     MOBILE_PLATFORM_VERSION,
     MobilePlatform,
 } from "./config";
+
+const logger = debug("util/device");
 
 function generateOptions(): WebDriver.Options & WebdriverIO.Options {
     const defaults: WebDriver.Options & WebdriverIO.Options = {
@@ -81,7 +84,10 @@ export class Device {
     public browser: BrowserObject;
 
     public async init() {
-        this.browser = await remote(generateOptions());
+        const options = generateOptions();
+        logger("init using options: %O", options);
+
+        this.browser = await remote(options);
     }
 
     public async close() {

@@ -1,4 +1,7 @@
+import debug = require("debug");
 import * as os from "os";
+
+const logger = debug("util/ip");
 
 /**
  * Try to guess the LAN IP of the OS
@@ -19,9 +22,15 @@ export function luckyIp(): string | null {
                     continue;
                 }
 
+                logger("using lucy ip: %s", info.address);
+
                 // return of the first matched ip
                 return info.address;
             }
         }
     }
+
+    logger("no lucky ip founded");
+
+    return null;
 }
