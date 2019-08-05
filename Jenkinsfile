@@ -99,6 +99,8 @@ pipeline {
       environment {
         // default ip to the docker host where also docker-compose will be executed
         SERVICES_HOST= "172.17.0.1"
+        // the sync service is running in the same container
+        SYNC_HOST="bs-local.com"
         // enable all debug logs
         DEBUG = "*"
       }
