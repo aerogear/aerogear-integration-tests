@@ -2,20 +2,11 @@
 
 ## Prerequisites
 
-#### BrowserStack Account
-
-Login to the BrowserStack and export the username and key.
-
-```bash
-export BROWSERSTACK_USER=[..]
-export BROWSERSTACK_KEY=[..]
-```
-
 #### Firebase Account
 
 Login to Firebase, create a new project and app, download the `google-services.json` and copy it to `fixtures/`, and export the server key and sender id.
 
-```
+```bash
 cp ~/Downloads/google-services.json fixtures/
 ```
 
@@ -24,96 +15,103 @@ export FIREBASE_SERVER_KEY=[..]
 export FIREBASE_SENDER_ID=[..]
 ```
 
-## Install dependencies
+#### Cordova
 
+```bash
+npm install -g cordova
 ```
+
+## Install Dependencies
+
+Install all npm dependencies and update aerogear packages to the latest master version.
+
+```bash
 npm install
 ```
 
-## Run services
+## Build APP
 
+### Build Android APP
+
+```bash
+npm run prepare:android
+npm run build:android
 ```
-docker network create aerogear
+
+### Build iOS APP
+
+```bash
+npm run prepare:ios
+npm run build:ios
+```
+
+## Start required services
+
+```bash
 docker-compose up -d
 ```
 
-## Setup testing app
+## Run tests
 
-```
-./scripts/build-testing-app.sh
-```
+### Run tests using BrowserStack
 
-## Run the tests
+Login to the BrowserStack and export the username and key.
 
-```
-npm start -- test/**/*.js
-```
-
-or to run specific test:
-
-```
-npm start -- test/<SERVICE>/index.js
+```bash
+export BROWSERSTACK_USER=[..]
+export BROWSERSTACK_KEY=[..]
 ```
 
-## Test locally on Android Emulator
+Set `MOBILE_PLATFORM` to `ios` or `android`
 
-### Prerequisites
+```bash
+export MOBILE_PLATFORM=(ios|android)
+```
 
--   Android Studio (https://developer.android.com/studio/)
--   Appium (https://appium.io/)
--   Chrome Drivers (https://appium.io/docs/en/writing-running-appium/web/chromedriver/)
--   Docker
--   docker-compose
+Upload the app to BrowserStack
 
-### Preparation
+```bash
+export BROWSERSTACK_APP="$(./scripts/upload-app-to-browserstack.sh ${MOBILE_PLATFORM})"
+```
 
-1. Install packages and plugins
-    > In order to update the plugins you have first to delete the _plugins_ and _platforms_ directories
-    ```bash
-    npm install
-    ```
-2. Build the app
-    > If the app is already installed in the emulator rebuilding it is not enough, you will need also to uninstall it `adb uninstall org.aerogear.integrationtests`
-    ```bash
-    npm run build:android
-    ```
-3. Create the android emulator using Android Studio. Ensure the Android version for the is **9.0**
-4. Start the emulator
-5. Download the correct Chrome Drivers for the Emulator Android version. In our case **2.44**
-    ```bash
-    wget https://chromedriver.storage.googleapis.com/2.44/chromedriver_linux64.zip
-    unzip chromedriver_linux64.zip
-    ll chromedriver
-    ```
-6. Optional: Move the chromedriver in a specific directory and rename it
-    ```bash
-    mkdir $HOME/.chromedrivers
-    mv chromedriver $HOME/.chromedrivers/chromedriver-2.44
-    ```
-7. Start Appium
-    ```bash
-    appium --chromedriver-executable $HOME/.chromedrivers/chromedriver-2.44
-    ```
-8. Start docker-compose
-    ```bash
-    docker-compose up
-    ```
-9. Optional: set **SERVICES_HOST** otherwise the test framework will try to guess it. The **SERVICES_HOST** should be an ip or hostname pointing to the machine where docker-compose is running (in our case locally) that both the local machine and the emulator can resolve (can't use 127.0.0.1)
-    ```bash
-    export SERVICES_HOST="192.168.1.1"
-    ```
-10. In order to also run the push integration test we have to set **FIREBASE_SERVER_KEY** and **FIREBASE_SENDER_ID**
-
-### Start Tests
-
-> Attention some security tests will fails because they detect that the device is an emulator, this is not an error.
+Start tests
 
 ```bash
 npm test
 ```
 
-Start single test
+### Run tests using local Emulator (only Android)
+
+Prerequisites:
+
+-   Android Studio (https://developer.android.com/studio/)
+-   Appium (https://appium.io/)
+-   Chrome Drivers (https://appium.io/docs/en/writing-running-appium/web/chromedriver/)
+
+Create the android emulator using Android Studio. Ensure the Android version for the is **9.0**
+
+Download the correct Chrome Drivers for the Emulator Android version. In our case **2.44**
+
+Start Appium
 
 ```bash
-npm test -- test/util/device.ts
+appium --chromedriver-executable path/to/chromedrivers
+```
+
+**Optional**: set **SERVICES_HOST** otherwise the test framework will try to guess it. The **SERVICES_HOST** should be an ip or hostname pointing to the machine where docker-compose is running (in our case locally) that both the local machine and the emulator can resolve (can't use 127.0.0.1)
+
+```bash
+export SERVICES_HOST="192.168.1.1"
+```
+
+Ensure `BROWSERSTACK_APP` is unset
+
+```bash
+export BROWSERSTACK_APP=
+```
+
+Start tests
+
+```bash
+npm test
 ```
