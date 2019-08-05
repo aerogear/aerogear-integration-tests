@@ -115,6 +115,7 @@ pipeline {
           }
           steps {
             sh 'export BROWSERSTACK_APP="$(cat ANDROID_BROWSERSTACK_APP)"'
+            sh 'env'
             sh 'npm test'
             // runIntegrationTests()
           }
