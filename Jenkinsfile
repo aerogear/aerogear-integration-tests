@@ -12,6 +12,11 @@ def cleanWorkSpace() {
 
 pipeline {
   agent none
+  options {
+    // allow to restart a build from a specific stage by reusing
+    // stashed files from previous builds
+    preserveStashes(buildCount: 5)
+  }
   environment {
     BROWSERSTACK_USER = credentials('browserstack-user')
     BROWSERSTACK_KEY = credentials('browserstack-key')
