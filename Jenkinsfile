@@ -47,8 +47,8 @@ pipeline {
             sh 'npm install --unsafe-perm'
             sh 'npm run prepare:android'
             sh 'npm run build:android'
-            sh './scripts/upload-app-to-browserstack.sh android > BROWSERSTACK_APP'
-            stash includes: 'BROWSERSTACK_APP', name: 'android-browserstack-app'
+            sh './scripts/upload-app-to-browserstack.sh android > ANDROID_BROWSERSTACK_APP'
+            stash includes: 'ANDROID_BROWSERSTACK_APP', name: 'android-browserstack-app'
           }
           post {
             always {
@@ -71,8 +71,8 @@ pipeline {
             sh """#!/usr/bin/env bash -l
             security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
             """
-            sh './scripts/upload-app-to-browserstack.sh ios > BROWSERSTACK_APP'
-            stash includes: 'BROWSERSTACK_APP', name: 'ios-browserstack-app'        
+            sh './scripts/upload-app-to-browserstack.sh ios > IOS_BROWSERSTACK_APP'
+            stash includes: 'IOS_BROWSERSTACK_APP', name: 'ios-browserstack-app'        
           }
           post { 
             always {
@@ -91,16 +91,17 @@ pipeline {
           args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
         }
       }
+      environment {
+        // default ip to the docker host where also docker-compose will be executed
+        SERVICES_HOST= "172.17.0.1"
+      }
       stages {
-        stage('Start services') {
-          steps {
-            sh 'docker-compose up -d'
-          }
-        }
-        stage('Install dependencies for tests') {
+        stage('Prepare') {
             steps {
+              sh 'docker-compose up -d'
               sh 'npm install --unsafe-perm'
-              // npm install mocha-jenkins-reporter
+              unstash 'android-browserstack-app'
+              unstash 'ios-browserstack-app'
             }
         }
         stage('Test android') {
@@ -108,8 +109,7 @@ pipeline {
             MOBILE_PLATFORM = 'android'
           }
           steps {
-            unstash 'android-browserstack-app'
-            sh 'export BROWSERSTACK_APP="$(cat BROWSERSTACK_APP)"'
+            sh 'export BROWSERSTACK_APP="$(cat ANDROID_BROWSERSTACK_APP)"'
             sh 'npm test'
             // runIntegrationTests()
           }
