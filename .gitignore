@@ -18,5 +18,8 @@ platforms/
 plugins/
 www/
 
-# ignore .env
-.env
+# mocha
+test-results.xml
+
+# ignore .vars
+.vars
