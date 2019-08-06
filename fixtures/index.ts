@@ -6,6 +6,14 @@ import * as agPush from "@aerogear/push";
 import * as offixCache from "offix-cache";
 import gql from "graphql-tag";
 import { ToggleNetworkStatus } from "./ToggleNetworkStatus";
+import * as helpers from "tslib";
+
+// expose all typescript helpers globally
+for (const key in helpers) {
+    if (helpers.hasOwnProperty(key)) {
+        window[key] = helpers[key];
+    }
+}
 
 //@ts-ignore
 window.aerogear = {
