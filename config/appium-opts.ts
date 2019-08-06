@@ -1,6 +1,7 @@
 import path = require("path");
 
-let opts: WebDriver.Options & WebdriverIO.Options;
+let opts: WebDriver.Options &
+    WebdriverIO.Options & { capabilities: { [key: string]: any } };
 if (process.env.LOCAL_APPIUM === "true") {
     opts = {
         port: 4723,
@@ -22,7 +23,6 @@ if (process.env.LOCAL_APPIUM === "true") {
         hostname: "hub-cloud.browserstack.com",
         logLevel: "error",
         capabilities: {
-            // @ts-ignore
             os_version: process.env.MOBILE_PLATFORM === "ios" ? "12" : "9.0",
             device:
                 process.env.MOBILE_PLATFORM === "ios"
