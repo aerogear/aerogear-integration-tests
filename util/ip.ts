@@ -1,7 +1,5 @@
-import debug = require("debug");
 import * as os from "os";
-
-const logger = debug("util/ip");
+import { log } from "./log";
 
 /**
  * Try to guess the LAN IP of the OS
@@ -22,7 +20,7 @@ export function luckyIp(): string | null {
                     continue;
                 }
 
-                logger("using lucy ip: %s", info.address);
+                log.info("founded lucy ip", { id: info.address });
 
                 // return of the first matched ip
                 return info.address;
@@ -30,7 +28,7 @@ export function luckyIp(): string | null {
         }
     }
 
-    logger("no lucky ip founded");
+    log.info("no lucky ip founded");
 
     return null;
 }

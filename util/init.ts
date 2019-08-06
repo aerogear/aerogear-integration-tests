@@ -1,6 +1,7 @@
 import { Local } from "browserstack-local";
 import { BROWSERSTACK_APP, BROWSERSTACK_KEY } from "./config";
 import { device } from "./device";
+import { log } from "./log";
 
 let browserstackLocal: Local;
 
@@ -8,15 +9,26 @@ before("start browserstack local", async function() {
     this.timeout(0);
 
     if (BROWSERSTACK_APP !== undefined) {
+        log.info("start browserstack local");
         browserstackLocal = new Local();
 
         await new Promise((resolve, reject) => {
             browserstackLocal.start(
-                { key: BROWSERSTACK_KEY },
+                {
+                    force: true,
+                    forceLocal: true,
+                    key: BROWSERSTACK_KEY,
+                    verbose: true,
+                },
                 (error?: Error) => {
                     if (error === undefined) {
+                        log.info("successfully started browserstack local");
                         resolve();
                     } else {
+                        log.error(
+                            "failed to start browserstack local: ",
+                            error
+                        );
                         reject(error);
                     }
                 }

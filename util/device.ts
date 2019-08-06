@@ -1,6 +1,6 @@
-import debug = require("debug");
 import * as path from "path";
 import { remote } from "webdriverio";
+import { log } from "./log";
 import { Modules } from "../app/modules";
 import {
     BROWSERSTACK_APP,
@@ -11,8 +11,6 @@ import {
     MOBILE_PLATFORM_VERSION,
     MobilePlatform,
 } from "./config";
-
-const logger = debug("util/device");
 
 function generateOptions(): WebDriver.Options & WebdriverIO.Options {
     const defaults: WebDriver.Options & WebdriverIO.Options = {
@@ -85,9 +83,13 @@ export class Device {
 
     public async init() {
         const options = generateOptions();
-        logger("init using options: %O", options);
+        log.info("init device", options);
 
         this.browser = await remote(options);
+
+        log.info("device initialized successfully", {
+            sessionId: this.browser.sessionId,
+        });
     }
 
     public async close() {

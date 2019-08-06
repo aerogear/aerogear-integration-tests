@@ -21,7 +21,6 @@
     "@aerogear/voyager-client": "2.6.1-dev.1002.05293ed.0",
     "@aerogear/voyager-server": "0.7.1",
     "@types/chai": "4.1.7",
-    "@types/debug": "4.1.4",
     "@types/mocha": "5.2.7",
     "@types/pg": "7.4.14",
     "@types/webdriverio": "5.0.0",
@@ -36,11 +35,11 @@
     "chai": "4.2.0",
     "cordova-android": "8.0.0",
     "cordova-ios": "5.0.1",
-    "debug": "4.1.1",
     "express": "4.17.1",
     "graphql": "14.4.2",
     "html-webpack-plugin": "3.2.0",
     "mocha": "6.1.4",
+    "mocha-junit-reporter": "1.23.1",
     "node-fetch": "2.6.0",
     "pg": "7.11.0",
     "prettier": "1.18.2",
@@ -54,7 +53,8 @@
     "unifiedpush-node-sender": "latest",
     "webdriverio": "5.9.5",
     "webpack": "4.35.2",
-    "webpack-cli": "3.3.5"
+    "webpack-cli": "3.3.5",
+    "winston": "3.2.1"
   },
   "devDependencies": {},
   "cordova": {
