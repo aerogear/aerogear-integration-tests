@@ -1,6 +1,5 @@
 import * as path from "path";
 import { remote } from "webdriverio";
-import { log } from "./log";
 import { Modules } from "../app/modules";
 import {
     BROWSERSTACK_APP,
@@ -11,6 +10,7 @@ import {
     MOBILE_PLATFORM_VERSION,
     MobilePlatform,
 } from "./config";
+import { log } from "./log";
 
 function generateOptions(): WebDriver.Options & WebdriverIO.Options {
     const defaults: WebDriver.Options & WebdriverIO.Options = {
