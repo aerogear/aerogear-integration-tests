@@ -17,7 +17,7 @@
     "mocha": "^6.1.4",
     "node-fetch": "^2.6.0",
     "pg": "^7.11.0",
-    "unifiedpush-node-sender": "latest",
+    "unifiedpush-node-sender": "git+https://git@github.com/aerogear/aerogear-unifiedpush-nodejs-client.git",
     "webdriverio": "^5.9.5"
   }
 }
