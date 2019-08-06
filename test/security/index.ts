@@ -1,21 +1,22 @@
-require("chai").should();
+import chai = require("chai");
+chai.should();
 
-describe("Device Security", function() {
-    it("should be possible to run `rooted` check", async function() {
-        // @ts-ignore
-        const result = await client.executeAsync(async done => {
-            const {
-                SecurityService,
-                DeviceCheckType,
-                // @ts-ignore
-            } = window.aerogear.agSecurity;
+import { DeviceCheck } from "@aerogear/security";
+import { device } from "../../util/device";
+
+describe("Device Security", () => {
+    it("should be possible to run `rooted` check", async () => {
+        const result = await device.execute(async modules => {
+            const { SecurityService, DeviceCheckType } = modules[
+                "@aerogear/security"
+            ];
             const securityService = new SecurityService();
 
             const result = await securityService.check(
                 DeviceCheckType.rootEnabled
             );
 
-            done(result);
+            return result;
         });
 
         // From BrowserStack support: "...there are certain changes made in the boot images
@@ -26,74 +27,62 @@ describe("Device Security", function() {
         result.passed.should.equal(process.env.MOBILE_PLATFORM !== "ios");
     });
 
-    it("should be possible to run `emulator` check", async function() {
-        // @ts-ignore
-        const result = await client.executeAsync(async done => {
-            const {
-                SecurityService,
-                DeviceCheckType,
-                // @ts-ignore
-            } = window.aerogear.agSecurity;
+    it("should be possible to run `emulator` check", async () => {
+        const result = await device.execute(async modules => {
+            const { SecurityService, DeviceCheckType } = modules[
+                "@aerogear/security"
+            ];
             const securityService = new SecurityService();
 
             const result = await securityService.check(
                 DeviceCheckType.isEmulator
             );
 
-            done(result);
+            return result;
         });
 
         result.passed.should.equal(false);
     });
 
-    it("should be possible to run `debugMode` check", async function() {
-        // @ts-ignore
-        const result = await client.executeAsync(async done => {
-            const {
-                SecurityService,
-                DeviceCheckType,
-                // @ts-ignore
-            } = window.aerogear.agSecurity;
+    it("should be possible to run `debugMode` check", async () => {
+        const result = await device.execute(async modules => {
+            const { SecurityService, DeviceCheckType } = modules[
+                "@aerogear/security"
+            ];
             const securityService = new SecurityService();
 
             const result = await securityService.check(
                 DeviceCheckType.debugModeEnabled
             );
 
-            done(result);
+            return result;
         });
 
         result.passed.should.equal(true);
     });
 
     it("should be possible to run `screenLock` check", async function() {
-        // @ts-ignore
-        const result = await client.executeAsync(async done => {
-            const {
-                SecurityService,
-                DeviceCheckType,
-                // @ts-ignore
-            } = window.aerogear.agSecurity;
+        const result = await device.execute(async modules => {
+            const { SecurityService, DeviceCheckType } = modules[
+                "@aerogear/security"
+            ];
             const securityService = new SecurityService();
 
             const result = await securityService.check(
                 DeviceCheckType.screenLockEnabled
             );
 
-            done(result);
+            return result;
         });
 
         result.passed.should.equal(false);
     });
 
-    it("should be possible to run multiple checks", async function() {
-        // @ts-ignore
-        const result = await client.executeAsync(async done => {
-            const {
-                SecurityService,
-                DeviceCheckType,
-                // @ts-ignore
-            } = window.aerogear.agSecurity;
+    it("should be possible to run multiple checks", async () => {
+        const result = await device.execute(async modules => {
+            const { SecurityService, DeviceCheckType } = modules[
+                "@aerogear/security"
+            ];
             const securityService = new SecurityService();
 
             const result = await securityService.checkMany(
@@ -103,7 +92,7 @@ describe("Device Security", function() {
                 DeviceCheckType.screenLockEnabled
             );
 
-            done(result);
+            return result;
         });
 
         result.find(r => r.name === "Debugger Check").passed.should.equal(true);
@@ -118,30 +107,25 @@ describe("Device Security", function() {
             .passed.should.equal(false);
     });
 
-    it("should be possible to run custom check", async function() {
-        // @ts-ignore
-        const result = await client.executeAsync(async done => {
-            class CustomDeviceCheck {
-                // @ts-ignore
-                get name() {
-                    return "My Custom Check";
-                }
+    it("should be possible to run custom check", async () => {
+        const result = await device.execute(async modules => {
+            class CustomDeviceCheck implements DeviceCheck {
+                public name = "My Custom Check";
 
-                check() {
-                    return Promise.resolve({
+                public async check() {
+                    return {
                         name: "My Custom Check",
                         passed: true,
-                    });
+                    };
                 }
             }
 
-            // @ts-ignore
-            const { SecurityService } = window.aerogear.agSecurity;
+            const { SecurityService } = modules["@aerogear/security"];
             const securityService = new SecurityService();
 
             const result = await securityService.check(new CustomDeviceCheck());
 
-            done(result);
+            return result;
         });
 
         result.passed.should.equal(true);
