@@ -14,12 +14,7 @@ before("start browserstack local", async function() {
 
         await new Promise((resolve, reject) => {
             browserstackLocal.start(
-                {
-                    force: true,
-                    forceLocal: true,
-                    key: BROWSERSTACK_KEY,
-                    verbose: true,
-                },
+                { key: BROWSERSTACK_KEY },
                 (error?: Error) => {
                     if (error === undefined) {
                         log.info("successfully started browserstack local");

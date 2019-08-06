@@ -4,6 +4,7 @@ node_modules
 
 # editors
 .vscode
+.history
 
 # google-services
 google-services.json
