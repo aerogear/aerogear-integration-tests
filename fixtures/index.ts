@@ -15,7 +15,10 @@ for (const key in helpers) {
     }
 }
 
-//@ts-ignore
+// @ts-ignore
+window._this = null;
+
+// @ts-ignore
 window.aerogear = {
     agSecurity,
     agAuth,
