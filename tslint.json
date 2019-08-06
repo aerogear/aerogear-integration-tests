@@ -1,0 +1,16 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-config-prettier",
+        "tslint-plugin-prettier"
+    ],
+    "rules": {
+        "prettier": [true, ".prettierrc.json"],
+        "interface-name": false,
+        "no-console": false,
+        "no-shadowed-variable": false,
+        "no-unused-expression": false,
+        "no-string-literal": false
+    }
+}
