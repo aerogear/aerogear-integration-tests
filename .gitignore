@@ -10,9 +10,8 @@ node_modules
 google-services.json
 
 # browserstack local
-bs-local-pid.txt
-BrowserStackLocal*
 local.log
+browserstack.err
 
 # cordova
 platforms/
