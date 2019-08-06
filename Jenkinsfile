@@ -1,11 +1,18 @@
-def runIntegrationTests() {
-    withDockerContainer(image: 'circleci/node:dubnium-stretch', args: '-u root --network aerogear') {
-        sh "JUNIT_REPORT_PATH=report-${env.MOBILE_PLATFORM}.xml npm start -- --reporter mocha-jenkins-reporter test/**/*.js || true"
-        archiveArtifacts "report-${env.MOBILE_PLATFORM}.xml"
-        junit allowEmptyResults: true, testResults: "report-${env.MOBILE_PLATFORM}.xml"
-    }
+def runIntegrationTests(platform) {
+  unstash "${platform}-browserstack-app"
+  sh """
+  JUNIT_REPORT_PATH=report-${platform}.xml \
+  MOBILE_PLATFORM=${platform} \
+  BROWSERSTACK_APP="\$(cat BROWSERSTACK_APP)" \
+    npm test || true
+  """
+  archiveArtifacts "report-${platform}.xml"
+  junit allowEmptyResults: true, testResults: "report-${platform}.xml"
 }
 
+// we need to clean the worskpace after each stage 
+// because we are using containers running with the root
+// user instant of the jenkins user
 def cleanWorkSpace() {
   sh 'find . -mindepth 1 -delete'
 }
@@ -49,11 +56,12 @@ pipeline {
             sh 'apt install gradle'
             sh 'npm -g install cordova'
             sh 'cp ${GOOGLE_SERVICES} ./google-services.json'
+            // unsafe perm is required because we are root
             sh 'npm install --unsafe-perm'
             sh 'npm run prepare:android'
             sh 'npm run build:android'
-            sh './scripts/upload-app-to-browserstack.sh android > ANDROID_BROWSERSTACK_APP'
-            stash includes: 'ANDROID_BROWSERSTACK_APP', name: 'android-browserstack-app'
+            sh './scripts/upload-app-to-browserstack.sh android > BROWSERSTACK_APP'
+            stash includes: 'BROWSERSTACK_APP', name: 'android-browserstack-app'
           }
           post {
             always {
@@ -73,11 +81,12 @@ pipeline {
             sh 'npm -g install cordova'
             sh 'npm install'
             sh 'npm run prepare:ios'
+            // bash -l is required in order to make fastlane available in the PATH
             sh """#!/usr/bin/env bash -l
             security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
             """
-            sh './scripts/upload-app-to-browserstack.sh ios > IOS_BROWSERSTACK_APP'
-            stash includes: 'IOS_BROWSERSTACK_APP', name: 'ios-browserstack-app'        
+            sh './scripts/upload-app-to-browserstack.sh ios > BROWSERSTACK_APP'
+            stash includes: 'BROWSERSTACK_APP', name: 'ios-browserstack-app'        
           }
           post { 
             always {
@@ -101,8 +110,6 @@ pipeline {
         SERVICES_HOST= "172.17.0.1"
         // the sync service is running in the same container
         SYNC_HOST="bs-local.com"
-        // enable all debug logs
-        DEBUG = "*"
       }
       stages {
         stage('Prepare') {
@@ -114,21 +121,13 @@ pipeline {
             }
         }
         stage('Test android') {
-          environment { 
-            MOBILE_PLATFORM = 'android'
-          }
           steps {
-            sh 'BROWSERSTACK_APP="$(cat ANDROID_BROWSERSTACK_APP)" npm test'
+            runIntegrationTests('android')
           }
         }
         stage('Test ios') {
-          environment { 
-            MOBILE_PLATFORM = 'ios'
-          }
           steps {
-            sh 'ls'
-            // unstash 'ios-testing-app'
-            // runIntegrationTests()
+            runIntegrationTests('ios')
           }
         }
       }
