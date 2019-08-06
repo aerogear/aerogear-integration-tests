@@ -1,7 +1,25 @@
+
+# npm
 node_modules
-testing-app
-package-lock.json
-bs-local-pid.txt
-BrowserStackLocal*
-google-services.json
+
+# editors
 .vscode
+.history
+
+# google-services
+google-services.json
+
+# browserstack local
+local.log
+browserstack.err
+
+# cordova
+platforms/
+plugins/
+www/
+
+# mocha
+test-results.xml
+
+# ignore .vars
+.vars
