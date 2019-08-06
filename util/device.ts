@@ -1,4 +1,4 @@
-import { remote } from "webdriverio";
+import { BrowserObject, remote } from "webdriverio";
 import { opts } from "../config/appium-opts";
 import { Modules } from "../fixtures/modules";
 
