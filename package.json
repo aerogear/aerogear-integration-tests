@@ -10,11 +10,18 @@
     "lint": "tslint -p ."
   },
   "dependencies": {
+    "@aerogear/app": "dev",
+    "@aerogear/auth": "dev",
+    "@aerogear/push": "dev",
+    "@aerogear/security": "dev",
+    "@aerogear/voyager-client": "dev",
     "@aerogear/voyager-server": "dev",
     "@types/chai": "4.1.7",
     "@types/express": "4.17.0",
     "@types/mocha": "5.2.7",
     "@types/node": "12.6.9",
+    "@types/node-fetch": "2.5.0",
+    "@types/pg": "7.4.14",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
     "express": "latest",

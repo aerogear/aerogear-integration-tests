@@ -1,13 +1,14 @@
+import { AeroGearConfiguration } from "@aerogear/core";
+
 const keycloakUrl = `http://${process.env.KEYCLOAK_HOST}:${process.env.KEYCLOAK_PORT}/auth`;
 const syncUrl = `${process.env.SYNC_HOST}:${process.env.SYNC_PORT}/graphql`;
 const metricsUrl = `http://${process.env.METRICS_HOST}:${process.env.METRICS_PORT}/metrics`;
 const upsUrl = `http://${process.env.UPS_HOST}:${process.env.UPS_PORT}`;
 
-// @ts-ignore
-const config = {
+export const config: AeroGearConfiguration = {
     version: 1,
     namespace: "integration",
-    clientId: "test",
+    clusterName: "test",
     services: [
         {
             id: "be432368-44b1-4e3a-9750-5ac43c9fcd78",
@@ -54,5 +55,3 @@ const config = {
         },
     ],
 };
-
-module.exports = config;

@@ -1,7 +1,8 @@
-const path = require("path");
+import path = require("path");
 
+let opts: WebDriver.Options & WebdriverIO.Options;
 if (process.env.LOCAL_APPIUM === "true") {
-    const opts = {
+    opts = {
         port: 4723,
         logLevel: "error",
         capabilities: {
@@ -16,13 +17,12 @@ if (process.env.LOCAL_APPIUM === "true") {
             autoWebview: true,
         },
     };
-
-    module.exports = opts;
 } else {
-    const opts = {
+    opts = {
         hostname: "hub-cloud.browserstack.com",
         logLevel: "error",
         capabilities: {
+            // @ts-ignore
             os_version: process.env.MOBILE_PLATFORM === "ios" ? "12" : "9.0",
             device:
                 process.env.MOBILE_PLATFORM === "ios"
@@ -41,6 +41,6 @@ if (process.env.LOCAL_APPIUM === "true") {
             "browserstack.debug": true,
         },
     };
-
-    module.exports = opts;
 }
+
+export { opts };
