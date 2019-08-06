@@ -5,30 +5,7 @@ import * as agSync from '@aerogear/voyager-client';
 import * as agPush from '@aerogear/push';
 import * as offixCache from 'offix-cache';
 import gql from 'graphql-tag';
-
-class ToggleNetworkStatus {
-
-  private online;
-  private callback;
-
-  constructor() {
-    this.online = true;
-  }
-
-  onStatusChangeListener(callback) {
-    this.callback = callback;
-  }
-
-  isOffline() {
-    const online = this.online;
-    return new Promise(resolve => resolve(!online));
-  }
-
-  setOnline(online) {
-    this.online = online;
-    this.callback && this.callback.onStatusChange({ online });
-  }
-};
+import { ToggleNetworkStatus } from "./ToggleNetworkStatus";
 
 //@ts-ignore
 window.aerogear = {
