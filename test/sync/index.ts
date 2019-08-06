@@ -2,9 +2,9 @@ import chai = require("chai");
 chai.should();
 
 import { ApolloOfflineClient } from "@aerogear/voyager-client";
+import { CordovaNetworkStatus } from "@aerogear/voyager-client";
 import { gql, VoyagerServer } from "@aerogear/voyager-server";
 import express = require("express");
-import { CordovaNetworkStatus } from "offix-offline";
 import { ToggleNetworkStatus } from "../../testing-app/ToggleNetworkStatus";
 import { device } from "../../util/device";
 import { GlobalUniverse } from "../../util/init";
@@ -75,14 +75,14 @@ describe("Data Sync", function() {
 
     it("should initialize voyager client", async () => {
         await device.execute(async (modules, universe: Universe, platform) => {
-            const { OfflineClient, CordovaNetworkStatus } = modules[
-                "@aerogear/voyager-client"
-            ];
+            const {
+                OfflineClient,
+                CordovaNetworkStatus,
+                CacheOperation,
+                getUpdateFunction,
+            } = modules["@aerogear/voyager-client"];
             const { gql } = modules["graphql-tag"];
             const { ToggleNetworkStatus } = modules["./ToggleNetworkStatus"];
-            const { CacheOperation, getUpdateFunction } = modules[
-                "offix-cache"
-            ];
 
             const { app } = universe;
 
