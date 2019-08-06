@@ -7,6 +7,10 @@ import * as offixCache from 'offix-cache';
 import gql from 'graphql-tag';
 
 class ToggleNetworkStatus {
+
+  private online;
+  private callback;
+
   constructor() {
     this.online = true;
   }
@@ -26,6 +30,7 @@ class ToggleNetworkStatus {
   }
 };
 
+//@ts-ignore
 window.aerogear = {
   agSecurity,
   agAuth,
@@ -44,6 +49,7 @@ var app = {
 
   onDeviceReady: function() {
       this.receivedEvent('deviceready');
+      //@ts-ignore
       window.aerogear.deviceIsReady = true;
   },
 

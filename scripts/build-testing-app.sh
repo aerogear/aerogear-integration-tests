@@ -9,7 +9,8 @@ fi
 
 cp fixtures/index.html testing-app/www/
 cp fixtures/webpack.config.js testing-app/
-cp fixtures/index.js testing-app/
+cp fixtures/index.ts testing-app/
+cp fixtures/tsconfig.json testing-app/
 cp -R fixtures/fastlane/* testing-app/
 
 if [ "$MOBILE_PLATFORM" != "ios" ]; then
@@ -26,6 +27,8 @@ npm install --save \
   @aerogear/push@dev \
   webpack \
   webpack-cli \
+  typescript \
+  ts-loader \
   graphql \
   graphql-tag
 
