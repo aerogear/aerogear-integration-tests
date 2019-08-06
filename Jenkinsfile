@@ -6,9 +6,16 @@ def runIntegrationTests() {
     }
 }
 
+def cleanWorkSpace() {
+  sh 'find . -mindepth 1 -delete'
+}
+
 pipeline {
-  agent {
-    label 'psi_rhel8'
+  agent none
+  options {
+    // allow to restart a build from a specific stage by reusing
+    // stashed files from previous builds
+    preserveStashes(buildCount: 5)
   }
   environment {
     BROWSERSTACK_USER = credentials('browserstack-user')
@@ -27,20 +34,30 @@ pipeline {
       parallel {
 
         stage('Android') {
+          agent {
+            docker {
+              image 'circleci/android:api-28-node'
+              label 'psi_rhel8'
+              args '-u root'
+            }
+          }
           environment {
             GOOGLE_SERVICES = credentials('google-services')
           }
           steps {
-            checkout scm
-            withDockerContainer(image: 'circleci/android:api-28-node', args: '-u root') {
-              sh """
-              apt update
-              apt install gradle
-              npm -g install cordova
-              cp ${GOOGLE_SERVICES} ./fixtures/google-services.json
-              ./scripts/build-testing-app.sh
-              """
-              stash includes: 'testing-app/bs-app-url.txt', name: 'android-testing-app'
+            sh 'apt update'
+            sh 'apt install gradle'
+            sh 'npm -g install cordova'
+            sh 'cp ${GOOGLE_SERVICES} ./google-services.json'
+            sh 'npm install --unsafe-perm'
+            sh 'npm run prepare:android'
+            sh 'npm run build:android'
+            sh './scripts/upload-app-to-browserstack.sh android > ANDROID_BROWSERSTACK_APP'
+            stash includes: 'ANDROID_BROWSERSTACK_APP', name: 'android-browserstack-app'
+          }
+          post {
+            always {
+              cleanWorkSpace()
             }
           }
         }
@@ -53,37 +70,47 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
-            checkout scm
+            sh 'npm -g install cordova'
+            sh 'npm install'
+            sh 'npm run prepare:ios'
             sh """#!/usr/bin/env bash -l
-            npm -g install cordova
-            security unlock-keychain -p $KEYCHAIN_PASS && ./scripts/build-testing-app.sh
+            security unlock-keychain -p $KEYCHAIN_PASS && npm run build:ios
             """
-            stash includes: 'testing-app/bs-app-url.txt', name: 'ios-testing-app'        
+            sh './scripts/upload-app-to-browserstack.sh ios > IOS_BROWSERSTACK_APP'
+            stash includes: 'IOS_BROWSERSTACK_APP', name: 'ios-browserstack-app'        
+          }
+          post { 
+            always {
+              cleanWorkSpace()
+            }
           }
         }
       }
     }
 
     stage('Testing') {
-      stages {
-        stage('Start services') {
-          steps {
-              sh """
-              docker network create aerogear || true
-              docker-compose up -d
-              # To remove ownership of root user from testing-app folder
-              sudo chown -R jenkins:jenkins .
-              """
-          }
+      agent {
+        docker {
+          image 'circleci/node:dubnium-stretch'
+          label 'psi_rhel8'
+          args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
         }
-        stage('Install dependencies for tests') {
+      }
+      environment {
+        // default ip to the docker host where also docker-compose will be executed
+        SERVICES_HOST= "172.17.0.1"
+        // the sync service is running in the same container
+        SYNC_HOST="bs-local.com"
+        // enable all debug logs
+        DEBUG = "*"
+      }
+      stages {
+        stage('Prepare') {
             steps {
-                withDockerContainer(image: 'circleci/node:dubnium-stretch', args: '-u root') {
-                  sh """
-                  npm install
-                  npm install mocha-jenkins-reporter
-                  """
-                }
+              sh 'docker-compose up -d'
+              sh 'npm install --unsafe-perm'
+              unstash 'android-browserstack-app'
+              unstash 'ios-browserstack-app'
             }
         }
         stage('Test android') {
@@ -91,8 +118,7 @@ pipeline {
             MOBILE_PLATFORM = 'android'
           }
           steps {
-            unstash 'android-testing-app'
-            runIntegrationTests()
+            sh 'BROWSERSTACK_APP="$(cat ANDROID_BROWSERSTACK_APP)" npm test'
           }
         }
         stage('Test ios') {
@@ -100,19 +126,18 @@ pipeline {
             MOBILE_PLATFORM = 'ios'
           }
           steps {
-            unstash 'ios-testing-app'
-            runIntegrationTests()
+            sh 'ls'
+            // unstash 'ios-testing-app'
+            // runIntegrationTests()
           }
         }
       }
       post { 
         always {
-          sh """
-          docker-compose logs --no-color > docker-compose.log
-          docker-compose down
-          docker network rm aerogear || true
-          """
+          sh 'docker-compose logs --no-color > docker-compose.log'
+          sh 'docker-compose down'
           archiveArtifacts 'docker-compose.log'
+          cleanWorkSpace()
         }
       }
     }
