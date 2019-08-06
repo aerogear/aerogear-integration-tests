@@ -12,7 +12,7 @@ else
   export UPS_HOST=bs-local.com
   export UPS_PORT=8089
   
-  export PGHOST=localhost
+  export PGHOST=bs-local.com
 fi
 
 export KEYCLOAK_PORT=8080
