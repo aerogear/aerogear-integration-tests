@@ -102,14 +102,14 @@ pipeline {
         docker {
           image 'circleci/node:dubnium-stretch'
           label 'psi_rhel8'
-          args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+          args '-u root -p 4000:4000 -v /var/run/docker.sock:/var/run/docker.sock'
         }
       }
       environment {
         // default ip to the docker host where also docker-compose will be executed
         SERVICES_HOST= "172.17.0.1"
         // the sync service is running in the same container
-        SYNC_HOST="bs-local.com"
+        // SYNC_HOST="bs-local.com"
       }
       stages {
         stage('Prepare') {
