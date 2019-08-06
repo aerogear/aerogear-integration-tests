@@ -1,7 +1,10 @@
-require("chai").should();
+import chai = require("chai");
+chai.should();
 
-const appiumOpts = require("../../config/appium-opts");
-const testAppConfig = require("../../testing-app/package-lock");
+import { opts as appiumOpts } from "../../config/appium-opts";
+import { postgres } from "../../util/postgres";
+
+import testAppConfig = require("../../testing-app/package-lock.json");
 
 const expectedData = {
     app: {
@@ -21,10 +24,9 @@ const expectedData = {
 describe("App Metrics", function() {
     this.timeout(0);
 
-    it("should receive app metrics", async function() {
+    it("should receive app metrics", async () => {
         await new Promise(resolve => setTimeout(resolve, 10 * 1000));
 
-        // @ts-ignore
         const result = await postgres.query("SELECT * FROM mobileappmetrics");
 
         result.rows.length.should.equal(1);
