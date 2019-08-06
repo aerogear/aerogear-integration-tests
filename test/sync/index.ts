@@ -58,6 +58,7 @@ describe('Data Sync', function() {
   });
 
   it('should initialize voyager client', async function() {
+    // @ts-ignore
     await client.executeAsync(async (platform, done) => {
       try {
         const {
@@ -72,6 +73,7 @@ describe('Data Sync', function() {
             CacheOperation,
             getUpdateFunction
           }
+          // @ts-ignore
         } = window.aerogear;
 
         let networkStatus;
@@ -84,6 +86,7 @@ describe('Data Sync', function() {
           networkStatus = new CordovaNetworkStatus();
         }
         
+        // @ts-ignore
         window.aerogear.networkStatus = networkStatus;
 
         const itemsQuery = gql`
@@ -94,6 +97,7 @@ describe('Data Sync', function() {
             }
           }
         `;
+        // @ts-ignore
         window.aerogear.itemsQuery = itemsQuery;
 
         const cacheUpdates = {
@@ -115,6 +119,7 @@ describe('Data Sync', function() {
 
         const apolloClient = await offlineClient.init();
 
+        // @ts-ignore
         window.aerogear.apolloClient = apolloClient;
 
         done();
@@ -125,8 +130,10 @@ describe('Data Sync', function() {
   });
 
   it('should perform query', async function() {
+    // @ts-ignore
     const result = await client.executeAsync(async done => {
       try {
+        // @ts-ignore
         const { apolloClient, itemsQuery } = window.aerogear;
 
         const { data } = await apolloClient.query({
@@ -146,7 +153,9 @@ describe('Data Sync', function() {
 
   it('should perform offline mutation', async function() {
     if (process.env.MOBILE_PLATFORM === 'ios') {
+      // @ts-ignore
       client.execute(() => {
+        // @ts-ignore
         const { networkStatus } = window.aerogear;
         networkStatus.setOnline(false);
       });
@@ -156,8 +165,10 @@ describe('Data Sync', function() {
 
     await new Promise(resolve => setTimeout(resolve, 5000));
 
+    // @ts-ignore
     await client.executeAsync(async done => {
       try {
+        // @ts-ignore
         const { apolloClient, gql, itemsQuery } = window.aerogear;
 
         await apolloClient.offlineMutate({
@@ -178,6 +189,7 @@ describe('Data Sync', function() {
       } catch (error) {
         if (error.networkError && error.networkError.offline) {
           const offlineError = error.networkError;
+          // @ts-ignore
           window.aerogear.offlineChangePromise = offlineError.watchOfflineChange();
           done();
           return;
@@ -189,8 +201,10 @@ describe('Data Sync', function() {
   });
 
   it('should see updated cache', async function() {
+    // @ts-ignore
     const result = await client.executeAsync(async done => {
       try {
+        // @ts-ignore
         const { apolloClient, itemsQuery } = window.aerogear;
 
         const { data } = await apolloClient.query({
@@ -209,7 +223,9 @@ describe('Data Sync', function() {
 
   it('should sync changes when going online', async function() {
     if (process.env.MOBILE_PLATFORM === 'ios') {
+      // @ts-ignore
       client.execute(() => {
+        // @ts-ignore
         const { networkStatus } = window.aerogear;
         networkStatus.setOnline(true);
       });
@@ -217,8 +233,10 @@ describe('Data Sync', function() {
       await setNetwork('reset');
     }
 
+    // @ts-ignore
     const result = await client.executeAsync(async done => {
       try {
+        // @ts-ignore
         const { apolloClient, itemsQuery, offlineChangePromise } = window.aerogear;
         
         await offlineChangePromise;

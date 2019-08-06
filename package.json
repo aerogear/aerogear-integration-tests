@@ -6,10 +6,14 @@
   "main": "index.js",
   "scripts": {
     "prestart": "./scripts/start-bs-local.sh",
-    "start": ". ./scripts/setup-env-vars.sh && mocha --file util/init.js"
+    "start": ". ./scripts/setup-env-vars.sh && mocha"
   },
   "dependencies": {
     "@aerogear/voyager-server": "dev",
+    "@types/chai": "4.1.7",
+    "@types/express": "4.17.0",
+    "@types/mocha": "5.2.7",
+    "@types/node": "12.6.9",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
     "express": "latest",
@@ -17,6 +21,8 @@
     "mocha": "^6.1.4",
     "node-fetch": "^2.6.0",
     "pg": "^7.11.0",
+    "ts-node": "8.3.0",
+    "typescript": "3.5.3",
     "unifiedpush-node-sender": "git+https://git@github.com/aerogear/aerogear-unifiedpush-nodejs-client.git",
     "webdriverio": "^5.9.5"
   }

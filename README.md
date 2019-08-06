@@ -46,11 +46,11 @@ docker-compose up -d
 ## Run the tests
 
 ```
-npm start -- test/**/*.js
+npm start -- test/**/*.ts
 ```
 
 or to run specific test:
 
 ```
-npm start -- test/<SERVICE>/index.js
+npm start -- test/<SERVICE>/index.ts
 ```

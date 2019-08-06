@@ -22,6 +22,7 @@ describe('App Metrics', function() {
   it('should receive app metrics', async function() {
     await new Promise(resolve => setTimeout(resolve, 10 * 1000));
 
+    // @ts-ignore
     const result = await postgres.query('SELECT * FROM mobileappmetrics');
 
     result.rows.length.should.equal(1);

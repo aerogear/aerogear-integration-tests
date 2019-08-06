@@ -1,5 +1,7 @@
 const expect = require('chai').expect;
+// @ts-ignore
 const axios = require('axios');
+// @ts-ignore
 const mobileServices = require('../../config/mobile-services');
 const sender = require("unifiedpush-node-sender");
 
@@ -69,7 +71,9 @@ describe('Push', function () {
   it('send and receive test notification', async function () {
 
     // register the app to the UPS server 
+    // @ts-ignore
     await client.executeAsync((config, done) => {
+      // @ts-ignore
       const { agPush, agApp } = window.aerogear;
       const { init } = agApp;
       const { PushRegistration } = agPush;
@@ -85,7 +89,9 @@ describe('Push', function () {
     }, mobileServices);
 
     // start listening for notifications
+    // @ts-ignore
     const message = client.executeAsync((done) => {
+      // @ts-ignore
       const { agPush } = window.aerogear;
       const { PushRegistration } = agPush;
 

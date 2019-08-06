@@ -2,7 +2,9 @@ require('chai').should();
 
 describe('Device Security', function() {
   it('should be possible to run `rooted` check', async function() {
+    // @ts-ignore
     const result = await client.executeAsync(async done => {
+      // @ts-ignore
       const { SecurityService, DeviceCheckType } = window.aerogear.agSecurity;
       const securityService = new SecurityService();
   
@@ -20,7 +22,9 @@ describe('Device Security', function() {
   });
 
   it('should be possible to run `emulator` check', async function() {
+    // @ts-ignore
     const result = await client.executeAsync(async done => {
+      // @ts-ignore
       const { SecurityService, DeviceCheckType } = window.aerogear.agSecurity;
       const securityService = new SecurityService();
   
@@ -33,7 +37,9 @@ describe('Device Security', function() {
   });
 
   it('should be possible to run `debugMode` check', async function() {
+    // @ts-ignore
     const result = await client.executeAsync(async done => {
+      // @ts-ignore
       const { SecurityService, DeviceCheckType } = window.aerogear.agSecurity;
       const securityService = new SecurityService();
   
@@ -46,7 +52,9 @@ describe('Device Security', function() {
   });
 
   it('should be possible to run `screenLock` check', async function() {
+    // @ts-ignore
     const result = await client.executeAsync(async done => {
+      // @ts-ignore
       const { SecurityService, DeviceCheckType } = window.aerogear.agSecurity;
       const securityService = new SecurityService();
   
@@ -59,7 +67,9 @@ describe('Device Security', function() {
   });
 
   it('should be possible to run multiple checks', async function() {
+    // @ts-ignore
     const result = await client.executeAsync(async done => {
+      // @ts-ignore
       const { SecurityService, DeviceCheckType } = window.aerogear.agSecurity;
       const securityService = new SecurityService();
 
@@ -80,6 +90,7 @@ describe('Device Security', function() {
   });
 
   it('should be possible to run custom check', async function() {
+    // @ts-ignore
     const result = await client.executeAsync(async done => {
       class CustomDeviceCheck {
         get name() {
@@ -94,6 +105,7 @@ describe('Device Security', function() {
         }
       }
 
+      // @ts-ignore
       const { SecurityService } = window.aerogear.agSecurity;
       const securityService = new SecurityService();
   
