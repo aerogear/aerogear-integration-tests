@@ -38,6 +38,8 @@ pipeline {
             ./scripts/build-testing-app.sh
             """
             stash includes: 'testing-app/bs-app-url.txt', name: 'android-testing-app'
+            // make the package-lock.json available for the testing
+            // because it is requested by the metrics test
             stash includes: 'testing-app/package-lock.json', name: 'package-lock'
           }
         }
