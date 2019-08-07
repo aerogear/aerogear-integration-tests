@@ -46,8 +46,3 @@ services:
       POSTGRES_DATABASE: ups
     depends_on:
       - upsdb
-
-networks:
-  default:
-    external:
-      name: aerogear
