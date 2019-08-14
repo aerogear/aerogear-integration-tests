@@ -24,8 +24,7 @@ pipeline {
         stage('Android') {
           agent {
             dockerfile {
-              dir 'containers/android/'
-              filename 'Dockerfile'
+              dir 'containers/android'
               label 'psi_rhel8'
             }
           }
