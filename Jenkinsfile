@@ -24,8 +24,7 @@ pipeline {
         stage('Android') {
           agent {
             dockerfile {
-              dir 'containers/android/'
-              filename 'Dockerfile'
+              dir 'containers/android'
               label 'psi_rhel8'
             }
           }
@@ -64,53 +63,58 @@ pipeline {
 
     stage('Testing') {
       agent {
-        dockerfile {
-          dir 'containers/node/'
-          filename 'Dockerfile'
+        node {
           label 'psi_rhel8'
-          args '--volume /var/run/docker.sock:/var/run/docker.sock --network host'
         }
       }
       stages {
         stage('Start services') {
           steps {
-            sh 'sudo docker-compose up -d'
+            sh 'docker-compose --no-ansi up > docker-compose.log 2>&1 &'
           }
         }
-        stage('Install dependencies for tests') {
-            steps {
-              sh """
-              npm install
-              npm install mocha-jenkins-reporter
-              """
-              unstash 'package-lock'
+        stage('In container') {
+          agent {
+            dockerfile {
+              dir 'containers/node'
+              args '--network host'
+              reuseNode true
             }
-        }
-        stage('Test android') {
-          environment { 
-            MOBILE_PLATFORM = 'android'
           }
-          steps {
-            unstash 'android-testing-app'
-            runIntegrationTests()
-          }
-        }
-        stage('Test ios') {
-          environment { 
-            MOBILE_PLATFORM = 'ios'
-          }
-          steps {
-            unstash 'ios-testing-app'
-            runIntegrationTests()
+          stages {
+            stage('Install dependencies') {
+              steps {
+                sh """
+                npm install
+                npm install mocha-jenkins-reporter
+                """
+                unstash 'package-lock'
+              }
+            }
+            stage('Test android') {
+              environment {
+                MOBILE_PLATFORM = 'android'
+              }
+              steps {
+                unstash 'android-testing-app'
+                runIntegrationTests()
+              }
+            }
+            stage('Test ios') {
+              environment { 
+                MOBILE_PLATFORM = 'ios'
+              }
+              steps {
+                unstash 'ios-testing-app'
+                runIntegrationTests()
+              }
+            }
           }
         }
       }
-      post { 
+      post {
         always {
-          sh """
-          sudo docker-compose logs --no-color > docker-compose.log
-          sudo docker-compose down
-          """
+          sh 'docker-compose --no-ansi down'
           archiveArtifacts 'docker-compose.log'
         }
       }
