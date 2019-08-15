@@ -1,5 +1,5 @@
 def runIntegrationTests() {
-  sh "JUNIT_REPORT_PATH=report-${env.MOBILE_PLATFORM}.xml npm start -- --reporter mocha-jenkins-reporter test/**/*.js || true"
+  sh "JUNIT_REPORT_PATH=report-${env.MOBILE_PLATFORM}.xml npm start -- --reporter mocha-jenkins-reporter test/**/*.ts || true"
   archiveArtifacts "report-${env.MOBILE_PLATFORM}.xml"
   junit allowEmptyResults: true, testResults: "report-${env.MOBILE_PLATFORM}.xml"
 }

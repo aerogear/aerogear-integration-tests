@@ -5,3 +5,5 @@ bs-local-pid.txt
 BrowserStackLocal*
 google-services.json
 .vscode
+.history
+.vars
