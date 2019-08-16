@@ -6,6 +6,9 @@ def runIntegrationTests() {
 
 pipeline {
   agent none
+  triggers {
+    cron(env.BRANCH_NAME == 'master' ? 'H H(0-2) * * *' : '')
+  }
   environment {
     BROWSERSTACK_USER = credentials('browserstack-user')
     BROWSERSTACK_KEY = credentials('browserstack-key')
