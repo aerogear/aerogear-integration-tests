@@ -1,7 +1,7 @@
 import path = require("path");
 import { Options } from "webdriver";
 
-let opts: Options & { capabilities: { [key: string]: string | boolean } };
+let opts: Options & { capabilities: { [key: string]: any } };
 if (process.env.LOCAL_APPIUM === "true") {
     opts = {
         port: 4723,
