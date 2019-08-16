@@ -5,7 +5,7 @@ import { ApolloOfflineClient } from "@aerogear/voyager-client";
 import { CordovaNetworkStatus } from "@aerogear/voyager-client";
 import { gql, VoyagerServer } from "@aerogear/voyager-server";
 import express = require("express");
-import { ToggleNetworkStatus } from "../../testing-app/ToggleNetworkStatus";
+import { ToggleNetworkStatus } from "../../fixtures/ToggleNetworkStatus";
 import { device } from "../../util/device";
 import { GlobalUniverse } from "../../util/init";
 import { setNetwork } from "../../util/network";
