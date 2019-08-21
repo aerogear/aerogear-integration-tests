@@ -1,153 +1,141 @@
-require("chai").should();
+import chai = require("chai");
+chai.should();
 
-const {
-    // @ts-ignore
+import { Auth } from "@aerogear/auth";
+import { KeycloakInitOptions } from "keycloak-js";
+import { config as mobileServices } from "../../config/mobile-services";
+import { device } from "../../util/device";
+import { GlobalUniverse } from "../../util/init";
+import {
     prepareKeycloak,
-    // @ts-ignore
     resetKeycloakConfiguration,
-} = require("../../util/keycloak");
-// @ts-ignore
-const mobileServices = require("../../config/mobile-services");
+} from "../../util/keycloak";
+
+interface Universe extends GlobalUniverse {
+    authService: Auth;
+}
 
 describe("Auth", function() {
     this.timeout(0);
 
-    let mainWindow;
+    let mainWindow: string;
 
-    before("setup test realm", async function() {
-        // @ts-ignore
-        mainWindow = await client.getWindowHandle();
+    before("setup test realm", async () => {
+        mainWindow = await device.browser.getWindowHandle();
         const config = mobileServices.services.find(
             service => service.name === "keycloak"
         );
         await prepareKeycloak(config.url);
     });
 
-    after("remove test realm", async function() {
-        // @ts-ignore
-        await client.switchToWindow(mainWindow);
+    after("remove test realm", async () => {
+        await device.browser.switchToWindow(mainWindow);
         await resetKeycloakConfiguration();
     });
 
-    it("should not login with incorrect credentials", async function() {
-        // @ts-ignore
-        client.execute(() => {
-            const {
-                agAuth: { Auth },
-                app,
-                // @ts-ignore
-            } = window.aerogear;
+    it("should not login with incorrect credentials", async () => {
+        await device.execute(async (modules, universe: Universe) => {
+            const { Auth } = modules["@aerogear/auth"];
+            const { app } = universe;
 
             const authService = new Auth(app.config);
-            // @ts-ignore
-            window.aerogear.authService = authService;
+            universe.authService = authService;
 
-            const initOptions = { onLoad: "login-required" };
+            const initOptions: KeycloakInitOptions = {
+                onLoad: "login-required",
+            };
             authService.init(initOptions);
         });
 
         await new Promise(resolve => setTimeout(resolve, 20 * 1000));
 
-        // @ts-ignore
-        const allWindows = await client.getWindowHandles();
+        const allWindows = await device.browser.getWindowHandles();
         const loginPage = allWindows.find(w => w !== mainWindow);
-        // @ts-ignore
-        await client.switchToWindow(loginPage);
+        await device.browser.switchToWindow(loginPage);
 
-        // @ts-ignore
-        const usernamEl = await client.$("#username");
+        const usernamEl = await device.browser.$("#username");
         await usernamEl.setValue("test");
 
-        // @ts-ignore
-        const passwordEl = await client.$("#password");
+        const passwordEl = await device.browser.$("#password");
         await passwordEl.setValue("wrong-password");
 
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // @ts-ignore
-        const loginEl = await client.$("#kc-login");
+        const loginEl = await device.browser.$("#kc-login");
         await loginEl.click();
 
         await new Promise(resolve => setTimeout(resolve, 3000));
 
-        // @ts-ignore
-        const alertEl = await client.$(".alert-error");
+        const alertEl = await device.browser.$(".alert-error");
         (await alertEl.isDisplayed()).should.equal(true);
     });
 
-    it("should login", async function() {
-        // @ts-ignore
-        const passwordEl = await client.$("#password");
+    it("should login", async () => {
+        const passwordEl = await device.browser.$("#password");
         await passwordEl.setValue("123");
 
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // @ts-ignore
-        const loginEl = await client.$("#kc-login");
+        const loginEl = await device.browser.$("#kc-login");
         await loginEl.click();
 
-        // @ts-ignore
-        await client.switchToWindow(mainWindow);
+        await device.browser.switchToWindow(mainWindow);
 
         await new Promise(resolve => setTimeout(resolve, 5000));
 
-        // @ts-ignore
-        const authenticated = await client.executeAsync(async done => {
-            // @ts-ignore
-            const { authService } = window.aerogear;
+        const authenticated = await device.execute(
+            async (_, universe: Universe) => {
+                const { authService } = universe;
 
-            done(authService.isAuthenticated());
-        });
-
-        authenticated.should.equal(true);
-    });
-
-    it("should refresh authentication token", async function() {
-        // @ts-ignore
-        const authenticated = await client.executeAsync(async done => {
-            // @ts-ignore
-            const { authService } = window.aerogear;
-
-            await authService.extract().updateToken(30);
-
-            done(authService.isAuthenticated());
-        });
+                return authService.isAuthenticated();
+            }
+        );
 
         authenticated.should.equal(true);
     });
 
-    it("should get authentication token", function() {
-        // @ts-ignore
-        client.execute(() => {
-            // @ts-ignore
-            const { authService } = window.aerogear;
+    it("should refresh authentication token", async () => {
+        const authenticated = await device.execute(
+            async (_, universe: Universe) => {
+                const { authService } = universe;
+
+                await authService.extract().updateToken(30);
+
+                return authService.isAuthenticated();
+            }
+        );
+
+        authenticated.should.equal(true);
+    });
+
+    it("should get authentication token", async () => {
+        await device.execute(async (_, universe: Universe) => {
+            const { authService } = universe;
 
             authService.extract().token;
         });
     });
 
-    it("should get realm roles", async function() {
-        // @ts-ignore
-        const result = await client.executeAsync(async done => {
-            // @ts-ignore
-            const { authService } = window.aerogear;
+    it("should get realm roles", async () => {
+        const result = await device.execute(async (_, universe: Universe) => {
+            const { authService } = universe;
 
-            done(authService.getRealmRoles());
+            return authService.getRealmRoles();
         });
 
         result.should.deep.equal(["offline_access", "uma_authorization"]);
     });
 
-    it("should logout", async function() {
-        // @ts-ignore
-        const authenticated = await client.executeAsync(async done => {
-            // @ts-ignore
-            const { authService } = window.aerogear;
+    it("should logout", async () => {
+        const authenticated = await device.execute(
+            async (_, universe: Universe) => {
+                const { authService } = universe;
 
-            await authService.logout();
+                await authService.logout();
 
-            done(authService.isAuthenticated());
-        });
+                return authService.isAuthenticated();
+            }
+        );
 
         authenticated.should.equal(false);
     });

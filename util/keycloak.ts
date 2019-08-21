@@ -1,9 +1,7 @@
-// @ts-ignore
-const axios = require("axios");
+import axios from "axios";
 
-const realmToImport = require("../fixtures/realm-export");
+import realmToImport = require("../fixtures/realm-export.json");
 
-// @ts-ignore
 const config = {
     appRealmName: "integration",
     adminRealmName: "master",
@@ -19,9 +17,7 @@ const config = {
 async function authenticateKeycloak() {
     const res = await axios({
         method: "POST",
-        // @ts-ignore
         url: `${config.authServerUrl}/realms/${config.adminRealmName}/protocol/openid-connect/token`,
-        // @ts-ignore
         data: `client_id=${config.resource}&username=${config.username}&password=${config.password}&grant_type=password`,
     });
     return `Bearer ${res.data["access_token"]}`;
@@ -30,58 +26,46 @@ async function authenticateKeycloak() {
 async function importRealm() {
     await axios({
         method: "POST",
-        // @ts-ignore
         url: `${config.authServerUrl}/admin/realms`,
         data: realmToImport,
         headers: {
-            // @ts-ignore
             Authorization: config.token,
             "Content-Type": "application/json",
         },
     });
 }
 
-async function createUser(name) {
+async function createUser(name: string) {
     await axios({
         method: "post",
-        // @ts-ignore
         url: `${config.authServerUrl}/admin/realms/${config.appRealmName}/users`,
         data: {
             username: name,
             credentials: [
-                // @ts-ignore
                 { type: "password", value: config.testPass, temporary: false },
             ],
             enabled: true,
         },
         headers: {
-            // @ts-ignore
             Authorization: config.token,
             "Content-Type": "application/json",
         },
     });
 }
 
-// @ts-ignore
-async function prepareKeycloak(authServerUrl) {
-    // @ts-ignore
+async function prepareKeycloak(authServerUrl: string) {
     config.authServerUrl = authServerUrl;
-    // @ts-ignore
     config.token = await authenticateKeycloak();
     await importRealm();
-    // @ts-ignore
     await createUser(config.testUser);
 }
 
-// @ts-ignore
 async function resetKeycloakConfiguration() {
     await axios({
         method: "DELETE",
-        // @ts-ignore
         url: `${config.authServerUrl}/admin/realms/${config.appRealmName}`,
-        // @ts-ignore
         headers: { Authorization: config.token },
     });
 }
 
-module.exports = { prepareKeycloak, resetKeycloakConfiguration };
+export { prepareKeycloak, resetKeycloakConfiguration };

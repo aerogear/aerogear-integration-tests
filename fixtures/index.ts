@@ -1,12 +1,5 @@
-import * as agSecurity from "@aerogear/security";
-import * as agAuth from "@aerogear/auth";
-import * as agApp from "@aerogear/app";
-import * as agSync from "@aerogear/voyager-client";
-import * as agPush from "@aerogear/push";
-import * as offixCache from "offix-cache";
-import gql from "graphql-tag";
-import { ToggleNetworkStatus } from "./ToggleNetworkStatus";
 import * as helpers from "tslib";
+import { modules } from "./modules";
 
 // expose all typescript helpers globally
 for (const key in helpers) {
@@ -15,46 +8,14 @@ for (const key in helpers) {
     }
 }
 
+// set _this globally to avoid typescript issue "_this is not defined"
 // @ts-ignore
 window._this = null;
 
+// initialize the universe where everyone can store everything
 // @ts-ignore
-window.aerogear = {
-    agSecurity,
-    agAuth,
-    agApp,
-    agSync,
-    agPush,
-    gql,
-    ToggleNetworkStatus,
-    offixCache,
-};
+window.universe = {};
 
-var app = {
-    initialize: function() {
-        document.addEventListener(
-            "deviceready",
-            this.onDeviceReady.bind(this),
-            false
-        );
-    },
-
-    onDeviceReady: function() {
-        this.receivedEvent("deviceready");
-        //@ts-ignore
-        window.aerogear.deviceIsReady = true;
-    },
-
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector(".listening");
-        var receivedElement = parentElement.querySelector(".received");
-
-        listeningElement.setAttribute("style", "display:none;");
-        receivedElement.setAttribute("style", "display:block;");
-
-        console.log("Received Event: " + id);
-    },
-};
-
-app.initialize();
+// expose modules globally
+// @ts-ignore
+window.modules = modules;

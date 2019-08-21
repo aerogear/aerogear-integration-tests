@@ -1,26 +1,24 @@
-require("chai").should();
+import chai = require("chai");
+chai.should();
 
-describe("Device Security with Metrics", function() {
-    it("should be possible to report device check via metrics", async function() {
-        // @ts-ignore
-        await client.executeAsync(async done => {
-            const {
-                SecurityService,
-                DeviceCheckType,
-                // @ts-ignore
-            } = window.aerogear.agSecurity;
-            // @ts-ignore
-            const { app } = window.aerogear;
+import { device } from "../../util/device";
+import { GlobalUniverse } from "../../util/init";
+import { postgres } from "../../util/postgres";
+
+describe("Device Security with Metrics", () => {
+    it("should be possible to report device check via metrics", async () => {
+        await device.execute(async (modules, universe: GlobalUniverse) => {
+            const { SecurityService, DeviceCheckType } = modules[
+                "@aerogear/security"
+            ];
+            const { app } = universe;
             const securityService = new SecurityService(app.metrics);
 
             await securityService.checkAndPublishMetric(
                 DeviceCheckType.isEmulator
             );
-
-            done();
         });
 
-        // @ts-ignore
         const result = await postgres.query("SELECT * FROM mobileappmetrics");
         const secResult = result.rows.find(row =>
             row.event_type.startsWith("security")

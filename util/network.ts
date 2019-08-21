@@ -1,14 +1,12 @@
-// @ts-ignore
-const fetch = require("node-fetch");
+import fetch from "node-fetch";
+import { device } from "./device";
 
-// @ts-ignore
-const setNetwork = async profile => {
+export async function setNetwork(profile: string) {
     const buff = Buffer.from(
         `${process.env.BROWSERSTACK_USER}:${process.env.BROWSERSTACK_KEY}`
     );
     await fetch(
-        // @ts-ignore
-        `https://api-cloud.browserstack.com/app-automate/sessions/${client.sessionId}/update_network.json`,
+        `https://api-cloud.browserstack.com/app-automate/sessions/${device.browser.sessionId}/update_network.json`,
         {
             body: `{"networkProfile":"${profile}"}`,
             headers: {
@@ -18,6 +16,4 @@ const setNetwork = async profile => {
             method: "PUT",
         }
     );
-};
-
-module.exports = { setNetwork };
+}

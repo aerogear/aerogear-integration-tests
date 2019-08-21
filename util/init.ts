@@ -1,69 +1,50 @@
-const wdio = require("webdriverio");
-const { Client } = require("pg");
+import { AeroGearApp } from "@aerogear/app";
+import { config as mobileServices } from "../config/mobile-services";
+import { device } from "./device";
+import { postgres } from "./postgres";
 
-const opts = require("../config/appium-opts");
-// @ts-ignore
-const mobileServices = require("../config/mobile-services");
+interface Universe {
+    app: AeroGearApp;
+}
 
 before("Initialize appium", async function() {
     this.timeout(0);
 
-    // @ts-ignore
-    global.client = await wdio.remote(opts);
-    // @ts-ignore
-    global.client.setAsyncTimeout(30000);
+    // wait for the device to be initialized
+    await device.init();
 });
 
 before("Wait for cordova device ready", async function() {
     this.timeout(0);
 
-    // @ts-ignore
-    await client.executeAsync(async done => {
-        // @ts-ignore
-        const { deviceIsReady } = window.aerogear;
-
-        if (deviceIsReady) {
-            done();
-        } else {
-            document.addEventListener("deviceready", done, false);
-        }
+    await device.execute(async () => {
+        await new Promise(resolve => {
+            document.addEventListener("deviceready", resolve, false);
+        });
     });
 });
 
-before("connect to postgres", async function() {
-    // @ts-ignore
-    global.postgres = new Client({
-        host: process.env.PGHOST,
-        user: process.env.PGUSER,
-        password: process.env.PGPASSWORD,
-        database: process.env.PGDATABASE,
-    });
-
-    // @ts-ignore
-    await global.postgres.connect();
+before("connect to postgres", async () => {
+    await postgres.connect();
 });
 
-before("reset metrics db", async function() {
-    // @ts-ignore
+before("reset metrics db", async () => {
     await postgres.query("DELETE FROM mobileappmetrics");
 });
 
-before("Initialize aerogear-js-sdk", async function() {
-    // @ts-ignore
-    client.execute(config => {
-        // @ts-ignore
-        const { init } = window.aerogear.agApp;
-        // @ts-ignore
-        window.aerogear.app = init(config);
+before("Initialize aerogear-js-sdk", async () => {
+    await device.execute(async (modules, universe: Universe, config) => {
+        const { init } = modules["@aerogear/app"];
+        universe.app = init(config);
     }, mobileServices);
 });
 
-after("Close appium session", async function() {
-    // @ts-ignore
-    await client.deleteSession();
+after("Close appium session", async () => {
+    await device.close();
 });
 
-after("close postgres connection", async function() {
-    // @ts-ignore
+after("close postgres connection", async () => {
     await postgres.end();
 });
+
+export { Universe as GlobalUniverse };

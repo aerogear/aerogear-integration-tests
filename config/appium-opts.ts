@@ -1,7 +1,9 @@
-const path = require("path");
+import path = require("path");
+import { Options } from "webdriver";
 
+let opts: Options & { capabilities: { [key: string]: any } };
 if (process.env.LOCAL_APPIUM === "true") {
-    const opts = {
+    opts = {
         port: 4723,
         logLevel: "error",
         capabilities: {
@@ -16,10 +18,8 @@ if (process.env.LOCAL_APPIUM === "true") {
             autoWebview: true,
         },
     };
-
-    module.exports = opts;
 } else {
-    const opts = {
+    opts = {
         hostname: "hub-cloud.browserstack.com",
         logLevel: "error",
         capabilities: {
@@ -41,6 +41,6 @@ if (process.env.LOCAL_APPIUM === "true") {
             "browserstack.debug": true,
         },
     };
-
-    module.exports = opts;
 }
+
+export { opts };
