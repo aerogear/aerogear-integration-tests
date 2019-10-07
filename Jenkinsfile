@@ -6,6 +6,9 @@ def runIntegrationTests() {
 
 pipeline {
   agent none
+  libraries {
+    lib('qe-pipeline-library')
+  }
   triggers {
     cron(env.BRANCH_NAME == 'master' ? 'H H(0-2) * * *' : '')
   }
@@ -35,6 +38,7 @@ pipeline {
             GOOGLE_SERVICES = credentials('google-services')
           }
           steps {
+            setNexusNpm()
             sh """
             cp ${GOOGLE_SERVICES} ./fixtures/google-services.json
             ./scripts/build-testing-app.sh
@@ -87,6 +91,7 @@ pipeline {
           stages {
             stage('Install dependencies') {
               steps {
+                setNexusNpm()
                 sh """
                 npm install
                 npm install mocha-jenkins-reporter
