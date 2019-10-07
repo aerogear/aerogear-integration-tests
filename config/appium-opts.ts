@@ -36,7 +36,7 @@ if (process.env.LOCAL_APPIUM === "true") {
             "browserstack.key": process.env.BROWSERSTACK_KEY,
             app: process.env.BROWSERSTACK_APP,
             autoWebview: true,
-            "browserstack.appium_version": "1.9.1",
+            "browserstack.appium_version": "1.14.0",
             "browserstack.networkLogs": true,
             "browserstack.debug": true,
         },
