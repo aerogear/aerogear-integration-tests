@@ -53,8 +53,8 @@ describe("Auth", function() {
         const loginPage = allWindows.find(w => w !== mainWindow);
         await device.browser.switchToWindow(loginPage);
 
-        const usernamEl = await device.browser.$("#username");
-        await usernamEl.setValue("test");
+        const usernameEl = await device.browser.$("#username");
+        await usernameEl.setValue("test");
 
         const passwordEl = await device.browser.$("#password");
         await passwordEl.setValue("wrong-password");
